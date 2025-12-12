@@ -1,1 +1,5 @@
 Pods/
+config.swift
+.DS_Store
+UserInterfaceState.xcuserstate
+xcuserdata/
