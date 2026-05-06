@@ -1,15 +1,11 @@
 import SwiftUI
 
-/// 診断結果を表示するレポート画面 - Chat Style
 struct DiagnosisView: View {
     @Environment(\.dismiss) var dismiss
     let report: DiagnosisReport?
     let isAnalyzing: Bool
     
-    // コーチのペルソナを取得（レポートがない場合はデフォルト）
     private var coachPersona: CoachPersona {
-        // ここでは簡易的に取得。本来はレポートに含まれるべきだが、現状は設定から取得
-        // 実際のアプリではレポート生成時のペルソナIDを保存しておくのがベスト
         let savedId = UserDefaults.standard.string(forKey: "coachModeId") ?? "normal_jp"
         let personas = CoachPersona.availablePersonas(for: LanguageManager.shared.currentLanguage)
         return personas.first(where: { $0.id == savedId }) ?? CoachPersona.standard
@@ -22,40 +18,35 @@ struct DiagnosisView: View {
     
     @ObservedObject var subscriptionManager = SubscriptionManager.shared
     
-    @State private var shareImage: Image?
-    
     var body: some View {
         NavigationView {
             ZStack {
-                // Background
                 Theme.background.ignoresSafeArea()
                 
                 if isAnalyzing {
-                    LoadingView()
+                    LoadingView(personaName: coachPersona.name)
                 } else if let report = report {
-                    // Chat Stream
                     ScrollViewReader { proxy in
                         ScrollView(showsIndicators: false) {
                             LazyVStack(spacing: Theme.Spacing.lg.rawValue) {
-                                // 1. Summary Card (Header, Score, Message, Overall Summary)
                                 ChatHeader(report: report, persona: coachPersona)
                                     .padding(.top, Theme.Spacing.md.rawValue)
                                 
-                                // 5. Diagnosis Items (Attachments)
                                 DiagnosisItemsChatSection(
                                     report: report,
                                     subscriptionManager: subscriptionManager,
                                     persona: coachPersona
                                 )
                                 
-                                // Spacer for bottom padding
+                                ImprovementDrillsSection(
+                                    report: report,
+                                    subscriptionManager: subscriptionManager
+                                )
+                                
                                 Color.clear.frame(height: Theme.Spacing.xxxl.rawValue)
                             }
                             .padding(.horizontal, Theme.Spacing.base.rawValue)
                         }
-                    }
-                    .onAppear {
-                        generateShareImage()
                     }
                 } else {
                     NoDataView()
@@ -64,21 +55,13 @@ struct DiagnosisView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("close".localized) {
-                        dismiss()
-                    }
-                    .typography(.bodyLarge)
-                    .foregroundColor(Theme.forestGreen)
+                    Button("close".localized) { dismiss() }
+                        .typography(.bodyLarge)
+                        .foregroundColor(Theme.forestGreen)
                 }
-                
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    if let image = shareImage, let report = report {
-                        ShareLink(
-                            item: image,
-                            subject: Text("GolfScan AI Diagnosis"),
-                            message: Text(generateShareHashtags(report: report)),
-                            preview: SharePreview("GolfScan AI Diagnosis", image: image)
-                        ) {
+                    if let report = report {
+                        ShareLink(item: generateShareText(report: report)) {
                             Image(systemName: "square.and.arrow.up")
                                 .font(.system(size: 18, weight: .semibold))
                                 .foregroundColor(Theme.forestGreen)
@@ -89,25 +72,17 @@ struct DiagnosisView: View {
         }
     }
     
-    @MainActor
-    private func generateShareImage() {
-        guard let report = report else { return }
+    private func generateShareText(report: DiagnosisReport) -> String {
+        """
+        \u{1F3CC}\u{FE0F} GolfScan AI\u8A3A\u65AD\u7D50\u679C
         
-        let renderer = ImageRenderer(content:
-            ChatHeader(report: report, persona: coachPersona)
-                .frame(width: 375) // 固定幅でレンダリング
-                .background(Theme.background)
-        )
-        renderer.scale = UIScreen.main.scale
+        \u30BF\u30A4\u30D7: \(report.swingTypeName)
+        \u30E9\u30F3\u30AF: \(report.swingRank)
+        \u30B9\u30B3\u30A2: \(report.totalScore)/100
         
-        if let uiImage = renderer.uiImage {
-            self.shareImage = Image(uiImage: uiImage)
-        }
-    }
-    
-    private func generateShareHashtags(report: DiagnosisReport) -> String {
-        return """
-        #GolfScanAI #ゴルフ #スイング診断 #\(report.swingTypeName)
+        \u{1F4AC} \(report.coachComment)
+        
+        #GolfScanAI #\u30B4\u30EB\u30D5 #\u30B9\u30A4\u30F3\u30B0\u8A3A\u65AD
         """
     }
 }

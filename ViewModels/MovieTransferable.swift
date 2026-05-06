@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import UniformTypeIdentifiers // ★ここを追加
+import UniformTypeIdentifiers
 
 struct MovieTransferable: Transferable {
     let url: URL
