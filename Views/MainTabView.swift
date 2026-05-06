@@ -2,96 +2,72 @@ import SwiftUI
 
 struct MainTabView: View {
     @State private var selectedTab = 0
+    @ObservedObject var languageManager = LanguageManager.shared
     
     var body: some View {
         ZStack(alignment: .bottom) {
-            // Tab Content
-            TabView(selection: $selectedTab) {
-                ContentView()
-                    .tag(0)
-                
-                HistoryView()
-                    .tag(1)
-                
-                SettingsView()
-                    .tag(2)
-            }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            
-            // Custom Tab Bar
+            tabContent
             CustomTabBar(selectedTab: $selectedTab)
                 .padding(.horizontal, Theme.Spacing.base.rawValue)
                 .padding(.bottom, Theme.Spacing.sm.rawValue)
         }
         .edgesIgnoringSafeArea(.bottom)
+        .id(languageManager.currentLanguage)
+    }
+    
+    private var tabContent: some View {
+        TabView(selection: $selectedTab) {
+            ContentView().tag(0)
+            HistoryView().tag(1)
+            SettingsView().tag(2)
+        }
+        .tabViewStyle(.page(indexDisplayMode: .never))
     }
 }
 
 struct CustomTabBar: View {
     @Binding var selectedTab: Int
     
-    let tabs: [(icon: String, label: String)] = [
-        ("figure.golf", "tab_diagnose".localized),
-        ("chart.line.uptrend.xyaxis", "tab_history".localized),
-        ("gearshape.fill", "tab_settings".localized)
-    ]
+    private var tabs: [(icon: String, label: String)] {
+        [
+            ("figure.golf", "tab_diagnose".localized),
+            ("chart.line.uptrend.xyaxis", "tab_history".localized),
+            ("gearshape.fill", "tab_settings".localized)
+        ]
+    }
     
     var body: some View {
         HStack(spacing: 0) {
             ForEach(0..<tabs.count, id: \.self) { index in
-                TabBarItem(
-                    icon: tabs[index].icon,
-                    label: tabs[index].label,
-                    isSelected: selectedTab == index
-                )
-                .onTapGesture {
-                    HapticFeedback.selection()
-                    withAnimation(Theme.springAnimation) {
-                        selectedTab = index
-                    }
-                }
-                
-                if index < tabs.count - 1 {
-                    Spacer()
-                }
+                TabBarItem(icon: tabs[index].icon, label: tabs[index].label, isSelected: selectedTab == index)
+                    .onTapGesture { handleTabTap(index: index) }
+                if index < tabs.count - 1 { Spacer() }
             }
         }
         .padding(.horizontal, Theme.Spacing.lg.rawValue)
         .padding(.vertical, Theme.Spacing.md.rawValue)
-        .background(
-            ZStack {
-                // Glassmorphic background
-                RoundedRectangle(cornerRadius: Theme.cornerRadiusLg)
-                    .fill(Theme.glassGradient)
-                    .background(.ultraThinMaterial)
-                
-                // Border gradient
-                RoundedRectangle(cornerRadius: Theme.cornerRadiusLg)
-                    .strokeBorder(
-                        LinearGradient(
-                            colors: [
-                                Theme.accent.opacity(0.5),
-                                Color.white.opacity(0.3)
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        ),
-                        lineWidth: 1.5
-                    )
-            }
-        )
-        .shadow(
-            color: Theme.primary.opacity(0.1),
-            radius: 20,
-            x: 0,
-            y: 10
-        )
-        .shadow(
-            color: Theme.forestGreen.opacity(0.05),
-            radius: 12,
-            x: 0,
-            y: 6
-        )
+        .background(tabBarBackground)
+        .clipShape(RoundedRectangle(cornerRadius: Theme.cornerRadiusLg))
+        .shadow(color: Theme.primary.opacity(0.1), radius: 20, x: 0, y: 10)
+        .shadow(color: Theme.forestGreen.opacity(0.05), radius: 12, x: 0, y: 6)
+    }
+    
+    private var tabBarBackground: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: Theme.cornerRadiusLg)
+                .fill(Theme.glassGradient)
+                .background(RoundedRectangle(cornerRadius: Theme.cornerRadiusLg).fill(.ultraThinMaterial))
+            RoundedRectangle(cornerRadius: Theme.cornerRadiusLg)
+                .strokeBorder(
+                    LinearGradient(colors: [Theme.accent.opacity(0.5), Color.white.opacity(0.3)], startPoint: .topLeading, endPoint: .bottomTrailing),
+                    lineWidth: 1.5
+                )
+        }
+    }
+    
+    private func handleTabTap(index: Int) {
+        HapticFeedback.selection()
+        withAnimation(Theme.springAnimation) { selectedTab = index }
     }
 }
 
@@ -107,7 +83,6 @@ struct TabBarItem: View {
                 .foregroundColor(isSelected ? Theme.forestGreen : Theme.textSecondary)
                 .scaleEffect(isSelected ? 1.1 : 1.0)
                 .animation(Theme.springAnimation, value: isSelected)
-            
             Text(label)
                 .typography(.caption)
                 .foregroundColor(isSelected ? Theme.forestGreen : Theme.textSecondary)
