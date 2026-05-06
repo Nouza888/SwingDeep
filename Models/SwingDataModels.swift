@@ -1,59 +1,49 @@
-import SwiftUI
-import SwiftData
 import Foundation
+import SwiftData
 
-// =============================================================================
-// MARK: - 列挙型
-// =============================================================================
+// MARK: - スイングメトリクス
 
-/// ゴルファーの種別
-enum UserType: String, Codable {
-    case me      // 自分
-    case friend  // 友人
-    case pro     // プロ選手
-}
-
-// =============================================================================
-// MARK: - 解析データ構造体
-// =============================================================================
-
-/// スイング解析の数値データ（LLMへの入力用）
-/// - Note: MediaPipeの骨格データから計算された各種メトリクス
+/// スイング解析の数値データ
+///
+/// v2.0: 胴体長比ベース
+/// - headMoveY: 胴体長に対する比率
+/// - hipMoveRatio: 胴体長に対する比率
+/// - handRaiseY: 胴体長に対する比率
+/// - spineAngleDiffDeg: 耳-腰ベースの角度差（度）
 struct SwingMetrics: Codable {
-    /// 前傾角度の差分（マイナスは起き上がり）
-    var spineAngleDiffDeg: Double
+    let spineAngleDiffDeg: Double  // 前傾角度差（度）- 耳-腰ベース
+    let hipMoveRatio: Double       // 腰の移動量（胴体長比）
+    let headMoveY: Double          // 頭の上下動（胴体長比）
+    let tempoRatio: Double         // テンポ比率
+    let handRaiseY: Double         // 手の浮き（胴体長比）
+    let swingPathType: String      // スイング軌道タイプ
     
-    /// 画面幅に対する腰の移動量
-    var hipMoveRatio: Double
-    
-    /// 頭の上下動
-    var headMoveY: Double
-    
-    /// Back : Down比率（テンポ）
-    var tempoRatio: Double
-    
-    /// インパクトでの手の浮き上がり量
-    var handRaiseY: Double
-    
-    /// スイング軌道タイプ ("Outside-In", "Inside-Out", "Straight")
-    var swingPathType: String
+    /// 空のメトリクス（デフォルト値）
+    static var empty: SwingMetrics {
+        SwingMetrics(
+            spineAngleDiffDeg: 0,
+            hipMoveRatio: 0,
+            headMoveY: 0,
+            tempoRatio: 3.0,
+            handRaiseY: 0,
+            swingPathType: "Unknown"
+        )
+    }
 }
 
-// =============================================================================
-// MARK: - 診断レポート構造体（API レスポンス用）
-// =============================================================================
+// MARK: - 診断レポート
 
-/// 診断レポート（LLMからの出力JSON）
-/// - Important: SwiftDataで保存する際はJSONエンコードされたDataとして保存
-struct DiagnosisReport: Codable, Equatable {
-    var coachComment: String
-    var overallSummary: String
-    var totalScore: Int
-    var swingRank: String
-    var swingTypeName: String
-    var diagnosisItems: [DiagnosisItem]
+/// AI診断レポート（JSON出力フォーマット）
+struct DiagnosisReport: Codable {
+    let coachComment: String
+    let overallSummary: String
+    let totalScore: Int
+    let swingRank: String
+    let swingTypeName: String
+    let diagnosisItems: [DiagnosisItem]
+    let drillsToShow: [String]
+    let drillSectionMessage: String
     
-    // JSON snake_case <-> Swift camelCase 変換
     enum CodingKeys: String, CodingKey {
         case coachComment = "coach_comment"
         case overallSummary = "overall_summary"
@@ -61,159 +51,88 @@ struct DiagnosisReport: Codable, Equatable {
         case swingRank = "swing_rank"
         case swingTypeName = "swing_type_name"
         case diagnosisItems = "diagnosis_items"
-    }
-    
-    // Equatable準拠のための実装
-    static func == (lhs: DiagnosisReport, rhs: DiagnosisReport) -> Bool {
-        lhs.coachComment == rhs.coachComment &&
-        lhs.totalScore == rhs.totalScore &&
-        lhs.swingRank == rhs.swingRank
+        case drillsToShow = "drills_to_show"
+        case drillSectionMessage = "drill_section_message"
     }
 }
 
-/// 診断項目（個別の診断ポイント）
-struct DiagnosisItem: Codable, Identifiable, Equatable {
+/// 診断項目
+struct DiagnosisItem: Codable, Identifiable {
+    let key: String
+    let title: String
+    let judgmentTitle: String?     // 一言判定タイトル（7〜14文字）
+    let itemScore: Int?            // 項目スコア（0-100）
+    let status: String
+    let severity: Double
+    let visualizationValue: Double
+    let comment: String
+    let detailKeyPhrases: [String] // キーフレーズ（太字化用）
+    let isTop2: Bool               // 上位2件フラグ（ドリル表示判定用）
+    let drill: Drill?
+    
     var id: String { key }
     
-    /// 項目キー（swing_path, hand_position等）
-    var key: String
-    
-    /// 表示タイトル
-    var title: String
-    
-    /// ステータス ("Good", "Bad", "Check")
-    var status: String
-    
-    /// 重要度 (1:軽微 〜 10:重度)
-    var severity: Double
-    
-    /// 可視化用の値 (-100 〜 +100)
-    var visualizationValue: Double
-    
-    /// コメント・アドバイス
-    var comment: String
-    
-    /// 改善ドリル
-    var drill: Drill?
-    
-    /// 改善ドリル詳細
-    struct Drill: Codable, Equatable {
-        var title: String
-        var description: String
-    }
-    
     enum CodingKeys: String, CodingKey {
-        case key
-        case title
-        case status
-        case severity
+        case key, title, status, severity, comment, drill
+        case judgmentTitle = "judgment_title"
+        case itemScore = "item_score"
         case visualizationValue = "visualization_value"
-        case comment
-        case drill
+        case detailKeyPhrases = "detail_key_phrases"
+        case isTop2 = "is_top2"
+    }
+    
+    /// ドリルデータ
+    struct Drill: Codable {
+        let title: String
+        let description: String
+        let drillKeyPhrases: [String]
+        let steps: [String]?
+        let reps: String?
+        let tools: [String]?
+        let ng: [String]?
+        let timeSec: Int?
+        
+        enum CodingKeys: String, CodingKey {
+            case title, description, steps, reps, tools, ng
+            case drillKeyPhrases = "drill_key_phrases"
+            case timeSec = "time_sec"
+        }
     }
 }
 
-// =============================================================================
-// MARK: - SwiftData モデル
-// =============================================================================
+// MARK: - SwiftData Model
 
-/// ゴルファープロフィール（マルチユーザー対応）
+/// スイング解析結果のSwiftDataモデル（永続化用）
 @Model
-class GolferProfile {
-    var id: UUID
-    var name: String
-    var type: UserType
-    
-    /// プロフィールアイコン画像（大サイズのため外部ストレージ）
-    @Attribute(.externalStorage) var icon: Data?
-    
-    /// このゴルファーの解析履歴
-    @Relationship(deleteRule: .cascade) var analyses: [SwingAnalysis] = []
-    
-    init(id: UUID = UUID(), name: String, type: UserType, icon: Data? = nil) {
-        self.id = id
-        self.name = name
-        self.type = type
-        self.icon = icon
-    }
-}
-
-/// スイング解析レコード
-/// - Important: diagnosisReportは複雑なネスト構造のため、JSONエンコードしてDataとして保存
-@Model
-class SwingAnalysis {
-    var id: UUID
+final class SwingAnalysis {
     var date: Date
-    
-    /// 動画ファイルパス（Documentsディレクトリからの相対パス）
     var videoPath: String
-    
-    /// 動画の長さ
-    var duration: TimeInterval
-    
-    // MARK: 診断用データ
-    
-    /// アドレス時刻（ミリ秒）
+    var duration: Double
     var addressTime: Double
-    
-    /// インパクト時刻（ミリ秒）
     var impactTime: Double
     
-    /// 解析メトリクス（JSONエンコードして保存）
-    @Attribute(.externalStorage) var metricsData: Data?
+    // JSON形式で保存
+    var metricsData: Data?
+    var reportData: Data?
     
-    /// 診断レポート（JSONエンコードして保存）
-    /// - Note: DiagnosisReportは複雑なネスト構造のため、Dataとして保存
-    @Attribute(.externalStorage) var diagnosisReportData: Data?
-    
-    // MARK: リレーション
-    
-    /// 親プロフィールへの逆参照
-    var golfer: GolferProfile?
-    
-    // MARK: 計算プロパティ
-    
-    /// メトリクス（エンコード/デコード）
+    // Computed Properties
     var metrics: SwingMetrics? {
-        get {
-            guard let data = metricsData else { return nil }
-            return try? JSONDecoder().decode(SwingMetrics.self, from: data)
-        }
-        set {
-            metricsData = try? JSONEncoder().encode(newValue)
-        }
+        guard let data = metricsData else { return nil }
+        return try? JSONDecoder().decode(SwingMetrics.self, from: data)
     }
     
-    /// 診断レポート（エンコード/デコード）
     var diagnosisReport: DiagnosisReport? {
-        get {
-            guard let data = diagnosisReportData else { return nil }
-            return try? JSONDecoder().decode(DiagnosisReport.self, from: data)
-        }
-        set {
-            diagnosisReportData = try? JSONEncoder().encode(newValue)
-        }
+        guard let data = reportData else { return nil }
+        return try? JSONDecoder().decode(DiagnosisReport.self, from: data)
     }
     
-    // MARK: イニシャライザ
-    
-    init(
-        id: UUID = UUID(),
-        date: Date = Date(),
-        videoPath: String,
-        duration: TimeInterval,
-        addressTime: Double,
-        impactTime: Double,
-        metrics: SwingMetrics? = nil,
-        diagnosisReport: DiagnosisReport? = nil
-    ) {
-        self.id = id
+    init(date: Date, videoPath: String, duration: Double, addressTime: Double, impactTime: Double, metrics: SwingMetrics?, diagnosisReport: DiagnosisReport?) {
         self.date = date
         self.videoPath = videoPath
         self.duration = duration
         self.addressTime = addressTime
         self.impactTime = impactTime
         self.metricsData = try? JSONEncoder().encode(metrics)
-        self.diagnosisReportData = try? JSONEncoder().encode(diagnosisReport)
+        self.reportData = try? JSONEncoder().encode(diagnosisReport)
     }
 }

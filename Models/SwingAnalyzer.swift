@@ -1,329 +1,296 @@
 import Foundation
 import MediaPipeTasksVision
-import SwiftUI
 
-/// スイング解析ロジックを担当する構造体
-/// アドレスとインパクトの2点を比較し、エラー（悪い癖）を診断する
+/// スイング解析のコアロジック
+/// MediaPipeの骨格データから各種メトリクスを計算し、診断結果を生成します
+///
+/// ## 主な機能
+/// - フェーズ自動検出（アドレス・インパクト位置の推定）
+/// - 骨格データからのメトリクス計算
+/// - ルールベースの診断実行
+///
+/// ## v2.0 胴体長比ベース
+/// - headMoveY: 胴体長に対する頭の上下動の比率
+/// - hipMoveRatio: 胴体長に対する腰の前後移動の比率
+/// - handRaiseY: 胴体長に対するインパクト時の手の浮きの比率
+/// - spineAngleDiffDeg: 耳-腰ベースの前傾角度差（度）
 struct SwingAnalyzer {
     
-    // MARK: - Constants (定数定義)
+    // MARK: - Data Types
     
-    /// 解析で使用する各種定数
-    ///
-    /// マジックナンバーを避け、意味のある名前で定義することで、
-    /// メンテナンス性と可読性を向上させます。
-    private struct Constants {
-        // データ品質関連
-        static let minDataPoints = 30                   // 最小データ点数（これ以下は解析不能）
-        static let landmarkToleranceMs = 100            // ランドマークデータの許容誤差（ミリ秒）
-        static let addressSearchStartMs = 300           // アドレス探索開始時刻（開始直後のノイズ回避）
-        static let impactSearchDelayMs = 1500           // インパクト探索開始遅延（バックスイング中の誤検知防止）
-        
-        // 診断基準値 - アーリーエクステンション（お尻の離脱）
-        static let earlyExtensionThresholdBad: Float = 0.05     // 重度（5cm以上の移動）
-        static let earlyExtensionThresholdCheck: Float = 0.02   // 要注意（2cm以上の移動）
-        
-        // 診断基準値 - 前傾角度の維持（Spine Angle）
-        static let spineAngleThresholdBad: Double = 10.0        // 重度（10度以上の変化）
-        static let spineAngleThresholdGood: Double = 5.0        // 良好（5度以内の維持）
-        
-        // スイングパス判定の閾値
-        static let swingPathOutsideThreshold: Float = 0.05      // Outside-In判定（手が前に出る）
-        static let swingPathInsideThreshold: Float = -0.05      // Inside-Out判定（手が後ろ）
-        
-        // MediaPipe ランドマークインデックス
-        struct LandmarkIndex {
-            static let nose = 0             // 鼻
-            static let leftShoulder = 11    // 左肩
-            static let leftWrist = 15       // 左手首
-            static let rightWrist = 16      // 右手首
-            static let leftHip = 23         // 左腰
-        }
-    }
-    
-    // MARK: - Types
-    
-    /// スイングの重要な局面（フェーズ）
-    /// 今回は「アドレス」と「インパクト」の2点のみを特定する
+    /// スイングフェーズ（アドレスとインパクトの時刻）
     struct SwingPhases {
-        let address: Int
-        let impact: Int
+        let address: Int // ミリ秒
+        let impact: Int  // ミリ秒
     }
     
-    /// 診断結果の評価レベル
-    enum Evaluation: String {
-        case excellent = "Excellent"
-        case good = "Good"
-        case bad = "Bad"
-        case check = "Check"
-        
-        var color: Color {
-            switch self {
-            case .excellent: return .green
-            case .good: return .blue
-            case .bad: return .red
-            case .check: return .orange
-            }
-        }
-    }
-    
-    /// UI表示用の診断結果モデル
-    struct AnalysisResult: Identifiable {
-        let id = UUID()
+    /// 解析結果の1項目
+    struct AnalysisResult {
         let title: String
-        let valueStr: String
-        let evaluation: Evaluation
-        let advice: String
+        let status: String // Good, Check, Bad
+        let value: Double
+        let description: String
     }
     
-    // MARK: - Phase Detection Logic (Auto Suggestion)
+    // MARK: - Phase Detection
     
-    /// AIがスイングのフェーズ（アドレス・インパクト）を自動推定する
-    /// - Parameter landmarkCache: 全フレームのランドマークデータ
-    /// - Returns: 推定されたフェーズ（見つからない場合はnil）
-    static func suggestPhases(from landmarkCache: [Int: [NormalizedLandmark]]) -> SwingPhases? {
-        // データ点数が少なすぎる場合は解析不能
-        guard landmarkCache.count > Constants.minDataPoints else { return nil }
+    /// 骨格データからスイングフェーズ（アドレス・インパクト）を自動推定する
+    ///
+    /// ## アルゴリズム
+    /// 1. 右手首(index:16)のY座標が最も低い時刻 = アドレス（構え位置）
+    /// 2. アドレス以降で右手首のX座標の変化速度が最大の時刻 = インパクト
+    ///
+    /// - Parameter cache: フレームごとの骨格データキャッシュ [タイムスタンプ(ms): ランドマーク配列]
+    /// - Returns: 推定されたフェーズ情報。推定不可の場合はnil
+    static func suggestPhases(from cache: [Int: [NormalizedLandmark]]) -> SwingPhases? {
+        let sortedKeys = cache.keys.sorted()
+        guard sortedKeys.count > 10 else { return nil }
         
-        let sortedKeys = landmarkCache.keys.sorted()
+        // 右手首のインデックス（MediaPipe Pose Landmarker仕様）
+        let rightWristIndex = 16
         
-        // 1. アドレス候補の探索
-        // 動画開始直後は安定していない可能性があるため、少し経過した時点を採用
-        guard let addressTime = sortedKeys.first(where: { $0 > Constants.addressSearchStartMs }) else { return nil }
-        
-        // 2. インパクト候補の探索
-        // 「アドレス時の手の高さ（Y座標）」に再び戻ってきた瞬間をインパクトと仮定する
-        guard let addressLandmarks = landmarkCache[addressTime] else { return nil }
-        // 手首のY座標（左右の手の低い方、つまり画面上で下にある方）を取得
-        let addressHandY = min(addressLandmarks[15].y, addressLandmarks[16].y)
-        
-        var impactTime = addressTime
-        var minDiff: Float = 100.0 // 差分の初期値（十分大きな値）
-        
-        // アドレスからある程度（例えば1.5秒）経った後から探索開始して、バックスイング中の誤検知を防ぐ
-        let searchStartTime = addressTime + 1500
-        
-        for time in sortedKeys where time > searchStartTime {
-            guard let landmarks = landmarkCache[time] else { continue }
-            let currentHandY = min(landmarks[15].y, landmarks[16].y)
-            let diff = abs(currentHandY - addressHandY)
-            
-            // 最もアドレスの高さに近い（戻ってきた）瞬間を更新
-            if diff < minDiff {
-                minDiff = diff
-                impactTime = time
+        // 1. アドレス推定: 右手首のY座標が最も低い（値が大きい = 画面下方）時刻
+        var addressTime: Int?
+        var maxWristY: Float = -1
+        for key in sortedKeys {
+            guard let landmarks = cache[key], landmarks.indices.contains(rightWristIndex) else { continue }
+            let wristY = landmarks[rightWristIndex].y
+            if wristY > maxWristY {
+                maxWristY = wristY
+                addressTime = key
             }
         }
         
-        // もしインパクトが見つからなければ、動画の最後の方を仮定する（フォールバック）
-        if impactTime == addressTime, let last = sortedKeys.last {
-            impactTime = last
+        guard let address = addressTime else { return nil }
+        
+        // 2. インパクト推定: アドレス以降で手首の移動速度が最大の時刻
+        let postAddressKeys = sortedKeys.filter { $0 > address }
+        guard postAddressKeys.count > 2 else { return nil }
+        
+        var impactTime: Int?
+        var maxSpeed: Float = 0
+        
+        for i in 1..<postAddressKeys.count {
+            let prevKey = postAddressKeys[i - 1]
+            let currKey = postAddressKeys[i]
+            guard let prevLandmarks = cache[prevKey], let currLandmarks = cache[currKey] else { continue }
+            guard prevLandmarks.indices.contains(rightWristIndex), currLandmarks.indices.contains(rightWristIndex) else { continue }
+            
+            let dx = currLandmarks[rightWristIndex].x - prevLandmarks[rightWristIndex].x
+            let dy = currLandmarks[rightWristIndex].y - prevLandmarks[rightWristIndex].y
+            let speed = sqrt(dx * dx + dy * dy)
+            
+            if speed > maxSpeed {
+                maxSpeed = speed
+                impactTime = currKey
+            }
         }
         
-        return SwingPhases(address: addressTime, impact: impactTime)
+        guard let impact = impactTime else { return nil }
+        
+        return SwingPhases(address: address, impact: impact)
     }
     
-    // MARK: - Diagnosis Logic
+    // MARK: - Metrics Calculation
     
-    /// スイング診断を実行するメインメソッド
-    static func analyzeSwing(phases: SwingPhases, cache: [Int: [NormalizedLandmark]]) -> [AnalysisResult] {
-        guard let addressLM = cache[phases.address],
-              let impactLM = cache[phases.impact] else { return [] }
-        
-        var results: [AnalysisResult] = []
-        
-        // 1. アーリーエクステンション診断
-        results.append(evaluateEarlyExtension(address: addressLM, impact: impactLM))
-        
-        // 2. 前傾角度（Spine Angle）診断
-        results.append(evaluateSpineAngle(address: addressLM, impact: impactLM))
-        
-        return results
-    }
-    
-    // MARK: - Metrics Calculation for AI
-    
-    /// AI診断用のスイングメトリクス（数値データ）を計算する
+    /// 骨格データからスイングメトリクスを計算する
     ///
-    /// アドレスとインパクトの2点間で以下の6つの指標を計算します：
-    /// 1. 背骨角度の変化量（起き上がり・沈み込み）
-    /// 2. 腰のX方向移動量（アーリーエクステンション）
-    /// 3. 頭のY方向移動量（浮き上がり・沈み込み）
-    /// 4. テンポ比率（バックスイング時間 / ダウンスイング時間）
-    /// 5. 手の浮き上がり量（ハンドアクション）
-    /// 6. スイングパスタイプ（Inside-Out, Outside-In, Straight）
+    /// v2.0: 胴体長比ベースの計算
+    /// - 胴体長 = 左肩(11)のY座標 - 左腰(23)のY座標 の絶対値
+    /// - 各メトリクスを胴体長で正規化することで、カメラ距離やプレーヤーの体格差を吸収
     ///
     /// - Parameters:
     ///   - phases: スイングフェーズ（アドレスとインパクトの時刻）
-    ///   - cache: 全フレームの骨格データキャッシュ
-    /// - Returns: 計算されたSwingMetrics
+    ///   - cache: フレームごとの骨格データキャッシュ
+    /// - Returns: 計算されたスイングメトリクス
     static func calculateMetrics(phases: SwingPhases, cache: [Int: [NormalizedLandmark]]) -> SwingMetrics {
-        /// 指定時刻に最も近いランドマークデータを取得する
-        ///
-        /// 完全一致ではなく、許容範囲内で最も近いデータを返します。
-        /// これにより、フレームレートの違いやタイミングのずれに対応します。
-        ///
-        /// - Parameter target: 目標時刻（ミリ秒）
-        /// - Returns: 最も近いランドマークデータ（許容範囲外の場合はnil）
-        func getClosest(target: Int) -> [NormalizedLandmark]? {
-            let sortedKeys = cache.keys.sorted()
-            guard let closestKey = sortedKeys.min(by: { abs($0 - target) < abs($1 - target) }) else { return nil }
-            // 許容誤差内（100ms以内）かチェック
-            if abs(closestKey - target) < Constants.landmarkToleranceMs {
-                return cache[closestKey]
-            }
-            return nil
+        // アドレスとインパクト時のランドマークを取得
+        let addressLandmarks = getNearestLandmarks(timestamp: phases.address, cache: cache)
+        let impactLandmarks = getNearestLandmarks(timestamp: phases.impact, cache: cache)
+        
+        guard let aLM = addressLandmarks, let iLM = impactLandmarks else {
+            return SwingMetrics.empty
         }
         
-        guard let addressLM = getClosest(target: phases.address),
-              let impactLM = getClosest(target: phases.impact) else {
-            // データが見つからない場合はゼロを返すが、ログを出力すべき
-            print("⚠️ SwingAnalyzer: Landmarks not found for metrics calculation")
-            return SwingMetrics(spineAngleDiffDeg: 0, hipMoveRatio: 0, headMoveY: 0, tempoRatio: 0, handRaiseY: 0, swingPathType: "Unknown")
-        }
+        // 胴体長の計算（アドレス時の左肩-左腰の距離）
+        let torsoLength = calculateTorsoLength(landmarks: aLM)
+        let safeTorso = max(torsoLength, 0.01) // ゼロ除算防止
         
-        // 1. 背骨角度の変化量（Spine Angle Diff）
-        // 肩(11)と腰(23)を結ぶ線と垂直線のなす角度を計算
-        let addressSpineAngle = calculateVerticalAngle(
-            p1: addressLM[Constants.LandmarkIndex.leftShoulder],
-            p2: addressLM[Constants.LandmarkIndex.leftHip]
-        )
-        let impactSpineAngle = calculateVerticalAngle(
-            p1: impactLM[Constants.LandmarkIndex.leftShoulder],
-            p2: impactLM[Constants.LandmarkIndex.leftHip]
-        )
-        let spineAngleDiff = impactSpineAngle - addressSpineAngle  // マイナス = 起き上がり、プラス = 沈み込み
+        // 1. 前傾角度差（耳-腰ベース、度）
+        let addressSpineAngle = calculateEarHipAngle(landmarks: aLM)
+        let impactSpineAngle = calculateEarHipAngle(landmarks: iLM)
+        let spineAngleDiff = impactSpineAngle - addressSpineAngle
         
-        // 2. 腰の前方移動量（Hip Move Ratio - Early Extension指標）
-        // 左腰(23)のX座標の変化量（プラス = 前方移動 = アーリーエクステンション）
-        let hipMove = impactLM[Constants.LandmarkIndex.leftHip].x - addressLM[Constants.LandmarkIndex.leftHip].x
+        // 2. 腰の移動量（胴体長比）
+        let hipMoveRatio = calculateHipMovement(address: aLM, impact: iLM) / safeTorso
         
-        // 3. 頭の浮き沈み（Head Move Y）
-        // 鼻(0)のY座標の変化量（マイナス = 沈み込み、プラス = 浮き上がり）
-        // ※ 画像座標系では上が0なので注意
-        let headMove = impactLM[Constants.LandmarkIndex.nose].y - addressLM[Constants.LandmarkIndex.nose].y
+        // 3. 頭の上下動（胴体長比）
+        let headMoveY = calculateHeadMovement(address: aLM, impact: iLM) / safeTorso
         
-        // 4. テンポ比率（Tempo Ratio）
-        // バックスイング時間とダウンスイング時間の比率を計算
-        // 理想的には3:1程度と言われている
-        let topTime = findTopPositionTime(phases: phases, cache: cache)
-        let backswingTime = Double(topTime - phases.address)
-        let downswingTime = Double(phases.impact - topTime)
-        let tempoRatio = downswingTime > 0 ? backswingTime / downswingTime : 0.0
+        // 4. テンポ比率
+        let tempoRatio = calculateTempoRatio(phases: phases, cache: cache)
         
-        // 5. 手の浮き上がり量（Hand Raise Y - ハンドアクション）
-        // アドレスとインパクトで手の高さがどれだけ変化したか
-        // 左右の手首(15, 16)の平均Y座標を比較
-        let addressHandY = (addressLM[Constants.LandmarkIndex.leftWrist].y + addressLM[Constants.LandmarkIndex.rightWrist].y) / 2.0
-        let impactHandY = (impactLM[Constants.LandmarkIndex.leftWrist].y + impactLM[Constants.LandmarkIndex.rightWrist].y) / 2.0
-        let handRaiseY = addressHandY - impactHandY  // Yは上が0なので、プラス = 手が浮いている
+        // 5. 手の浮き（胴体長比）
+        let handRaiseY = calculateHandRaise(address: aLM, impact: iLM) / safeTorso
         
-        // 6. スイングパスタイプの推定（Swing Path Type）
-        // インパクト時の手の位置から、スイング軌道を簡易推定
-        // ※ 本来は3D解析が必要だが、ここでは手のX座標の変化で判定
-        let addressHandX = (addressLM[Constants.LandmarkIndex.leftWrist].x + addressLM[Constants.LandmarkIndex.rightWrist].x) / 2.0
-        let impactHandX = (impactLM[Constants.LandmarkIndex.leftWrist].x + impactLM[Constants.LandmarkIndex.rightWrist].x) / 2.0
-        let handPathDiffX = impactHandX - addressHandX
-        
-        let swingPathType: String
-        if handPathDiffX > Constants.swingPathOutsideThreshold {
-            swingPathType = "Outside-In"  // 手が前（外側）に出ている = カット軌道傾向
-        } else if handPathDiffX < Constants.swingPathInsideThreshold {
-            swingPathType = "Inside-Out"  // 手が後ろ（内側）にある = インサイドアウト傾向
-        } else {
-            swingPathType = "Straight"    // ニュートラル
-        }
+        // 6. スイング軌道
+        let swingPathType = detectSwingPathType(phases: phases, cache: cache)
         
         return SwingMetrics(
             spineAngleDiffDeg: spineAngleDiff,
-            hipMoveRatio: Double(hipMove),
-            headMoveY: Double(headMove),
+            hipMoveRatio: hipMoveRatio,
+            headMoveY: headMoveY,
             tempoRatio: tempoRatio,
-            handRaiseY: Double(handRaiseY),
+            handRaiseY: handRaiseY,
             swingPathType: swingPathType
         )
     }
     
-    /// トップの位置（手が最も高い位置）の時間を特定する
-    private static func findTopPositionTime(phases: SwingPhases, cache: [Int: [NormalizedLandmark]]) -> Int {
-        var topTime = phases.address
-        var minHandY: Float = 100.0 // Yは上が0なので、最小値を探す
+    // MARK: - Rule-Based Analysis
+    
+    /// ルールベースのスイング診断を実行する
+    static func analyzeSwing(phases: SwingPhases, cache: [Int: [NormalizedLandmark]]) -> [AnalysisResult] {
+        let metrics = calculateMetrics(phases: phases, cache: cache)
+        var results: [AnalysisResult] = []
         
-        let sortedKeys = cache.keys.sorted().filter { $0 >= phases.address && $0 <= phases.impact }
+        // 前傾角度
+        let spineStatus = abs(metrics.spineAngleDiffDeg) < 3 ? "Good" : abs(metrics.spineAngleDiffDeg) < 6 ? "Check" : "Bad"
+        results.append(AnalysisResult(
+            title: "前傾キープ",
+            status: spineStatus,
+            value: metrics.spineAngleDiffDeg,
+            description: String(format: "%.1f° の変化", metrics.spineAngleDiffDeg)
+        ))
         
-        for time in sortedKeys {
-            guard let landmarks = cache[time] else { continue }
-            // 左右の手首(15, 16)の平均高さ
-            let handY = (landmarks[15].y + landmarks[16].y) / 2.0
-            
-            if handY < minHandY {
-                minHandY = handY
-                topTime = time
+        // 腰の移動
+        let hipStatus = abs(metrics.hipMoveRatio) < 0.10 ? "Good" : abs(metrics.hipMoveRatio) < 0.20 ? "Check" : "Bad"
+        results.append(AnalysisResult(
+            title: "腰の安定性",
+            status: hipStatus,
+            value: metrics.hipMoveRatio,
+            description: String(format: "胴体長の%.0f%%移動", metrics.hipMoveRatio * 100)
+        ))
+        
+        // 頭の上下動
+        let headStatus = abs(metrics.headMoveY) < 0.10 ? "Good" : abs(metrics.headMoveY) < 0.20 ? "Check" : "Bad"
+        results.append(AnalysisResult(
+            title: "頭の安定性",
+            status: headStatus,
+            value: metrics.headMoveY,
+            description: String(format: "胴体長の%.0f%%移動", metrics.headMoveY * 100)
+        ))
+        
+        return results
+    }
+    
+    // MARK: - Private Helpers
+    
+    /// 指定時刻に最も近い骨格データを取得する
+    private static func getNearestLandmarks(timestamp: Int, cache: [Int: [NormalizedLandmark]]) -> [NormalizedLandmark]? {
+        let nearest = cache.keys.min(by: { abs($0 - timestamp) < abs($1 - timestamp) })
+        guard let key = nearest else { return nil }
+        return cache[key]
+    }
+    
+    /// 胴体長を計算（左肩 - 左腰のY座標差の絶対値）
+    private static func calculateTorsoLength(landmarks: [NormalizedLandmark]) -> Double {
+        guard landmarks.count > 23 else { return 0.1 }
+        let shoulderY = Double(landmarks[11].y) // 左肩
+        let hipY = Double(landmarks[23].y)       // 左腰
+        return abs(shoulderY - hipY)
+    }
+    
+    /// 耳-腰ベースの前傾角度を計算（度）
+    private static func calculateEarHipAngle(landmarks: [NormalizedLandmark]) -> Double {
+        guard landmarks.count > 23 else { return 0 }
+        // 左耳(7)と左腰(23)を使用
+        let earX = Double(landmarks[7].x)
+        let earY = Double(landmarks[7].y)
+        let hipX = Double(landmarks[23].x)
+        let hipY = Double(landmarks[23].y)
+        
+        let dx = earX - hipX
+        let dy = earY - hipY
+        let angleRad = atan2(dx, -dy) // 上方向を0とした角度
+        return angleRad * 180.0 / .pi
+    }
+    
+    /// 腰の前後移動を計算
+    private static func calculateHipMovement(address: [NormalizedLandmark], impact: [NormalizedLandmark]) -> Double {
+        guard address.count > 24, impact.count > 24 else { return 0 }
+        let addressHipX = (Double(address[23].x) + Double(address[24].x)) / 2
+        let impactHipX = (Double(impact[23].x) + Double(impact[24].x)) / 2
+        return impactHipX - addressHipX
+    }
+    
+    /// 頭の上下動を計算
+    private static func calculateHeadMovement(address: [NormalizedLandmark], impact: [NormalizedLandmark]) -> Double {
+        guard address.count > 0, impact.count > 0 else { return 0 }
+        let addressNoseY = Double(address[0].y)
+        let impactNoseY = Double(impact[0].y)
+        return impactNoseY - addressNoseY
+    }
+    
+    /// テンポ比率を計算（ダウンスイング時間 / バックスイング時間）
+    private static func calculateTempoRatio(phases: SwingPhases, cache: [Int: [NormalizedLandmark]]) -> Double {
+        let sortedKeys = cache.keys.sorted()
+        let rightWristIndex = 16
+        
+        // トップ位置を推定（手首のY座標が最小 = 最も高い位置）
+        let addressToImpact = sortedKeys.filter { $0 >= phases.address && $0 <= phases.impact }
+        guard !addressToImpact.isEmpty else { return 3.0 }
+        
+        var topTime: Int = phases.address
+        var minWristY: Float = Float.greatestFiniteMagnitude
+        
+        for key in addressToImpact {
+            guard let landmarks = cache[key], landmarks.indices.contains(rightWristIndex) else { continue }
+            let wristY = landmarks[rightWristIndex].y
+            if wristY < minWristY {
+                minWristY = wristY
+                topTime = key
             }
         }
         
-        return topTime
+        let backswingDuration = Double(topTime - phases.address)
+        let downswingDuration = Double(phases.impact - topTime)
+        
+        guard downswingDuration > 0 else { return 3.0 }
+        return backswingDuration / downswingDuration
     }
-
-    // MARK: - Evaluation Helpers
     
-    /// アーリーエクステンション（お尻の離脱）を評価する
-    private static func evaluateEarlyExtension(address: [NormalizedLandmark], impact: [NormalizedLandmark]) -> AnalysisResult {
-        let hipIndex = 23 // 左腰（後方アングルで見えている側）
-        
-        // X座標の差分（インパクト - アドレス）
-        // MediaPipeの座標系は左上が(0,0)。右打者の後方アングルでは、お尻が前に出る＝Xが増加する方向と仮定
-        // ※ 実際の座標系やカメラ位置によって符号は調整が必要
-        let diffX = impact[hipIndex].x - address[hipIndex].x
-        
-        let evaluation: Evaluation
-        let advice: String
-        
-        if diffX > Constants.earlyExtensionThresholdBad {
-            evaluation = .bad
-            advice = "お尻が前に出ています。手元が詰まり、スライスやシャンクの原因になります。"
-        } else if diffX > Constants.earlyExtensionThresholdCheck {
-            evaluation = .check
-            advice = "少し起き上がりの傾向があります。お尻を後ろに残す意識を持ちましょう。"
-        } else {
-            evaluation = .excellent
-            advice = "お尻の位置がキープできています！プロのようなインパクトです。"
+    /// 手の浮きを計算
+    private static func calculateHandRaise(address: [NormalizedLandmark], impact: [NormalizedLandmark]) -> Double {
+        guard address.count > 16, impact.count > 16 else { return 0 }
+        let addressWristY = Double(address[16].y)
+        let impactWristY = Double(impact[16].y)
+        return addressWristY - impactWristY
+    }
+    
+    /// スイング軌道タイプを検出
+    private static func detectSwingPathType(phases: SwingPhases, cache: [Int: [NormalizedLandmark]]) -> String {
+        guard let impactLM = getNearestLandmarks(timestamp: phases.impact, cache: cache) else {
+            return "Unknown"
         }
         
-        return AnalysisResult(title: "Early Extension", valueStr: evaluation.rawValue, evaluation: evaluation, advice: advice)
-    }
-    
-    /// 前傾角度（Spine Angle）を評価する
-    private static func evaluateSpineAngle(address: [NormalizedLandmark], impact: [NormalizedLandmark]) -> AnalysisResult {
-        // 肩(11)と腰(23)を結ぶ線の角度を計算
-        let addressAngle = calculateVerticalAngle(p1: address[11], p2: address[23])
-        let impactAngle = calculateVerticalAngle(p1: impact[11], p2: impact[23])
+        let rightWristIndex = 16
+        let rightElbowIndex = 14
         
-        // 角度の変化量（絶対値）
-        let diff = abs(addressAngle - impactAngle)
-        
-        let evaluation: Evaluation
-        let advice: String
-        
-        if diff > Constants.spineAngleThresholdBad {
-            evaluation = .bad
-            advice = "上体が起き上がっています。ボールに力が伝わりにくい状態です。"
-        } else if diff > Constants.spineAngleThresholdGood {
-            evaluation = .good
-            advice = "許容範囲内ですが、もう少し前傾を深く保てるとより良いです。"
-        } else {
-            evaluation = .excellent
-            advice = "前傾角度が完璧に保たれています。"
+        guard impactLM.count > rightWristIndex, impactLM.count > rightElbowIndex else {
+            return "Unknown"
         }
         
-        return AnalysisResult(title: "Spine Angle", valueStr: "\(Int(diff))° Loss", evaluation: evaluation, advice: advice)
-    }
-    
-    /// 2点間の垂直角度を計算する
-    private static func calculateVerticalAngle(p1: NormalizedLandmark, p2: NormalizedLandmark) -> Double {
-        let dy = p2.y - p1.y
-        let dx = p2.x - p1.x
-        // atan2で角度（ラジアン）を求め、度数法に変換
-        return Double(atan2(abs(dx), abs(dy)) * 180 / .pi)
+        let wristX = Double(impactLM[rightWristIndex].x)
+        let elbowX = Double(impactLM[rightElbowIndex].x)
+        
+        let diff = wristX - elbowX
+        
+        if diff > 0.03 {
+            return "Outside-In"
+        } else if diff < -0.03 {
+            return "Inside-Out"
+        } else {
+            return "Straight"
+        }
     }
 }
