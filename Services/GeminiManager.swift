@@ -1,312 +1,169 @@
 import Foundation
 
-/// Gemini API通信時のエラー種別
 enum GeminiError: LocalizedError {
-    case invalidURL                    // URLが不正
-    case networkError(Error)           // ネットワークエラー
-    case invalidResponse(Int)          // HTTPステータスコードが200以外
-    case parseError(String)            // JSONパース失敗
-    case missingData                   // 必要なデータが不足
-    case apiKeyMissing                 // APIキーが設定されていない
+    case invalidURL
+    case networkError(Error)
+    case invalidResponse(Int)
+    case parseError(String)
+    case missingData
+    case llmError(LLMError)
+    case usageLimitReached
     
     var errorDescription: String? {
         switch self {
-        case .invalidURL:
-            return "APIのURLが不正です"
-        case .networkError(let error):
-            return "ネットワークエラー: \(error.localizedDescription)"
-        case .invalidResponse(let statusCode):
-            return "APIエラー (HTTP \(statusCode))"
-        case .parseError(let detail):
-            return "AI応答の解析に失敗: \(detail)"
-        case .missingData:
-            return "AIからの応答データが不完全です"
-        case .apiKeyMissing:
-            return "Gemini APIキーが設定されていません"
+        case .invalidURL: return "API\u{306E}URL\u{304C}\u{4E0D}\u{6B63}\u{3067}\u{3059}"
+        case .networkError(let error): return "\u{30CD}\u{30C3}\u{30C8}\u{30EF}\u{30FC}\u{30AF}\u{30A8}\u{30E9}\u{30FC}: \(error.localizedDescription)"
+        case .invalidResponse(let statusCode): return "API\u{30A8}\u{30E9}\u{30FC} (HTTP \(statusCode))"
+        case .parseError(let detail): return "AI\u{5FDC}\u{7B54}\u{306E}\u{89E3}\u{6790}\u{306B}\u{5931}\u{6557}: \(detail)"
+        case .missingData: return "AI\u{304B}\u{3089}\u{306E}\u{5FDC}\u{7B54}\u{30C7}\u{30FC}\u{30BF}\u{304C}\u{4E0D}\u{5B8C}\u{5168}\u{3067}\u{3059}"
+        case .llmError(let error): return error.code.userMessage
+        case .usageLimitReached: return "error_usage_limit_reached".localized
         }
     }
     
-    /// リトライ可能なエラーかどうか
     var isRetryable: Bool {
         switch self {
-        case .networkError, .invalidResponse:
-            return true
-        default:
-            return false
+        case .networkError, .invalidResponse: return true
+        case .llmError(let error): return error.retryable
+        default: return false
         }
     }
 }
 
-/// Google Gemini APIとの通信を管理するクラス
-///
-/// Gemini 1.5 Flashモデルを使用して、スイング解析データから
-/// 詳細な診断レポートを生成します。
-///
-/// ## 主な機能
-/// - コーチペルソナに応じたプロンプト生成
-/// - JSON形式での診断レポート取得
-/// - ネットワークエラー時の自動リトライ
-///
-/// - Note: シングルトンパターンで実装されています
-/// - Important: APIキーはAppConfig.swiftで管理されています
 class GeminiManager {
     static let shared = GeminiManager()
-    
-    /// Gemini APIキー（Config.swiftから取得）
-    private let apiKey: String = AppConfig.geminiApiKey
-    
-    /// Gemini APIのエンドポイントURL（モデル指定あり）
-    private let baseURL: String = "\(AppConfig.geminiBaseURL)/\(AppConfig.geminiModel):generateContent"
-    
+    private let llmClient: LLMClient = FirebaseLLMClient.shared
+    private let llmClientV2: LLMClientV2 = FirebaseLLMClient.shared
     private init() {}
     
-    // MARK: - Public Methods (公開メソッド)
+    // MARK: - V1
     
-    /// スイング解析データに基づいて診断レポートを生成する
-    ///
-    /// このメソッドは以下の処理を実行します：
-    /// 1. APIキーの確認
-    /// 2. システムプロンプトの構築（コーチペルソナ反映）
-    /// 3. リクエストボディの作成
-    /// 4. API呼び出し（リトライあり）
-    /// 5. レスポンスのパースと検証
-    ///
-    /// - Parameters:
-    ///   - metrics: 解析済みスイングメトリクス（背骨角度、腰の移動、頭の位置など）
-    ///   - coachPersona: 選択されたコーチペルソナ（鬼軍曹、関西おかんなど）
-    /// - Returns: 診断レポート（DiagnosisReport）
-    /// - Throws: GeminiError - API通信またはパースに失敗した場合
     func generateDiagnosis(metrics: SwingMetrics, coachPersona: CoachPersona) async throws -> DiagnosisReport {
-        // APIキーの確認
-        guard !AppConfig.geminiApiKey.isEmpty else {
-            throw GeminiError.apiKeyMissing
+        if UsageLimiter.shared.isLimitReached() {
+            AnalyticsLogger.shared.logUsageLimitReached(remainingCount: 0)
+            throw GeminiError.usageLimitReached
         }
+        let startTime = Date()
+        let language = LanguageManager.shared.currentLanguage
+        AnalyticsLogger.shared.logReportStarted(personaId: coachPersona.id, locale: language.rawValue)
+        CrashLogger.shared.setUserContext(locale: language.rawValue, personaId: coachPersona.id, appVersion: AppConfig.appVersion, clientIdHash: ClientIdManager.shared.clientIdHash)
         
-        // リトライロジック付きAPI呼び出し
-        return try await performAPICallWithRetry(
-            metrics: metrics,
-            coachPersona: coachPersona,
-            maxRetries: 3
-        )
-    }
-    
-    // MARK: - Private Methods - API Communication (API通信)
-    
-    /// リトライロジック付きでAPI呼び出しを実行する
-    ///
-    /// ネットワークエラーや一時的なAPIエラーの場合、
-    /// 指定された回数まで自動でリトライします。
-    ///
-    /// - Parameters:
-    ///   - metrics: スイングメトリクス
-    ///   - coachPersona: コーチペルソナ
-    ///   - maxRetries: 最大リトライ回数（デフォルト: 3回）
-    /// - Returns: 診断レポート
-    /// - Throws: GeminiError
-    private func performAPICallWithRetry(
-        metrics: SwingMetrics,
-        coachPersona: CoachPersona,
-        maxRetries: Int = 3
-    ) async throws -> DiagnosisReport {
-        var lastError: GeminiError?
-        
-        for attempt in 1...maxRetries {
-            do {
-                // API呼び出しを試行
-                return try await executeDiagnosisAPI(
-                    metrics: metrics,
-                    coachPersona: coachPersona
-                )
-            } catch let error as GeminiError {
-                lastError = error
-                
-                // リトライ不可なエラーの場合は即座にスロー
-                if !error.isRetryable {
-                    print("❌ [GeminiManager] リトライ不可エラー: \(error.localizedDescription)")
-                    throw error
-                }
-                
-                // 最後の試行でなければ、少し待ってからリトライ
-                if attempt < maxRetries {
-                    let delay = Double(attempt) * 1.0  // 1秒、 2秒、 3秒...
-                    print("⚠️ [GeminiManager] リトライ \(attempt)/\(maxRetries): \(delay)秒後に再試行")
-                    try await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
-                }
-            } catch {
-                // GeminiError以外のエラー
-                throw GeminiError.networkError(error)
-            }
-        }
-        
-        // 全てのリトライが失敗した場合
-        print("❌ [GeminiManager] \(maxRetries)回のリトライ後も失敗")
-        throw lastError ?? GeminiError.networkError(NSError(domain: "Unknown", code: -1))
-    }
-    
-    /// Gemini APIに診断リクエストを送信する（実際のAPI呼び出し）
-    ///
-    /// - Parameters:
-    ///   - metrics: スイングメトリクス
-    ///   - coachPersona: コーチペルソナ
-    /// - Returns: 診断レポート
-    /// - Throws: GeminiError
-    private func executeDiagnosisAPI(
-        metrics: SwingMetrics,
-        coachPersona: CoachPersona
-    ) async throws -> DiagnosisReport {
-        let apiKey = AppConfig.geminiApiKey
-        let urlString = "\(AppConfig.geminiBaseURL)/\(AppConfig.geminiModel):generateContent?key=\(apiKey)"
-        
-        guard let url = URL(string: urlString) else {
-            throw GeminiError.invalidURL
-        }
-        
-        // システムプロンプトの構築
-        let systemInstruction = constructSystemInstruction(coachPersona: coachPersona)
-        
-        // ユーザー入力データの構築
+        let systemPrompt = constructSystemInstruction(coachPersona: coachPersona)
         let inputJson = constructInputJson(metrics: metrics, userProfile: [:])
-        let userPrompt = "以下のスイング解析データを診断してください：\n\(inputJson)"
+        let userPrompt = "\u{4EE5}\u{4E0B}\u{306E}\u{30B9}\u{30A4}\u{30F3}\u{30B0}\u{89E3}\u{6790}\u{30C7}\u{30FC}\u{30BF}\u{3092}\u{8A3A}\u{65AD}\u{3057}\u{3066}\u{304F}\u{3060}\u{3055}\u{3044}\u{FF1A}\n\(inputJson)"
         
-        // リクエストボディの作成
-        let requestBody = buildRequestBody(
-            systemInstruction: systemInstruction,
-            userPrompt: userPrompt
+        let request = LLMRequest(
+            clientId: ClientIdManager.shared.clientId, locale: language, personaId: coachPersona.id,
+            analysisVersion: "1.0.0", appVersion: AppConfig.appVersion, metrics: metrics,
+            systemPrompt: systemPrompt, userPrompt: userPrompt
         )
         
-        // HTTPリクエストの設定
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.timeoutInterval = 60  // 60秒タイムアウト
-        request.httpBody = try JSONSerialization.data(withJSONObject: requestBody)
-        
-        // デバッグログ
-        logAPIRequest(url: urlString, body: request.httpBody)
-        
-        // APIリクエスト実行
-        let (data, response) = try await URLSession.shared.data(for: request)
-        
-        // デバッグログ
-        logAPIResponse(response: response, data: data)
-        
-        // レスポンスのステータスコード確認
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw GeminiError.invalidResponse(0)
-        }
-        
-        guard httpResponse.statusCode == 200 else {
-            let errorMsg = String(data: data, encoding: .utf8) ?? "不明なエラー"
-            print("🔴 [GeminiManager] APIエラー: \(errorMsg)")
-            throw GeminiError.invalidResponse(httpResponse.statusCode)
-        }
-        
-        // レスポンスのパース
-        return try parseGeminiResponse(data)
-    }
-    
-    // MARK: - Private Methods - Helpers (ヘルパーメソッド)
-    
-    /// APIリクエストボディを構築する
-    ///
-    /// Gemini APIのリクエスト形式に従ってJSONボディを生成します。
-    ///
-    /// - Parameters:
-    ///   - systemInstruction: システムプロンプト文字列
-    ///   - userPrompt: ユーザープロンプト文字列
-    /// - Returns: リクエストボディの辞書
-    private func buildRequestBody(
-        systemInstruction: String,
-        userPrompt: String
-    ) -> [String: Any] {
-        return [
-            "contents": [
-                [
-                    "role": "user",
-                    "parts": [
-                        ["text": userPrompt]
-                    ]
-                ]
-            ],
-            "systemInstruction": [
-                "parts": [
-                    ["text": systemInstruction]
-                ]
-            ],
-            "generationConfig": [
-                "responseMimeType": "application/json"
-            ]
-        ]
-    }
-    
-    /// APIリクエストのログを出力する（デバッグ用）
-    ///
-    /// - Parameters:
-    ///   - url: リクエストURL
-    ///   - body: リクエストボディ
-    private func logAPIRequest(url: String, body: Data?) {
-        guard AppConfig.isDebugMode else { return }
-        
-        print("🔵 [GeminiManager] API Request URL: \(url)")
-        print("🔵 [GeminiManager] Model: \(AppConfig.geminiModel)")
-        
-        if let body = body, let bodyString = String(data: body, encoding: .utf8) {
-            print("🔵 [GeminiManager] Request Body (first 500 chars): \(String(bodyString.prefix(500)))")
+        do {
+            let response = try await llmClient.generateReport(request: request)
+            if let error = response.error {
+                AnalyticsLogger.shared.logReportFailure(errorCode: error.code.rawValue, networkStatus: "connected", provider: response.provider)
+                CrashLogger.shared.logLLMError(error, requestId: response.requestId)
+                throw GeminiError.llmError(error)
+            }
+            guard let reportText = response.reportText else { throw GeminiError.missingData }
+            let report = try parseReportText(reportText)
+            UsageLimiter.shared.recordSuccess()
+            let duration = Int(Date().timeIntervalSince(startTime) * 1000)
+            AnalyticsLogger.shared.logReportSuccess(requestId: response.requestId, provider: response.provider, durationMs: duration)
+            if response.personaFallback { CrashLogger.shared.log("PersonaId fallback occurred for: \(coachPersona.id)") }
+            return report
+        } catch let error as LLMError {
+            AnalyticsLogger.shared.logReportFailure(errorCode: error.code.rawValue, networkStatus: "error", provider: "gemini")
+            CrashLogger.shared.logLLMError(error, requestId: nil)
+            throw GeminiError.llmError(error)
+        } catch {
+            AnalyticsLogger.shared.logReportFailure(errorCode: "UNKNOWN", networkStatus: "error", provider: "gemini")
+            throw GeminiError.networkError(error)
         }
     }
     
-    /// APIレスポンスのログを出力する（デバッグ用）
-    ///
-    /// - Parameters:
-    ///   - response: URLResponse
-    ///   - data: レスポンスデータ
-    private func logAPIResponse(response: URLResponse, data: Data) {
-        guard AppConfig.isDebugMode else { return }
-        
-        print("🟢 [GeminiManager] Response received")
-        
-        if let httpResponse = response as? HTTPURLResponse {
-            print("🟢 [GeminiManager] Status Code: \(httpResponse.statusCode)")
+    // MARK: - V2 (Layer Separation)
+    
+    func generateDiagnosisV2(metrics: SwingMetrics, coachPersona: CoachPersona) async throws -> DiagnosisReportV2 {
+        if UsageLimiter.shared.isLimitReached() {
+            AnalyticsLogger.shared.logUsageLimitReached(remainingCount: 0)
+            throw GeminiError.usageLimitReached
         }
+        let startTime = Date()
+        let language = LanguageManager.shared.currentLanguage
+        AnalyticsLogger.shared.logReportStarted(personaId: coachPersona.id, locale: language.rawValue)
+        CrashLogger.shared.setUserContext(locale: language.rawValue, personaId: coachPersona.id, appVersion: AppConfig.appVersion, clientIdHash: ClientIdManager.shared.clientIdHash)
         
-        if let responseString = String(data: data, encoding: .utf8) {
-            print("🟢 [GeminiManager] Response Body (first 1000 chars): \(String(responseString.prefix(1000)))")
+        let itemsRanked = SeverityCalculator.calculateAll(from: metrics, language: language)
+        let score = ScoreCalculator.calculate(from: itemsRanked)
+        let metaMode = MetaModeCalculator.calculate(from: itemsRanked)
+        let topIssueKey = itemsRanked.first(where: { $0.severity != .good })?.key
+        let badgeTitle = BadgeGenerator.generate(score: score, topIssueKey: topIssueKey, metaMode: metaMode, language: language, variant: Int(Date().timeIntervalSince1970) % 5)
+        let skeletonSummary = generateSkeletonSummary(items: itemsRanked, language: language)
+        let reportContext = ReportContextManager.shared.determineContext()
+        
+        let request = LLMRequestV2(
+            locale: language, personaId: coachPersona.id, analysisVersion: "v1.0", appVersion: AppConfig.appVersion,
+            score: score, itemsRanked: itemsRanked, skeletonSummaryText: skeletonSummary, reportContext: reportContext
+        )
+        
+        do {
+            let response = try await llmClientV2.generateReportV2(request: request)
+            if let error = response.error {
+                AnalyticsLogger.shared.logReportFailure(errorCode: error.code.rawValue, networkStatus: "connected", provider: "gemini")
+                CrashLogger.shared.logLLMError(error, requestId: response.requestId)
+                throw GeminiError.llmError(error)
+            }
+            UsageLimiter.shared.recordSuccess()
+            ReportContextManager.shared.recordReportGenerated()
+            let duration = Int(Date().timeIntervalSince(startTime) * 1000)
+            AnalyticsLogger.shared.logReportSuccess(requestId: response.requestId, provider: "gemini", durationMs: duration)
+            return DiagnosisReportV2(overallBadgeTitle: response.overallBadgeTitle, overallCardText: response.overallCardText,
+                                    score: score, metaMode: metaMode, details: response.details, itemsRanked: itemsRanked)
+        } catch let error as LLMError {
+            AnalyticsLogger.shared.logReportFailure(errorCode: error.code.rawValue, networkStatus: "error", provider: "gemini")
+            CrashLogger.shared.logLLMError(error, requestId: nil)
+            throw GeminiError.llmError(error)
+        } catch {
+            AnalyticsLogger.shared.logReportFailure(errorCode: "UNKNOWN", networkStatus: "error", provider: "gemini")
+            throw GeminiError.networkError(error)
         }
     }
     
-    // MARK: - System Prompt Construction (システムプロンプト構築)
+    private func generateSkeletonSummary(items: [ItemRanked], language: AppLanguage) -> String {
+        let badItems = items.filter { $0.severity == .bad }
+        let okItems = items.filter { $0.severity == .ok }
+        let goodItems = items.filter { $0.severity == .good }
+        if language == .japanese {
+            var summary = "\u{3010}\u{8981}\u{7D04}\u{3011}"
+            if !badItems.isEmpty { summary += "\u{8981}\u{6539}\u{5584}: \(badItems.map { $0.displayName }.joined(separator: ", "))\u{3002}" }
+            if !okItems.isEmpty { summary += "\u{8981}\u{6CE8}\u{610F}: \(okItems.map { $0.displayName }.joined(separator: ", "))\u{3002}" }
+            if !goodItems.isEmpty { summary += "\u{826F}\u{597D}: \(goodItems.map { $0.displayName }.joined(separator: ", "))\u{3002}" }
+            return summary
+        } else {
+            var summary = "[Summary] "
+            if !badItems.isEmpty { summary += "Needs Improvement: \(badItems.map { $0.displayName }.joined(separator: ", ")). " }
+            if !okItems.isEmpty { summary += "Needs Attention: \(okItems.map { $0.displayName }.joined(separator: ", ")). " }
+            if !goodItems.isEmpty { summary += "Good: \(goodItems.map { $0.displayName }.joined(separator: ", ")). " }
+            return summary
+        }
+    }
     
-    /// システムプロンプトを構築する（統合メソッド）
-    /// - Parameters:
-    ///   - coachPersona: 選択されたコーチのペルソナ
-    /// - Returns: 構築されたシステムプロンプト文字列
+    // MARK: - Private Parsing
+    
+    private func parseReportText(_ text: String) throws -> DiagnosisReport {
+        let jsonString = extractJsonString(from: text)
+        guard let jsonData = jsonString.data(using: .utf8) else { throw GeminiError.parseError("Failed to convert string to data") }
+        return try JSONDecoder().decode(DiagnosisReport.self, from: jsonData)
+    }
+    
     private func constructSystemInstruction(coachPersona: CoachPersona) -> String {
         let language = LanguageManager.shared.currentLanguage
-        
-        // 1. 基本プロンプトの構築
-        var prompt = buildBasePrompt(language: language)
-        
-        // 2. ペルソナプロンプトの追加
-        prompt += "\n\n" + buildPersonaPrompt(for: coachPersona)
-        
-        return prompt
+        return buildBasePrompt(language: language) + "\n\n" + buildPersonaPrompt(for: coachPersona)
     }
     
-    /// 基本プロンプトを構築（役割定義・診断ロジック・出力形式）
-    ///
-    /// ## 含まれる要素
-    /// - AI の役割（プロゴルフコーチ）
-    /// - 出力言語の指定
-    /// - 表現のバリエーション要求
-    /// - 診断ロジック（severity 1-10 の基準）
-    /// - 分析の深さ（原因仮説の提示）
-    /// - JSON 出力フォーマットの詳細定義
-    ///
-    /// - Parameter language: 出力言語（日本語 or English）
-    /// - Returns: 基本プロンプト文字列
     private func buildBasePrompt(language: AppLanguage) -> String {
-        let langInstruction = language == .japanese ? "日本語" : "English"
-        
+        let langInstruction = language == .japanese ? "\u{65E5}\u{672C}\u{8A9E}" : "English"
         return """
         Role: You are a professional golf coach AI. Create a diagnosis report in JSON format based on the provided data.
         Language: Output must be in \(langInstruction).
@@ -353,9 +210,8 @@ class GeminiManager {
         """
     }
     
-    /// ペルソナプロンプトを構築（CoachPersona構造体から直接取得）
     private func buildPersonaPrompt(for persona: CoachPersona) -> String {
-        return """
+        """
         【Persona Definition】
         Name: \(persona.name)
         Role: \(persona.description)
@@ -363,7 +219,6 @@ class GeminiManager {
         """
     }
     
-    /// メトリクスとユーザー情報をJSON文字列に変換する
     private func constructInputJson(metrics: SwingMetrics, userProfile: [String: Any]) -> String {
         let inputData: [String: Any] = [
             "user_profile": userProfile,
@@ -375,198 +230,73 @@ class GeminiManager {
                 "hand_raise_y": metrics.handRaiseY,
                 "swing_path_type": metrics.swingPathType
             ],
-            "request_variation_seed": Int.random(in: 1...100000) // 毎回ランダムな値を送り、回答の固定化を防ぐ
+            "request_variation_seed": Int.random(in: 1...100000)
         ]
-        
         if let jsonData = try? JSONSerialization.data(withJSONObject: inputData, options: .prettyPrinted),
-           let jsonString = String(data: jsonData, encoding: .utf8) {
-            return jsonString
-        }
+           let jsonString = String(data: jsonData, encoding: .utf8) { return jsonString }
         return "{}"
     }
     
-    /// Gemini APIのレスポンスをパースしてDiagnosisReportに変換する
-    /// - Parameter data: APIレスポンスの生データ
-    /// - Returns: パース済みの診断レポート
-    /// - Throws: JSONデコードエラーまたはレスポンス形式エラー
-    /// - Note: Geminiのレスポンスからテキスト部分を抽出し、JSONとしてデコードします
     private func parseGeminiResponse(_ data: Data) throws -> DiagnosisReport {
-        // Geminiのレスポンス構造に合わせてデコード
         struct GeminiResponse: Decodable {
             struct Candidate: Decodable {
                 struct Content: Decodable {
-                    struct Part: Decodable {
-                        let text: String
-                    }
+                    struct Part: Decodable { let text: String }
                     let parts: [Part]
                 }
                 let content: Content
             }
             let candidates: [Candidate]?
         }
-        
         let geminiResp = try JSONDecoder().decode(GeminiResponse.self, from: data)
-        
         guard let text = geminiResp.candidates?.first?.content.parts.first?.text else {
-            throw NSError(domain: "GeminiManager", code: 500, userInfo: [NSLocalizedDescriptionKey: "レスポンスにコンテンツが含まれていません"])
+            throw NSError(domain: "GeminiManager", code: 500, userInfo: [NSLocalizedDescriptionKey: "\u{30EC}\u{30B9}\u{30DD}\u{30F3}\u{30B9}\u{306B}\u{30B3}\u{30F3}\u{30C6}\u{30F3}\u{30C4}\u{304C}\u{542B}\u{307E}\u{308C}\u{3066}\u{3044}\u{307E}\u{305B}\u{3093}"])
         }
-        
-        // JSON文字列部分を抽出（Markdownのコードブロック ```json ... ``` が含まれる場合の対策）
         let jsonString = extractJsonString(from: text)
-        
         guard let jsonData = jsonString.data(using: .utf8) else {
             throw NSError(domain: "GeminiManager", code: 500, userInfo: [NSLocalizedDescriptionKey: "Failed to convert string to data"])
         }
-        
         return try JSONDecoder().decode(DiagnosisReport.self, from: jsonData)
     }
     
-    /// レスポンステキストからJSON文字列部分を抽出する
-    /// - Parameter text: Gemini APIからのレスポンステキスト
-    /// - Returns: JSON文字列
-    /// - Note: Markdownのコードブロック ```json ... ``` が含まれる場合の対策
     private func extractJsonString(from text: String) -> String {
-        // ```json と ``` の間、もしくは { と } の間を抽出する簡易ロジック
         if let rangeStart = text.range(of: "{"), let rangeEnd = text.range(of: "}", options: .backwards) {
-            // 安全な範囲チェックを追加
-            if rangeStart.lowerBound < rangeEnd.upperBound {
-                return String(text[rangeStart.lowerBound..<rangeEnd.upperBound])
-            }
+            if rangeStart.lowerBound < rangeEnd.upperBound { return String(text[rangeStart.lowerBound..<rangeEnd.upperBound]) }
         }
         return text
     }
 }
-/// コーチのペルソナ定義（言語ごとに独立）
+
 struct CoachPersona: Identifiable, Codable, Equatable, Hashable {
     let id: String
     let name: String
     let description: String
     let icon: String
-    let themeColorHex: String // 16進数カラーコード
-    let systemPrompt: String // ペルソナ固有のシステムプロンプト指示
+    let themeColorHex: String
+    let systemPrompt: String
     
-    // デフォルトのペルソナ（標準）
-    static var standard: CoachPersona {
-        availablePersonas(for: LanguageManager.shared.currentLanguage).first!
-    }
+    static var standard: CoachPersona { availablePersonas(for: LanguageManager.shared.currentLanguage).first! }
     
-    /// 言語ごとの利用可能なペルソナリストを返す
     static func availablePersonas(for language: AppLanguage) -> [CoachPersona] {
-        switch language {
-        case .japanese:
-            return [
-                CoachPersona(
-                    id: "normal_jp",
-                    name: "標準",
-                    description: "データに基づいた冷静かつ論理的な分析を行います。",
-                    icon: "🤖",
-                    themeColorHex: "007AFF", // Blue
-                    systemPrompt: "あなたはプロのゴルフコーチです。データに基づき、論理的かつ冷静に分析結果を伝えてください。敬語を使い、簡潔で分かりやすい説明を心がけてください。"
-                ),
-                CoachPersona(
-                    id: "spartan_jp",
-                    name: "鬼軍曹",
-                    description: "甘えを許さない厳しい指導で、徹底的に鍛え上げます。",
-                    icon: "👹",
-                    themeColorHex: "FF3B30", // Red
-                    systemPrompt: "あなたは非常に厳しいスパルタゴルフコーチ「鬼軍曹」です。ユーザーを「貴様」や「お前」と呼び、甘えを一切許さない口調で指導してください。ただし、アドバイスは的確で、上達への情熱は人一倍あります。「気合が足りん！」「歯を食いしばれ！」などのフレーズを多用してください。"
-                ),
-                CoachPersona(
-                    id: "kind_jp",
-                    name: "お姉さん",
-                    description: "優しく褒めて伸ばすスタイル。初心者の方におすすめです。",
-                    icon: "👩",
-                    themeColorHex: "FF2D55", // Pink
-                    systemPrompt: "あなたは優しくて包容力のあるお姉さんコーチです。ユーザーを「くん」や「ちゃん」付けで呼び、とにかく褒めて伸ばすスタイルです。「すごい！」「惜しい！」など感情豊かに、絵文字も多用して励ましてください。"
-                ),
-                CoachPersona(
-                    id: "kansai_mom_jp",
-                    name: "関西おかん",
-                    description: "愛のあるツッコミとお節介で、親身にアドバイスします。",
-                    icon: "🐯",
-                    themeColorHex: "FF9500", // Orange
-                    systemPrompt: "あなたは世話焼きな「関西のおかん」です。コテコテの関西弁で話し、「あんた」「〜やんか」「飴ちゃんあげるわ」などのフレーズを使ってください。親しみやすく、時に厳しく、愛のあるツッコミを入れてください。"
-                ),
-                CoachPersona(
-                    id: "comedian_jp",
-                    name: "芸人",
-                    description: "ユニークな例え話で、楽しみながらスイング改善できます。",
-                    icon: "🎤",
-                    themeColorHex: "AF52DE", // Purple
-                    systemPrompt: "あなたは人気のお笑い芸人コーチです。スイングの欠点を、誰もが笑ってしまうようなユニークな例え話（「カマキリの求愛ダンスか！」など）で指摘してください。ユーモアたっぷりに、でも核心を突いたアドバイスをしてください。"
-                )
-            ]
-            
-        case .english:
-            return [
-                CoachPersona(
-                    id: "standard_en",
-                    name: "Standard",
-                    description: "Provides calm, logical analysis based on data.",
-                    icon: "🤖",
-                    themeColorHex: "007AFF", // Blue
-                    systemPrompt: "You are a professional golf coach. Provide logical and calm analysis based on data. Use polite language and ensure explanations are concise and easy to understand."
-                ),
-                CoachPersona(
-                    id: "sergeant_en",
-                    name: "Drill Sergeant",
-                    description: "Strict guidance with no excuses. Toughens you up.",
-                    icon: "🪖",
-                    themeColorHex: "FF3B30", // Red
-                    systemPrompt: "You are a strict Drill Sergeant golf coach. Call the user 'Private' or 'Maggot'. Do not tolerate any excuses. Your tone is aggressive and commanding. Use phrases like 'Drop and give me 20!' or 'Is that all you got?'. However, your advice is accurate and aims to toughen them up."
-                ),
-                CoachPersona(
-                    id: "sister_en",
-                    name: "Supportive Sister",
-                    description: "Praises and encourages. Recommended for beginners.",
-                    icon: "👩",
-                    themeColorHex: "FF2D55", // Pink
-                    systemPrompt: "You are a supportive and kind older sister figure. Call the user 'Sweetie' or 'Champ'. Focus on positive reinforcement. Use lots of encouraging words like 'Great job!', 'You're doing amazing!', and use emojis. Be very gentle with criticism."
-                ),
-                CoachPersona(
-                    id: "hero_en",
-                    name: "Hollywood Hero",
-                    description: "Dramatic and inspiring feedback like a movie star.",
-                    icon: "🎬",
-                    themeColorHex: "FF9500", // Orange
-                    systemPrompt: "You are a dramatic Hollywood Action Hero. Speak in epic, movie-trailer voice. Use metaphors about saving the world or defusing bombs. 'This swing is a ticking time bomb!' or 'You're the chosen one!'. Be over-the-top, inspiring, and intense."
-                ),
-                CoachPersona(
-                    id: "butler_en",
-                    name: "British Butler",
-                    description: "Polite, dry wit, and sophisticated advice.",
-                    icon: "☕️",
-                    themeColorHex: "AF52DE", // Purple
-                    systemPrompt: "You are a sophisticated British Butler. Speak with extreme politeness and dry wit. Address the user as 'Sir' or 'Madam'. Use phrases like 'If I may suggest...' or 'A trifle untidy, I'm afraid'. Be elegant, refined, and slightly sarcastic but helpful."
-                )
-            ]
+        let personaConfigs: [(id: String, icon: String, themeColorHex: String)] = [
+            ("gentle_sister", "\u{1F469}", "FF2D55"), ("spartan", "\u{1FA96}", "FF3B30"),
+            ("standard", "\u{1F916}", "007AFF"), ("comedian", "\u{1F3A4}", "AF52DE"),
+            ("gal", "\u{1F496}", "FF9500"), ("toxic_pro", "\u{1F3AF}", "34C759")
+        ]
+        return personaConfigs.map { config in
+            let name = LanguageManager.shared.localized("coach_\(config.id)")
+            let desc = LanguageManager.shared.localized("desc_\(config.id)")
+            let quote = LanguageManager.shared.localized("quote_\(config.id)")
+            return CoachPersona(id: config.id, name: name, description: "\(desc)\n\(quote)",
+                              icon: config.icon, themeColorHex: config.themeColorHex, systemPrompt: "")
         }
     }
-
     
-    // MARK: - Compatibility Properties (Static)
-    // 旧CoachMode enumとの互換性のためにstaticプロパティを提供
-    
-    static var normal: CoachPersona {
-        availablePersonas(for: LanguageManager.shared.currentLanguage).first { $0.id.contains("normal") || $0.id.contains("standard") } ?? standard
-    }
-    
-    static var spartan: CoachPersona {
-        availablePersonas(for: LanguageManager.shared.currentLanguage).first { $0.id.contains("spartan") || $0.id.contains("sergeant") } ?? standard
-    }
-    
-    static var kind: CoachPersona {
-        availablePersonas(for: LanguageManager.shared.currentLanguage).first { $0.id.contains("kind") || $0.id.contains("sister") } ?? standard
-    }
-    
-    static var kansaiMom: CoachPersona {
-        availablePersonas(for: LanguageManager.shared.currentLanguage).first { $0.id.contains("kansai") || $0.id.contains("hero") } ?? standard
-    }
-    
-    static var comedian: CoachPersona {
-        availablePersonas(for: LanguageManager.shared.currentLanguage).first { $0.id.contains("comedian") || $0.id.contains("butler") } ?? standard
-    }
+    static var normal: CoachPersona { availablePersonas(for: LanguageManager.shared.currentLanguage).first { $0.id == "standard" } ?? standard }
+    static var spartan: CoachPersona { availablePersonas(for: LanguageManager.shared.currentLanguage).first { $0.id == "spartan" } ?? standard }
+    static var kind: CoachPersona { availablePersonas(for: LanguageManager.shared.currentLanguage).first { $0.id == "gentle_sister" } ?? standard }
+    static var kansaiMom: CoachPersona { availablePersonas(for: LanguageManager.shared.currentLanguage).first { $0.id == "gal" } ?? standard }
+    static var comedian: CoachPersona { availablePersonas(for: LanguageManager.shared.currentLanguage).first { $0.id == "comedian" } ?? standard }
 }
 
-// 互換性のためのエイリアス（必要に応じて削除可能）
 typealias CoachMode = CoachPersona
