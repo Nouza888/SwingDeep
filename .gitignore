@@ -1,5 +1,22 @@
+# CocoaPods
 Pods/
-config.swift
+
+# Xcode
 .DS_Store
 UserInterfaceState.xcuserstate
 xcuserdata/
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+
+# App Config / Secrets
+config.swift
+GoogleService-Info.plist
+
+# Backend / Node
+node_modules/
+backend/functions/node_modules/
+backend/functions/node_modules 2/
+npm-debug.log
+firebase-debug.log
+.firebaserc
