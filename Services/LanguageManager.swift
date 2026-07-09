@@ -11,13 +11,13 @@ import Combine
 enum AppLanguage: String, CaseIterable, Identifiable {
     case japanese = "ja"
     case english = "en"
-    
+
     // MARK: - Identifiable
-    
+
     var id: String { rawValue }
-    
+
     // MARK: - Display Properties
-    
+
     /// 言語の表示名（各言語のネイティブ表記）
     var displayName: String {
         switch self {
@@ -25,7 +25,7 @@ enum AppLanguage: String, CaseIterable, Identifiable {
         case .english: return "English"
         }
     }
-    
+
     /// Localeオブジェクト
     var locale: Locale {
         return Locale(identifier: rawValue)
@@ -53,27 +53,27 @@ enum AppLanguage: String, CaseIterable, Identifiable {
 /// let text = "hello".localized
 /// ```
 class LanguageManager: ObservableObject {
-    
+
     // MARK: - Singleton
-    
+
     static let shared = LanguageManager()
-    
+
     // MARK: - Properties
-    
+
     /// 保存された言語設定（UserDefaults）
     @AppStorage("appLanguage") private var savedLanguage: String = "ja"
-    
+
     /// 現在の言語（Published）
     @Published var currentLanguage: AppLanguage = .japanese
-    
+
     // MARK: - Initialization
-    
+
     private init() {
         loadSavedLanguage()
     }
-    
+
     // MARK: - Public Methods
-    
+
     /// 言語を設定する
     ///
     /// - Parameter language: 設定する言語
@@ -83,7 +83,7 @@ class LanguageManager: ObservableObject {
         self.currentLanguage = language
         self.savedLanguage = language.rawValue
     }
-    
+
     /// キーに対応する翻訳テキストを取得する
     ///
     /// - Parameter key: ローカライズキー
@@ -92,9 +92,9 @@ class LanguageManager: ObservableObject {
         let table = currentLanguage == .japanese ? AppStrings.japanese : AppStrings.english
         return table[key] ?? key
     }
-    
+
     // MARK: - Private Methods
-    
+
     /// 保存された言語設定を読み込む
     private func loadSavedLanguage() {
         if let lang = AppLanguage(rawValue: savedLanguage) {

@@ -14,13 +14,13 @@ enum SubscriptionPlan: String, CaseIterable, Identifiable {
     case free = "Free"
     case standard = "Standard"
     case premium = "Premium"
-    
+
     // MARK: - Identifiable
-    
+
     var id: String { rawValue }
-    
+
     // MARK: - Display Properties
-    
+
     /// 表示名
     var name: String {
         switch self {
@@ -29,7 +29,7 @@ enum SubscriptionPlan: String, CaseIterable, Identifiable {
         case .premium: return "Premium (Pro)"
         }
     }
-    
+
     /// SF Symbolsアイコン名
     var icon: String {
         switch self {
@@ -38,7 +38,7 @@ enum SubscriptionPlan: String, CaseIterable, Identifiable {
         case .premium: return "crown.fill"
         }
     }
-    
+
     /// テーマカラー
     var color: Color {
         switch self {
@@ -47,24 +47,24 @@ enum SubscriptionPlan: String, CaseIterable, Identifiable {
         case .premium: return .yellow
         }
     }
-    
+
     // MARK: - Feature Access
-    
+
     /// トレンドグラフ閲覧権限
     var canViewTrendGraph: Bool {
         self == .premium
     }
-    
+
     /// 全診断項目閲覧権限
     var canViewAllDiagnosisItems: Bool {
         self != .free
     }
-    
+
     /// 動画比較機能使用権限
     var canCompareVideo: Bool {
         self == .premium
     }
-    
+
     /// 月あたりの最大解析回数
     var monthlyLimit: Int {
         switch self {
@@ -73,7 +73,7 @@ enum SubscriptionPlan: String, CaseIterable, Identifiable {
         case .premium: return Int.max  // 無制限
         }
     }
-    
+
     /// 無制限かどうか
     var isUnlimited: Bool {
         self == .premium
@@ -93,22 +93,22 @@ enum SubscriptionPlan: String, CaseIterable, Identifiable {
 /// - 購入履歴の永続化
 /// - レシート検証
 class SubscriptionManager: ObservableObject {
-    
+
     // MARK: - Singleton
-    
+
     static let shared = SubscriptionManager()
-    
+
     // MARK: - Published Properties
-    
+
     /// 現在のサブスクリプションプラン
     @Published var currentPlan: SubscriptionPlan = .free
-    
+
     // MARK: - Initialization
-    
+
     private init() {}
-    
+
     // MARK: - Public Methods
-    
+
     /// プランを変更する
     ///
     /// - Parameter plan: 変更先のプラン
@@ -118,12 +118,12 @@ class SubscriptionManager: ObservableObject {
     func upgrade(to plan: SubscriptionPlan) {
         self.currentPlan = plan
     }
-    
+
     /// 無料プランにダウングレードする
     func downgradeToFree() {
         self.currentPlan = .free
     }
-    
+
     /// 現在のプランの機能制限情報を取得
     /// - Returns: 機能制限の説明文
     func currentPlanDescription() -> String {

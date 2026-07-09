@@ -10,26 +10,26 @@ import SwiftData
 /// - 診断履歴リスト（スワイプで削除可能）
 /// - 各診断結果への詳細遷移
 struct HistoryView: View {
-    
+
     // MARK: - Properties
-    
+
     /// SwiftDataモデルコンテキスト
     @Environment(\.modelContext) private var modelContext
-    
+
     /// 診断データ（日付降順でソート）
     @Query(sort: \SwingAnalysis.date, order: .reverse) private var analyses: [SwingAnalysis]
-    
+
     /// サブスクリプション管理
     @ObservedObject var subscriptionManager = SubscriptionManager.shared
-    
+
     // MARK: - Body
-    
+
     var body: some View {
         NavigationView {
             ZStack {
                 // 背景色
                 Theme.background.edgesIgnoringSafeArea(.all)
-                
+
                 List {
                     trendGraphSection
                     historyListSection
@@ -42,9 +42,9 @@ struct HistoryView: View {
             .navigationBarTitleDisplayMode(.large)
         }
     }
-    
+
     // MARK: - Sections
-    
+
     /// トレンドグラフセクション
     private var trendGraphSection: some View {
         Section {
@@ -63,7 +63,7 @@ struct HistoryView: View {
             }
         }
     }
-    
+
     /// 診断履歴リストセクション
     private var historyListSection: some View {
         Section(header: sectionHeader) {
@@ -77,20 +77,20 @@ struct HistoryView: View {
             }
         }
     }
-    
+
     /// セクションヘッダー
     private var sectionHeader: some View {
         Text("history_section_title".localized)
             .foregroundColor(Theme.textSecondary)
     }
-    
+
     /// 空状態表示
     private var emptyStateView: some View {
         Text("history_empty".localized)
             .foregroundColor(Theme.textSecondary)
             .listRowBackground(Color.clear)
     }
-    
+
     /// タブバーとの重なりを防ぐための余白
     private var bottomSpacerSection: some View {
         Section {
@@ -99,9 +99,9 @@ struct HistoryView: View {
                 .listRowBackground(Color.clear)
         }
     }
-    
+
     // MARK: - Components
-    
+
     /// ナビゲーション付きの履歴行
     private func historyRowWithNavigation(for analysis: SwingAnalysis) -> some View {
         ZStack {
@@ -110,15 +110,15 @@ struct HistoryView: View {
                 EmptyView()
             }
             .opacity(0)
-            
+
             HistoryRow(analysis: analysis)
         }
         .listRowBackground(Color.clear)
         .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
     }
-    
+
     // MARK: - Actions
-    
+
     /// 項目を削除する
     /// - Parameter offsets: 削除対象のインデックス
     private func deleteItems(offsets: IndexSet) {
@@ -134,14 +134,14 @@ struct HistoryView: View {
 
 /// 診断履歴の1行分を表示するコンポーネント
 struct HistoryRow: View {
-    
+
     // MARK: - Properties
-    
+
     /// 表示する診断データ
     let analysis: SwingAnalysis
-    
+
     // MARK: - Body
-    
+
     var body: some View {
         HStack(spacing: Theme.Spacing.md.rawValue) {
             scoreBadge
@@ -158,9 +158,9 @@ struct HistoryRow: View {
         )
         .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
     }
-    
+
     // MARK: - Components
-    
+
     /// スコアバッジ
     private var scoreBadge: some View {
         ZStack {
@@ -168,7 +168,7 @@ struct HistoryRow: View {
                 .fill(Theme.surface)
                 .shadow(color: Color.black.opacity(0.1), radius: 4)
                 .frame(width: 50, height: 50)
-            
+
             if let report = analysis.diagnosisReport {
                 Text("\(report.totalScore)")
                     .typography(.headlineMedium)
@@ -179,7 +179,7 @@ struct HistoryRow: View {
             }
         }
     }
-    
+
     /// コンテンツスタック（タイトル・日時）
     private var contentStack: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -192,22 +192,22 @@ struct HistoryRow: View {
                     .typography(.headlineMedium)
                     .foregroundColor(Theme.textSecondary)
             }
-            
+
             Text(analysis.date.formatted(date: .numeric, time: .shortened))
                 .typography(.caption)
                 .foregroundColor(Theme.textSecondary)
         }
     }
-    
+
     /// 右矢印アイコン
     private var chevronIcon: some View {
         Image(systemName: "chevron.right")
             .font(.system(size: 14, weight: .semibold))
             .foregroundColor(Theme.textSecondary.opacity(0.5))
     }
-    
+
     // MARK: - Helpers
-    
+
     /// スコアに応じた色を返す
     /// - Parameter score: スコア値（0-100）
     /// - Returns: 対応する色
@@ -222,10 +222,10 @@ struct HistoryRow: View {
 
 /// 診断結果の詳細を表示する画面
 struct AnalysisDetailView: View {
-    
+
     /// 表示する診断データ
     let analysis: SwingAnalysis
-    
+
     var body: some View {
         DiagnosisView(report: analysis.diagnosisReport, isAnalyzing: false)
     }

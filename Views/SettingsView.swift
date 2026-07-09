@@ -10,21 +10,21 @@ import SwiftUI
 /// - AIコーチ選択
 /// - アプリ情報表示
 struct SettingsView: View {
-    
+
     // MARK: - Properties
-    
+
     /// サブスクリプション管理
     @ObservedObject var subscriptionManager = SubscriptionManager.shared
-    
+
     /// 利用回数管理
     @ObservedObject var usageLimiter = UsageLimiter.shared
-    
+
     /// 言語管理
     @ObservedObject var languageManager = LanguageManager.shared
-    
+
     /// 選択中のコーチID（UserDefaultsに永続化）
     @AppStorage("coachModeId") private var coachModeId: String = "gentle_sister"
-    
+
     /// 選択中のコーチペルソナ（Binding）
     private var selectedPersona: Binding<CoachPersona> {
         Binding(
@@ -37,9 +37,9 @@ struct SettingsView: View {
             }
         )
     }
-    
+
     // MARK: - Body
-    
+
     var body: some View {
         NavigationView {
             List {
@@ -53,9 +53,9 @@ struct SettingsView: View {
             .navigationTitle("settings_title".localized)
         }
     }
-    
+
     // MARK: - Sections
-    
+
     /// 利用状況セクション
     private var usageStatusSection: some View {
         Section(header: Text("usage_status".localized)) {
@@ -81,7 +81,7 @@ struct SettingsView: View {
                         .foregroundColor(usageLimiter.displayRemainingCount > 5 ? Theme.forestGreen : Theme.accentOrange)
                 }
             }
-            
+
             // 次回リセット日（Premiumは非表示）
             if !usageLimiter.isUnlimited {
                 HStack {
@@ -94,7 +94,7 @@ struct SettingsView: View {
                         .foregroundColor(.secondary)
                 }
             }
-            
+
             // レポート回数（ReportContextManager）
             HStack {
                 Image(systemName: "doc.text.fill")
@@ -111,7 +111,7 @@ struct SettingsView: View {
             usageLimiter.refreshForPlanChange()
         }
     }
-    
+
     /// プラン設定セクション
     private var planSettingsSection: some View {
         Section(header: Text("plan_settings".localized)) {
@@ -122,14 +122,14 @@ struct SettingsView: View {
                 }
             }
             .pickerStyle(.navigationLink)
-            
+
             // 無料プランの場合はアップグレードボタンを表示
             if subscriptionManager.currentPlan == .free {
                 upgradeButton
             }
         }
     }
-    
+
     /// 言語設定セクション
     private var languageSettingsSection: some View {
         Section(header: Text("language_settings".localized)) {
@@ -143,7 +143,7 @@ struct SettingsView: View {
             }
         }
     }
-    
+
     /// コーチ設定セクション
     private var coachSettingsSection: some View {
         Section(header: Text("coach_settings".localized)) {
@@ -154,14 +154,14 @@ struct SettingsView: View {
                     Text("\(persona.icon) \(persona.name)").tag(persona)
                 }
             }
-            
+
             // 注釈
             Text("coach_note".localized)
                 .font(.caption)
                 .foregroundColor(.secondary)
         }
     }
-    
+
     /// アプリ情報セクション
     private var appInfoSection: some View {
         Section(header: Text("app_info".localized)) {
@@ -172,15 +172,15 @@ struct SettingsView: View {
                 Text(AppConfig.appVersion)
                     .foregroundColor(.secondary)
             }
-            
+
             // 利用規約リンク
             Link("terms".localized, destination: URL(string: "https://nouza888.github.io/golfscan-ai-legal/terms.html")!)
-            
+
             // プライバシーポリシーリンク
             Link("privacy".localized, destination: URL(string: "https://nouza888.github.io/golfscan-ai-legal/")!)
         }
     }
-    
+
     /// タブバーとの重なりを防ぐための余白セクション
     private var bottomSpacerSection: some View {
         Section {
@@ -189,9 +189,9 @@ struct SettingsView: View {
                 .listRowBackground(Color.clear)
         }
     }
-    
+
     // MARK: - Component Views
-    
+
     /// プラン行のビュー
     private func planRowView(for plan: SubscriptionPlan) -> some View {
         HStack {
@@ -201,7 +201,7 @@ struct SettingsView: View {
         }
         .tag(plan)
     }
-    
+
     /// プレミアムアップグレードボタン
     private var upgradeButton: some View {
         Button(action: { subscriptionManager.upgrade(to: .premium) }) {

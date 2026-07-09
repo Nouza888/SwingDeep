@@ -5,9 +5,9 @@ import Foundation
 /// 決定論的バッジ生成
 /// v1.0 ゴールドスタンダード（LLMに依存しない）
 struct BadgeGenerator {
-    
+
     // MARK: - Score Phase
-    
+
     private static func getScorePhase(_ score: Int, language: AppLanguage) -> String {
         let phases: [String: (ja: String, en: String)] = [
             "rebuild": (ja: "再構築フェーズ", en: "Rebuild Phase"),
@@ -15,7 +15,7 @@ struct BadgeGenerator {
             "growing": (ja: "成長途中", en: "Growing"),
             "rising": (ja: "伸び盛り", en: "On the Rise"),
         ]
-        
+
         let phase: String
         if score < 60 {
             phase = "rebuild"
@@ -26,13 +26,13 @@ struct BadgeGenerator {
         } else {
             phase = "rising"
         }
-        
+
         let p = phases[phase]!
         return language == .japanese ? p.ja : p.en
     }
-    
+
     // MARK: - Weakness Word
-    
+
     private static func getWeaknessWord(_ key: MetricKey, language: AppLanguage, variant: Int) -> String {
         let words: [MetricKey: (ja: [String], en: [String])] = [
             .swingPath: (
@@ -60,25 +60,25 @@ struct BadgeGenerator {
                 en: ["Quick Swinger", "Impatient Golfer", "Rhythm Seeker"]
             ),
         ]
-        
+
         let list = language == .japanese ? words[key]!.ja : words[key]!.en
         return list[variant % list.count]
     }
-    
+
     // MARK: - Play Word
-    
+
     private static func getPlayWord(language: AppLanguage, variant: Int) -> String {
         let words: (ja: [String], en: [String]) = (
             ja: ["戦士", "旅人", "挑戦者", "研究家", "候補生", "予備軍"],
             en: ["Warrior", "Traveler", "Challenger", "Researcher", "Candidate", "Recruit"]
         )
-        
+
         let list = language == .japanese ? words.ja : words.en
         return list[variant % list.count]
     }
-    
+
     // MARK: - Special Pools
-    
+
     private static func getExcellentBadge(language: AppLanguage, variant: Int) -> String {
         let badges: (ja: [String], en: [String]) = (
             ja: [
@@ -96,11 +96,11 @@ struct BadgeGenerator {
                 "Today's Best Swing"
             ]
         )
-        
+
         let list = language == .japanese ? badges.ja : badges.en
         return list[variant % list.count]
     }
-    
+
     private static func getAlmostThereBadge(language: AppLanguage, variant: Int) -> String {
         let badges: (ja: [String], en: [String]) = (
             ja: [
@@ -118,13 +118,13 @@ struct BadgeGenerator {
                 "Almost There Golfer"
             ]
         )
-        
+
         let list = language == .japanese ? badges.ja : badges.en
         return list[variant % list.count]
     }
-    
+
     // MARK: - Main Generate Method
-    
+
     /// バッジを生成
     /// - Parameters:
     ///   - score: スコア（0-100）
@@ -149,16 +149,16 @@ struct BadgeGenerator {
         case .rebuild, .normal:
             break
         }
-        
+
         // 通常/REBUILDモード
         guard let key = topIssueKey else {
             return language == .japanese ? "成長途中のゴルファー" : "Growing Golfer"
         }
-        
+
         let weaknessWord = getWeaknessWord(key, language: language, variant: variant)
         let phaseWord = getScorePhase(score, language: language)
         let playWord = getPlayWord(language: language, variant: variant)
-        
+
         // 日本語: "スライサー成長途中の戦士"
         // 英語: "Slicer - Growing Warrior"
         if language == .japanese {

@@ -1,5 +1,37 @@
-Pods/
-config.swift
 .DS_Store
-UserInterfaceState.xcuserstate
+**/.DS_Store
+
+# Xcode
+DerivedData/
+build/
+*.xcuserstate
 xcuserdata/
+*.xccheckout
+*.xcscmblueprint
+
+# CocoaPods
+Pods/
+
+# Firebase and signing material
+GoogleService-Info.plist
+.firebaserc
+*.mobileprovision
+*.p12
+*.cer
+*.pem
+*.key
+*service-account*.json
+
+# Local configuration and secrets
+config.swift
+.env
+.env.*
+!.env.example
+
+# Firebase Functions generated files
+functions/node_modules/
+functions/lib/
+functions/.firebase/
+functions/firebase-debug.log*
+functions/*-debug.log*
+npm-debug.log*

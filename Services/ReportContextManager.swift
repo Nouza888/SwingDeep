@@ -18,7 +18,7 @@ enum ReportContext: String, Codable {
     case gettingUsed = "GETTING_USED"
     case regular = "REGULAR"
     case comeback = "COMEBACK"
-    
+
     /// 日本語表示名
     var displayNameJa: String {
         switch self {
@@ -45,40 +45,40 @@ enum ReportContext: String, Codable {
 /// 3. reportCount <= 2 → GETTING_USED
 /// 4. それ以外 → REGULAR
 class ReportContextManager {
-    
+
     // MARK: - Singleton
-    
+
     static let shared = ReportContextManager()
-    
+
     // MARK: - Constants
-    
+
     /// UserDefaultsキー：レポート回数
     private let reportCountKey = "report_count"
-    
+
     /// UserDefaultsキー：最終レポート日時
     private let lastReportDateKey = "last_report_date"
-    
+
     /// COMEBACK判定の閾値（日数）
     private let comebackThresholdDays = 30
-    
+
     // MARK: - Initialization
-    
+
     private init() {}
-    
+
     // MARK: - Public Properties
-    
+
     /// 現在のレポート回数
     var reportCount: Int {
         return UserDefaults.standard.integer(forKey: reportCountKey)
     }
-    
+
     /// 最終レポート日時
     var lastReportDate: Date? {
         return UserDefaults.standard.object(forKey: lastReportDateKey) as? Date
     }
-    
+
     // MARK: - Public Methods
-    
+
     /// レポートコンテキストを決定する
     ///
     /// ## 判定優先順位
@@ -90,26 +90,26 @@ class ReportContextManager {
     /// - Returns: 決定されたReportContext
     func determineContext() -> ReportContext {
         let count = reportCount
-        
+
         // 1. 初回は最優先でFIRST_TIME
         if count == 0 {
             return .firstTime
         }
-        
+
         // 2. 30日以上経過していたらCOMEBACK
         if isDueForComeback() {
             return .comeback
         }
-        
+
         // 3. 2〜3回目はGETTING_USED
         if count <= 2 {
             return .gettingUsed
         }
-        
+
         // 4. 4回目以降はREGULAR
         return .regular
     }
-    
+
     /// レポート生成成功時に呼び出す（回数カウント + 日時記録）
     ///
     /// - Note: GeminiManagerのレポート生成成功後に呼び出してください
@@ -117,13 +117,13 @@ class ReportContextManager {
         // 回数をインクリメント
         let newCount = reportCount + 1
         UserDefaults.standard.set(newCount, forKey: reportCountKey)
-        
+
         // 最終レポート日時を更新
         UserDefaults.standard.set(Date(), forKey: lastReportDateKey)
-        
+
         logContextUpdate(newCount: newCount)
     }
-    
+
     /// 最終レポートからの経過日数を取得
     ///
     /// - Returns: 経過日数（レポート履歴がない場合は0）
@@ -131,28 +131,28 @@ class ReportContextManager {
         guard let lastDate = lastReportDate else {
             return 0
         }
-        
+
         let calendar = Calendar.current
         let components = calendar.dateComponents([.day], from: lastDate, to: Date())
         return components.day ?? 0
     }
-    
+
     // MARK: - Private Methods
-    
+
     /// COMEBACK判定
     private func isDueForComeback() -> Bool {
         let days = daysSinceLastReport()
         return days >= comebackThresholdDays
     }
-    
+
     /// コンテキスト更新ログ
     private func logContextUpdate(newCount: Int) {
         let context = determineContext()
         print("📊 [ReportContextManager] Report recorded. Count: \(newCount), Context: \(context.rawValue)")
     }
-    
+
     // MARK: - Debug Methods
-    
+
     #if DEBUG
     /// デバッグ用：レポート回数をリセット
     func resetForDebug() {
@@ -160,13 +160,13 @@ class ReportContextManager {
         UserDefaults.standard.removeObject(forKey: lastReportDateKey)
         print("🔧 [ReportContextManager] Reset for debug")
     }
-    
+
     /// デバッグ用：レポート回数を設定
     func setReportCountForDebug(_ count: Int) {
         UserDefaults.standard.set(count, forKey: reportCountKey)
         print("🔧 [ReportContextManager] Set count to \(count) for debug")
     }
-    
+
     /// デバッグ用：最終レポート日時を設定
     func setLastReportDateForDebug(_ date: Date) {
         UserDefaults.standard.set(date, forKey: lastReportDateKey)

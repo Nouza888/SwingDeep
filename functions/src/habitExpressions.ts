@@ -1,7 +1,7 @@
 /**
  * GolfScan AI - Habit (癖) Expression Templates
  * Premium + REGULAR ユーザー専用の癖表現
- * 
+ *
  * 解禁条件（厳守）:
  * 1. Premium ユーザーのみ
  * 2. report_context = REGULAR 以上
@@ -125,7 +125,7 @@ export function selectHabitExpression(
 
 /**
  * 癖表現が解禁されているかチェック
- * 
+ *
  * 条件:
  * 1. Premium ユーザー
  * 2. report_context = REGULAR

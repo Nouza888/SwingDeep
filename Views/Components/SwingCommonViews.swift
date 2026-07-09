@@ -23,14 +23,14 @@ import UIKit
 /// - 左側: アプリ名「GolfScan AI」
 /// - 右側: 動画選択ボタン（未選択時）/ 閉じるボタン（選択時）
 struct HeaderView: View {
-    
+
     // MARK: - Properties
-    
+
     /// ビューモデル
     @ObservedObject var viewModel: VideoViewModel
-    
+
     // MARK: - Body
-    
+
     var body: some View {
         HStack {
             appTitle
@@ -40,9 +40,9 @@ struct HeaderView: View {
         .padding(.horizontal)
         .padding(.vertical, 10)
     }
-    
+
     // MARK: - Components
-    
+
     /// アプリタイトル
     private var appTitle: some View {
         Text("GolfScan AI")
@@ -52,7 +52,7 @@ struct HeaderView: View {
             .shadow(color: .black.opacity(0.6), radius: 4, x: 0, y: 2) // 追加の深み
             .shadow(color: Theme.accent.opacity(0.5), radius: 8, x: 0, y: 0) // アクセントグロー
     }
-    
+
     /// アクションボタン（動画選択 or 残り回数表示）
     @ViewBuilder
     private var actionButton: some View {
@@ -62,7 +62,7 @@ struct HeaderView: View {
             remainingCountPill
         }
     }
-    
+
     /// 動画選択ボタン
     private var videoPickerButton: some View {
         PhotosPicker(selection: $viewModel.selectedItem, matching: .videos) {
@@ -79,11 +79,11 @@ struct HeaderView: View {
             .foregroundColor(Theme.textPrimary)
         }
     }
-    
+
     /// 残り回数ピル
     private var remainingCountPill: some View {
         let usageLimiter = UsageLimiter.shared
-        
+
         return HStack(spacing: 4) {
             Image(systemName: "chart.bar.fill")
                 .font(.system(size: 10))
@@ -116,22 +116,22 @@ struct HeaderView: View {
 /// - 骨格検出結果のオーバーレイ
 /// - ガイド表示（設定モード中）
 struct VideoPlayerView: View {
-    
+
     // MARK: - Properties
-    
+
     /// ビューモデル
     @ObservedObject var viewModel: VideoViewModel
-    
+
     // MARK: - Body
-    
+
     var body: some View {
         VideoPlayer(player: viewModel.player)
             .aspectRatio(viewModel.videoAspectRatio, contentMode: .fit)
             .overlay(overlayContent)
     }
-    
+
     // MARK: - Components
-    
+
     /// オーバーレイコンテンツ
     private var overlayContent: some View {
         ZStack {
@@ -148,14 +148,14 @@ struct VideoPlayerView: View {
                 cachedLandmarks: viewModel.landmarkCache,
                 isComplete: viewModel.status == .complete
             )
-            
+
             // ガイド表示（設定モード中で、まだ設定が完了していない場合）
             if shouldShowGuide {
                 GuideOverlay()
             }
         }
     }
-    
+
     /// ガイドを表示すべきかどうか
     private var shouldShowGuide: Bool {
         viewModel.status == .setting && !viewModel.canAnalyze
@@ -203,9 +203,9 @@ struct EmptyStateView: View {
         .padding()
         .frame(maxWidth: .infinity)
     }
-    
+
     // MARK: - Components
-    
+
     /// カメラプレビューエリア
     private var cameraPreviewArea: some View {
         ZStack {
@@ -214,15 +214,15 @@ struct EmptyStateView: View {
                 .stroke(Theme.textSecondary.opacity(0.3), lineWidth: 2)
                 .frame(width: 320, height: 240)
                 .background(Color.gray.opacity(0.05))
-            
+
             // シルエット画像
             silhouetteImage
-            
+
             // カメラアイコン
             cameraIcon
         }
     }
-    
+
     /// シルエット画像
     @ViewBuilder
     private var silhouetteImage: some View {
@@ -240,7 +240,7 @@ struct EmptyStateView: View {
                 .foregroundColor(Theme.textSecondary.opacity(0.5))
         }
     }
-    
+
     /// カメラアイコン
     private var cameraIcon: some View {
         Image(systemName: "camera.fill")
@@ -251,25 +251,25 @@ struct EmptyStateView: View {
             .clipShape(Circle())
             .offset(y: 120)
     }
-    
+
     /// 説明エリア
     private var instructionsArea: some View {
         VStack(spacing: 16) {
             Text("empty_state_title".localized)
                 .font(.title2.bold())
                 .foregroundColor(Theme.textPrimary)
-            
+
             tipsCard
         }
     }
-    
+
     /// ヒントカード
     private var tipsCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("analysis_tips_title".localized)
                 .font(.subheadline.bold())
                 .foregroundColor(Theme.textPrimary)
-            
+
             VStack(alignment: .leading, spacing: 8) {
                 tipRow("tip_camera".localized)
                 tipRow("tip_fixed".localized)
@@ -282,7 +282,7 @@ struct EmptyStateView: View {
         .background(Theme.surface)
         .cornerRadius(12)
     }
-    
+
     /// ヒント行
     private func tipRow(_ text: String) -> some View {
         HStack(alignment: .top) {
@@ -290,9 +290,9 @@ struct EmptyStateView: View {
             Text(text)
         }
     }
-    
+
     // MARK: - Helpers
-    
+
     /// シルエット画像をバンドルから読み込む
     ///
     /// - Returns: 読み込みに成功した場合はUIImage、失敗した場合はnil
@@ -307,7 +307,7 @@ struct EmptyStateView: View {
         }
         return uiImage
     }
-    
+
     /// 画像エラーをログ出力
     private func logImageError(_ message: String) {
         print("⚠️ \(message)")
@@ -325,21 +325,21 @@ struct LoadingOverlay: View {
         ZStack {
             // 背景（半透明黒）
             Color.black.opacity(0.7)
-            
+
             // ローディングコンテンツ
             loadingContent
         }
     }
-    
+
     // MARK: - Components
-    
+
     /// ローディングコンテンツ
     private var loadingContent: some View {
         VStack(spacing: 20) {
             ProgressView()
                 .progressViewStyle(CircularProgressViewStyle(tint: Theme.accent))
                 .scaleEffect(1.5)
-            
+
             VStack(spacing: 8) {
                 Text("analyzing_status".localized)
                     .font(.headline)
@@ -351,7 +351,7 @@ struct LoadingOverlay: View {
         .clipShape(RoundedRectangle(cornerRadius: Theme.cornerRadius))
         .shadow(color: Theme.forestGreen.opacity(0.1), radius: 16, x: 0, y: 8)
     }
-    
+
     /// ガラスモーフィズム背景
     private var glassBackground: some View {
         RoundedRectangle(cornerRadius: Theme.cornerRadius)
@@ -369,14 +369,14 @@ struct LoadingOverlay: View {
 ///
 /// 動画読み込みエラーやAPI呼び出しエラーなどを表示します。
 struct ErrorOverlay: View {
-    
+
     // MARK: - Properties
-    
+
     /// ユーザーに表示するエラーメッセージ
     let message: String
-    
+
     // MARK: - Body
-    
+
     var body: some View {
         VStack(spacing: 12) {
             Image(systemName: "exclamationmark.triangle.fill")

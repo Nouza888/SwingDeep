@@ -162,7 +162,7 @@ export const DRILL_LIBRARY: Record<MetricKey, DrillMaterial> = {
  * Spine Angleのdirectionを判定
  * @param spineAngleDiff アドレス時との前傾角度差（impact - address）
  * @returns direction
- * 
+ *
  * Note: 正の値 = 起き上がり（前傾が浅くなる）= lose_forward_bend
  *       負の値 = 前傾が深くなる = too_much_forward_bend
  */
@@ -178,7 +178,7 @@ export function detectSpineAngleDirection(spineAngleDiff: number): SpineAngleDir
  * Swing Pathのdirectionを判定
  * @param swingPathValue スイング軌道の値（負 = out_to_in、正 = in_to_out）
  * @returns direction
- * 
+ *
  * Note: 負の値 = カット軌道（out_to_in）
  *       正の値 = インサイドアウト過多（in_to_out）
  */
@@ -194,7 +194,7 @@ export function detectSwingPathDirection(swingPathValue: number): SwingPathDirec
  * Early Extension / Hip Swayのdirectionを判定
  * @param hipMoveRatio 腰の移動量（正 = 流れすぎ、負 = 動かなさすぎ）
  * @returns direction
- * 
+ *
  * Note: 正の値 = 流れすぎ（too_much_sway）
  *       負の値 = 動かなさすぎ（too_little_sway）
  */
@@ -223,7 +223,7 @@ export function detectHeadMovementDirection(headHeightDiff: number): HeadMovemen
  * Tempoのdirectionを判定
  * @param tempoRatio ダウン/バック比率（1より大きい = 速すぎ、1より小さい = 遅すぎ）
  * @returns direction
- * 
+ *
  * Note: tempoRatio > 1.3 = too_fast_downswing
  *       tempoRatio < 0.7 = too_slow_downswing
  */

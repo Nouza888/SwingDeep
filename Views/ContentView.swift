@@ -7,22 +7,22 @@ struct ContentView: View {
     @StateObject private var viewModel = VideoViewModel()
     @State private var showReport = false
     @Environment(\.modelContext) private var modelContext
-    
+
     var body: some View {
         ZStack {
             // Background with subtle texture
             Theme.background
                 .ignoresSafeArea()
-            
+
             if viewModel.player == nil {
                 // Empty State: No video loaded
                 VStack(spacing: 0) {
                     // Header with video selection button
                     HeaderView(viewModel: viewModel)
-                    
+
                     // Empty State Content
                     EmptyStateView()
-                    
+
                     Spacer() // コンテンツを上部に寄せる
                 }
             } else {
@@ -47,7 +47,7 @@ struct ContentView: View {
 struct VideoAnalysisView: View {
     @ObservedObject var viewModel: VideoViewModel
     @Binding var showReport: Bool
-    
+
     var body: some View {
         // VStackで構造化して重ならないように
         VStack(spacing: 0) {
@@ -56,30 +56,30 @@ struct VideoAnalysisView: View {
                 // Video Player
                 VideoPlayerView(viewModel: viewModel)
                     .aspectRatio(contentMode: .fit)
-                
+
                 // Top Header (floating)
                 VStack {
                     CustomHeaderView(viewModel: viewModel)
                         .padding(.horizontal, Theme.Spacing.base.rawValue)
                         .padding(.top, Theme.Spacing.md.rawValue)
-                    
+
                     Spacer()
                 }
                 .zIndex(10)
-                
+
                 // Loading Overlay
                 if viewModel.status == .analyzing {
                     LoadingOverlay()
                         .zIndex(5)
                 }
-                
+
                 // Error Overlay
                 if viewModel.showError, let errorMsg = viewModel.errorMessage {
                     ErrorOverlay(message: errorMsg)
                         .zIndex(15)
                 }
             }
-            
+
             // Bottom Controls (outside ZStack, no overlap)
             if viewModel.status != .analyzing {
                 ControlArea(viewModel: viewModel, showReport: $showReport)
@@ -96,7 +96,7 @@ struct VideoAnalysisView: View {
 
 struct CustomHeaderView: View {
     @ObservedObject var viewModel: VideoViewModel
-    
+
     var body: some View {
         HStack(spacing: Theme.Spacing.md.rawValue) {
             // Delete Video Button
@@ -119,9 +119,9 @@ struct CustomHeaderView: View {
                 }
                 .hoverGlow(color: Theme.error)
             }
-            
+
             Spacer()
-            
+
             // Replace Video Button
             PhotosPicker(selection: $viewModel.selectedItem, matching: .videos) {
                 Image(systemName: "photo.on.rectangle.angled")

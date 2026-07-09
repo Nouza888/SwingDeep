@@ -37,7 +37,7 @@ struct LLMError: Error {
     let code: LLMErrorCode
     let message: String
     let retryable: Bool
-    
+
     var localizedDescription: String { message }
 }
 
@@ -50,7 +50,7 @@ enum LLMErrorCode: String, Codable {
     case timeout = "TIMEOUT"
     case networkError = "NETWORK_ERROR"
     case unknown = "UNKNOWN"
-    
+
     /// ユーザー向けメッセージ（ローカライズ対応）
     var userMessage: String {
         switch self {
@@ -108,7 +108,7 @@ struct DetailItemV2: Codable {
     let drillIntroText: String
     let drillTitle: String
     let drillText: String
-    
+
     enum CodingKeys: String, CodingKey {
         case key
         case judgmentTitle = "judgment_title"

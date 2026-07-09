@@ -14,22 +14,22 @@ import SwiftUI
 /// - ガラスモーフィズムデザイン
 /// - 言語変更時に自動で画面を再構築
 struct MainTabView: View {
-    
+
     // MARK: - Properties
-    
+
     /// 選択中のタブインデックス
     @State private var selectedTab = 0
-    
+
     /// 言語管理（言語変更時に画面再構築のため監視）
     @ObservedObject var languageManager = LanguageManager.shared
-    
+
     // MARK: - Body
-    
+
     var body: some View {
         ZStack(alignment: .bottom) {
             // タブコンテンツ
             tabContent
-            
+
             // カスタムタブバー
             CustomTabBar(selectedTab: $selectedTab)
                 .padding(.horizontal, Theme.Spacing.base.rawValue)
@@ -38,18 +38,18 @@ struct MainTabView: View {
         .edgesIgnoringSafeArea(.bottom)
         .id(languageManager.currentLanguage) // 言語変更時に画面を再構築
     }
-    
+
     // MARK: - Components
-    
+
     /// タブコンテンツ
     private var tabContent: some View {
         TabView(selection: $selectedTab) {
             ContentView()
                 .tag(0)
-            
+
             HistoryView()
                 .tag(1)
-            
+
             SettingsView()
                 .tag(2)
         }
@@ -66,12 +66,12 @@ struct MainTabView: View {
 /// - グラデーション枠線
 /// - シャドウ効果
 struct CustomTabBar: View {
-    
+
     // MARK: - Properties
-    
+
     /// 選択中のタブ（親ビューからバインディング）
     @Binding var selectedTab: Int
-    
+
     /// タブ定義（アイコン、ラベル）
     private var tabs: [(icon: String, label: String)] {
         [
@@ -80,9 +80,9 @@ struct CustomTabBar: View {
             ("gearshape.fill", "tab_settings".localized)
         ]
     }
-    
+
     // MARK: - Body
-    
+
     var body: some View {
         HStack(spacing: 0) {
             ForEach(0..<tabs.count, id: \.self) { index in
@@ -94,7 +94,7 @@ struct CustomTabBar: View {
                 .onTapGesture {
                     handleTabTap(index: index)
                 }
-                
+
                 // タブ間のスペーサー
                 if index < tabs.count - 1 {
                     Spacer()
@@ -108,9 +108,9 @@ struct CustomTabBar: View {
         .shadow(color: Theme.primary.opacity(0.1), radius: 20, x: 0, y: 10)
         .shadow(color: Theme.forestGreen.opacity(0.05), radius: 12, x: 0, y: 6)
     }
-    
+
     // MARK: - Components
-    
+
     /// タブバー背景
     private var tabBarBackground: some View {
         ZStack {
@@ -121,7 +121,7 @@ struct CustomTabBar: View {
                     RoundedRectangle(cornerRadius: Theme.cornerRadiusLg)
                         .fill(.ultraThinMaterial)
                 )
-            
+
             // グラデーション枠線
             RoundedRectangle(cornerRadius: Theme.cornerRadiusLg)
                 .strokeBorder(
@@ -137,9 +137,9 @@ struct CustomTabBar: View {
                 )
         }
     }
-    
+
     // MARK: - Actions
-    
+
     /// タブタップ時の処理
     private func handleTabTap(index: Int) {
         HapticFeedback.selection()
@@ -153,20 +153,20 @@ struct CustomTabBar: View {
 
 /// 個々のタブアイテム
 struct TabBarItem: View {
-    
+
     // MARK: - Properties
-    
+
     /// SF Symbolsアイコン名
     let icon: String
-    
+
     /// 表示ラベル
     let label: String
-    
+
     /// 選択状態
     let isSelected: Bool
-    
+
     // MARK: - Body
-    
+
     var body: some View {
         VStack(spacing: Theme.Spacing.xs.rawValue) {
             // アイコン
@@ -175,7 +175,7 @@ struct TabBarItem: View {
                 .foregroundColor(isSelected ? Theme.forestGreen : Theme.textSecondary)
                 .scaleEffect(isSelected ? 1.1 : 1.0)
                 .animation(Theme.springAnimation, value: isSelected)
-            
+
             // ラベル
             Text(label)
                 .typography(.caption)
@@ -186,9 +186,9 @@ struct TabBarItem: View {
         .padding(.vertical, Theme.Spacing.xs.rawValue)
         .background(selectionBackground)
     }
-    
+
     // MARK: - Components
-    
+
     /// 選択時の背景
     private var selectionBackground: some View {
         RoundedRectangle(cornerRadius: Theme.cornerRadius)

@@ -20,17 +20,17 @@ import FirebaseAnalytics
 /// - `diagnosis_started`: 診断開始
 /// - `usage_limit_reached`: 利用回数制限到達
 class AnalyticsLogger {
-    
+
     // MARK: - Singleton
-    
+
     static let shared = AnalyticsLogger()
-    
+
     // MARK: - Initialization
-    
+
     private init() {}
-    
+
     // MARK: - Report Events
-    
+
     /// レポート生成開始イベントを送信
     ///
     /// - Parameters:
@@ -42,7 +42,7 @@ class AnalyticsLogger {
             "locale": locale
         ])
     }
-    
+
     /// レポート生成成功イベントを送信
     ///
     /// - Parameters:
@@ -56,7 +56,7 @@ class AnalyticsLogger {
             "duration_ms": durationMs
         ])
     }
-    
+
     /// レポート生成失敗イベントを送信
     ///
     /// - Parameters:
@@ -70,9 +70,9 @@ class AnalyticsLogger {
             "provider": provider
         ])
     }
-    
+
     // MARK: - User Interaction Events
-    
+
     /// ペルソナ選択イベントを送信
     ///
     /// - Parameter personaId: 選択されたペルソナID
@@ -81,24 +81,24 @@ class AnalyticsLogger {
             "persona_id": personaId
         ])
     }
-    
+
     /// シェアボタンタップイベントを送信
     func logShareTapped() {
         Analytics.logEvent("share_tapped", parameters: nil)
     }
-    
+
     /// 動画選択イベントを送信
     func logVideoSelected() {
         Analytics.logEvent("video_selected", parameters: nil)
     }
-    
+
     /// 診断開始イベントを送信
     func logDiagnosisStarted() {
         Analytics.logEvent("diagnosis_started", parameters: nil)
     }
-    
+
     // MARK: - Usage Events
-    
+
     /// 利用回数制限到達イベントを送信
     ///
     /// - Parameter remainingCount: 残り回数

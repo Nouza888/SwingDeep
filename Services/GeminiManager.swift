@@ -9,7 +9,7 @@ enum GeminiError: LocalizedError {
     case missingData                   // 必要なデータが不足
     case llmError(LLMError)            // Firebase Functions経由のエラー
     case usageLimitReached             // 利用回数制限
-    
+
     var errorDescription: String? {
         switch self {
         case .invalidURL:
@@ -28,7 +28,7 @@ enum GeminiError: LocalizedError {
             return "error_usage_limit_reached".localized
         }
     }
-    
+
     /// リトライ可能なエラーかどうか
     var isRetryable: Bool {
         switch self {
@@ -56,17 +56,17 @@ enum GeminiError: LocalizedError {
 /// - Important: APIキーはFirebase Functions側で管理されます
 class GeminiManager {
     static let shared = GeminiManager()
-    
+
     /// LLMクライアント（Firebase Functions経由）- V1
     private let llmClient: LLMClient = FirebaseLLMClient.shared
-    
+
     /// LLMクライアント V2（Layer分離設計）
     private let llmClientV2: LLMClientV2 = FirebaseLLMClient.shared
-    
+
     private init() {}
-    
+
     // MARK: - Public Methods (公開メソッド)
-    
+
     /// スイング解析データに基づいて診断レポートを生成する
     ///
     /// このメソッドは以下の処理を実行します：
@@ -87,16 +87,16 @@ class GeminiManager {
             AnalyticsLogger.shared.logUsageLimitReached(remainingCount: 0)
             throw GeminiError.usageLimitReached
         }
-        
+
         let startTime = Date()
         let language = LanguageManager.shared.currentLanguage
-        
+
         // Analyticsイベント：開始
         AnalyticsLogger.shared.logReportStarted(
             personaId: coachPersona.id,
             locale: language.rawValue
         )
-        
+
         // Crashlyticsコンテキスト設定
         CrashLogger.shared.setUserContext(
             locale: language.rawValue,
@@ -104,12 +104,12 @@ class GeminiManager {
             appVersion: AppConfig.appVersion,
             clientIdHash: ClientIdManager.shared.clientIdHash
         )
-        
+
         // プロンプト構築
         let systemPrompt = constructSystemInstruction(coachPersona: coachPersona)
         let inputJson = constructInputJson(metrics: metrics, userProfile: [:])
         let userPrompt = "以下のスイング解析データを診断してください：\n\(inputJson)"
-        
+
         // LLMリクエスト作成
         let request = LLMRequest(
             clientId: ClientIdManager.shared.clientId,
@@ -121,11 +121,11 @@ class GeminiManager {
             systemPrompt: systemPrompt,
             userPrompt: userPrompt
         )
-        
+
         do {
             // Firebase Functions経由でAPI呼び出し
             let response = try await llmClient.generateReport(request: request)
-            
+
             // エラーチェック
             if let error = response.error {
                 let duration = Int(Date().timeIntervalSince(startTime) * 1000)
@@ -137,31 +137,31 @@ class GeminiManager {
                 CrashLogger.shared.logLLMError(error, requestId: response.requestId)
                 throw GeminiError.llmError(error)
             }
-            
+
             // レスポンステキストのパース
             guard let reportText = response.reportText else {
                 throw GeminiError.missingData
             }
-            
+
             let report = try parseReportText(reportText)
-            
+
             // 成功！利用回数をカウント
             UsageLimiter.shared.recordSuccess()
-            
+
             let duration = Int(Date().timeIntervalSince(startTime) * 1000)
             AnalyticsLogger.shared.logReportSuccess(
                 requestId: response.requestId,
                 provider: response.provider,
                 durationMs: duration
             )
-            
+
             // ペルソナフォールバック時のログ
             if response.personaFallback {
                 CrashLogger.shared.log("PersonaId fallback occurred for: \(coachPersona.id)")
             }
-            
+
             return report
-            
+
         } catch let error as LLMError {
             let duration = Int(Date().timeIntervalSince(startTime) * 1000)
             AnalyticsLogger.shared.logReportFailure(
@@ -181,9 +181,9 @@ class GeminiManager {
             throw GeminiError.networkError(error)
         }
     }
-    
+
     // MARK: - V2 Public Methods (Layer分離設計)
-    
+
     /// V2: スイング解析データに基づいて診断レポートを生成する（Layer分離設計）
     ///
     /// - Parameters:
@@ -197,16 +197,16 @@ class GeminiManager {
             AnalyticsLogger.shared.logUsageLimitReached(remainingCount: 0)
             throw GeminiError.usageLimitReached
         }
-        
+
         let startTime = Date()
         let language = LanguageManager.shared.currentLanguage
-        
+
         // Analyticsイベント：開始
         AnalyticsLogger.shared.logReportStarted(
             personaId: coachPersona.id,
             locale: language.rawValue
         )
-        
+
         // Crashlyticsコンテキスト設定
         CrashLogger.shared.setUserContext(
             locale: language.rawValue,
@@ -214,16 +214,16 @@ class GeminiManager {
             appVersion: AppConfig.appVersion,
             clientIdHash: ClientIdManager.shared.clientIdHash
         )
-        
+
         // severity計算（iOS側で実行）
         let itemsRanked = SeverityCalculator.calculateAll(from: metrics, language: language)
-        
+
         // スコア計算
         let score = ScoreCalculator.calculate(from: itemsRanked)
-        
+
         // metaモード判定
         let metaMode = MetaModeCalculator.calculate(from: itemsRanked)
-        
+
         // バッジ生成
         let topIssueKey = itemsRanked.first(where: { $0.severity != .good })?.key
         let badgeTitle = BadgeGenerator.generate(
@@ -233,13 +233,13 @@ class GeminiManager {
             language: language,
             variant: Int(Date().timeIntervalSince1970) % 5
         )
-        
+
         // スケルトンサマリー生成
         let skeletonSummary = generateSkeletonSummary(items: itemsRanked, language: language)
-        
+
         // report_context を決定
         let reportContext = ReportContextManager.shared.determineContext()
-        
+
         // V2リクエスト作成
         let request = LLMRequestV2(
             locale: language,
@@ -251,11 +251,11 @@ class GeminiManager {
             skeletonSummaryText: skeletonSummary,
             reportContext: reportContext
         )
-        
+
         do {
             // Firebase Functions V2呼び出し
             let response = try await llmClientV2.generateReportV2(request: request)
-            
+
             // エラーチェック
             if let error = response.error {
                 let duration = Int(Date().timeIntervalSince(startTime) * 1000)
@@ -267,20 +267,20 @@ class GeminiManager {
                 CrashLogger.shared.logLLMError(error, requestId: response.requestId)
                 throw GeminiError.llmError(error)
             }
-            
+
             // 成功！利用回数をカウント
             UsageLimiter.shared.recordSuccess()
-            
+
             // レポート回数を記録（report_context用）
             ReportContextManager.shared.recordReportGenerated()
-            
+
             let duration = Int(Date().timeIntervalSince(startTime) * 1000)
             AnalyticsLogger.shared.logReportSuccess(
                 requestId: response.requestId,
                 provider: "gemini",
                 durationMs: duration
             )
-            
+
             // DiagnosisReportV2を構築
             let report = DiagnosisReportV2(
                 overallBadgeTitle: response.overallBadgeTitle,
@@ -290,9 +290,9 @@ class GeminiManager {
                 details: response.details,
                 itemsRanked: itemsRanked
             )
-            
+
             return report
-            
+
         } catch let error as LLMError {
             let duration = Int(Date().timeIntervalSince(startTime) * 1000)
             AnalyticsLogger.shared.logReportFailure(
@@ -311,13 +311,13 @@ class GeminiManager {
             throw GeminiError.networkError(error)
         }
     }
-    
+
     /// スケルトンサマリーを生成
     private func generateSkeletonSummary(items: [ItemRanked], language: AppLanguage) -> String {
         let badItems = items.filter { $0.severity == .bad }
         let okItems = items.filter { $0.severity == .ok }
         let goodItems = items.filter { $0.severity == .good }
-        
+
         if language == .japanese {
             var summary = "【要約】"
             if !badItems.isEmpty {
@@ -344,43 +344,43 @@ class GeminiManager {
             return summary
         }
     }
-    
+
     // MARK: - Private Methods - Response Parsing
-    
+
     /// レスポンステキストをパースしてDiagnosisReportに変換する
     private func parseReportText(_ text: String) throws -> DiagnosisReport {
         // JSON文字列部分を抽出（Markdownのコードブロック対策）
         let jsonString = extractJsonString(from: text)
-        
+
         guard let jsonData = jsonString.data(using: .utf8) else {
             throw GeminiError.parseError("Failed to convert string to data")
         }
-        
+
         do {
             return try JSONDecoder().decode(DiagnosisReport.self, from: jsonData)
         } catch {
             throw GeminiError.parseError(error.localizedDescription)
         }
     }
-    
+
     // MARK: - System Prompt Construction (システムプロンプト構築)
-    
+
     /// システムプロンプトを構築する（統合メソッド）
     /// - Parameters:
     ///   - coachPersona: 選択されたコーチのペルソナ
     /// - Returns: 構築されたシステムプロンプト文字列
     private func constructSystemInstruction(coachPersona: CoachPersona) -> String {
         let language = LanguageManager.shared.currentLanguage
-        
+
         // 1. 基本プロンプトの構築
         var prompt = buildBasePrompt(language: language)
-        
+
         // 2. ペルソナプロンプトの追加
         prompt += "\n\n" + buildPersonaPrompt(for: coachPersona)
-        
+
         return prompt
     }
-    
+
     /// 基本プロンプトを構築（役割定義・診断ロジック・出力形式）
     ///
     /// ## 含まれる要素
@@ -395,7 +395,7 @@ class GeminiManager {
     /// - Returns: 基本プロンプト文字列
     private func buildBasePrompt(language: AppLanguage) -> String {
         let langInstruction = language == .japanese ? "日本語" : "English"
-        
+
         return """
         Role: You are a professional golf coach AI. Create a diagnosis report in JSON format based on the provided data.
         Language: Output must be in \(langInstruction).
@@ -410,7 +410,7 @@ class GeminiManager {
         - Assign severity (1-10) to each item.
         - 10: Fatal error destroying the swing.
         - 1: Pro-level movement.
-        
+
         【Analysis Depth】
         - Don't just describe "what" is happening. Explain "why" it might be happening (even if it's a guess).
         - Provide a hypothesis for the cause of the error.
@@ -441,7 +441,7 @@ class GeminiManager {
         }
         """
     }
-    
+
     /// ペルソナプロンプトを構築（CoachPersona構造体から直接取得）
     private func buildPersonaPrompt(for persona: CoachPersona) -> String {
         return """
@@ -451,7 +451,7 @@ class GeminiManager {
         System Instruction: \(persona.systemPrompt)
         """
     }
-    
+
     /// メトリクスとユーザー情報をJSON文字列に変換する
     private func constructInputJson(metrics: SwingMetrics, userProfile: [String: Any]) -> String {
         let inputData: [String: Any] = [
@@ -466,14 +466,14 @@ class GeminiManager {
             ],
             "request_variation_seed": Int.random(in: 1...100000) // 毎回ランダムな値を送り、回答の固定化を防ぐ
         ]
-        
+
         if let jsonData = try? JSONSerialization.data(withJSONObject: inputData, options: .prettyPrinted),
            let jsonString = String(data: jsonData, encoding: .utf8) {
             return jsonString
         }
         return "{}"
     }
-    
+
     /// Gemini APIのレスポンスをパースしてDiagnosisReportに変換する
     /// - Parameter data: APIレスポンスの生データ
     /// - Returns: パース済みの診断レポート
@@ -493,23 +493,23 @@ class GeminiManager {
             }
             let candidates: [Candidate]?
         }
-        
+
         let geminiResp = try JSONDecoder().decode(GeminiResponse.self, from: data)
-        
+
         guard let text = geminiResp.candidates?.first?.content.parts.first?.text else {
             throw NSError(domain: "GeminiManager", code: 500, userInfo: [NSLocalizedDescriptionKey: "レスポンスにコンテンツが含まれていません"])
         }
-        
+
         // JSON文字列部分を抽出（Markdownのコードブロック ```json ... ``` が含まれる場合の対策）
         let jsonString = extractJsonString(from: text)
-        
+
         guard let jsonData = jsonString.data(using: .utf8) else {
             throw NSError(domain: "GeminiManager", code: 500, userInfo: [NSLocalizedDescriptionKey: "Failed to convert string to data"])
         }
-        
+
         return try JSONDecoder().decode(DiagnosisReport.self, from: jsonData)
     }
-    
+
     /// レスポンステキストからJSON文字列部分を抽出する
     /// - Parameter text: Gemini APIからのレスポンステキスト
     /// - Returns: JSON文字列
@@ -534,12 +534,12 @@ struct CoachPersona: Identifiable, Codable, Equatable, Hashable {
     let icon: String
     let themeColorHex: String
     let systemPrompt: String // V1互換用（V2ではFunctions側で管理）
-    
+
     // デフォルトのペルソナ（優しいお姉さん）
     static var standard: CoachPersona {
         availablePersonas(for: LanguageManager.shared.currentLanguage).first!
     }
-    
+
     /// 言語ごとの利用可能なペルソナリストを返す
     /// v1.0: 6ペルソナ（言語はAppStrings経由で取得）
     static func availablePersonas(for language: AppLanguage) -> [CoachPersona] {
@@ -552,17 +552,17 @@ struct CoachPersona: Identifiable, Codable, Equatable, Hashable {
             ("gal", "💖", "FF9500"),
             ("toxic_pro", "🎯", "34C759")
         ]
-        
+
         return personaConfigs.map { config in
             let nameKey = "coach_\(config.id)"
             let descKey = "desc_\(config.id)"
             let quoteKey = "quote_\(config.id)"
-            
+
             // AppStrings経由で言語に応じた文字列を取得
             let name = LanguageManager.shared.localized(nameKey)
             let desc = LanguageManager.shared.localized(descKey)
             let quote = LanguageManager.shared.localized(quoteKey)
-            
+
             return CoachPersona(
                 id: config.id,
                 name: name,
@@ -573,26 +573,26 @@ struct CoachPersona: Identifiable, Codable, Equatable, Hashable {
             )
         }
     }
-    
+
     // MARK: - Compatibility Properties (Static)
     // 旧CoachMode enumとの互換性のためにstaticプロパティを提供
-    
+
     static var normal: CoachPersona {
         availablePersonas(for: LanguageManager.shared.currentLanguage).first { $0.id == "standard" } ?? standard
     }
-    
+
     static var spartan: CoachPersona {
         availablePersonas(for: LanguageManager.shared.currentLanguage).first { $0.id == "spartan" } ?? standard
     }
-    
+
     static var kind: CoachPersona {
         availablePersonas(for: LanguageManager.shared.currentLanguage).first { $0.id == "gentle_sister" } ?? standard
     }
-    
+
     static var kansaiMom: CoachPersona {
         availablePersonas(for: LanguageManager.shared.currentLanguage).first { $0.id == "gal" } ?? standard
     }
-    
+
     static var comedian: CoachPersona {
         availablePersonas(for: LanguageManager.shared.currentLanguage).first { $0.id == "comedian" } ?? standard
     }

@@ -27,7 +27,7 @@ import UIKit
 struct ControlArea: View {
     @ObservedObject var viewModel: VideoViewModel
     @Binding var showReport: Bool
-    
+
     var body: some View {
         VStack(spacing: Theme.Spacing.md.rawValue) {
             // Status Guide
@@ -60,13 +60,13 @@ struct ControlArea: View {
                     if editing { viewModel.startSeeking() } else { viewModel.endSeeking() }
                 }
             )
-            
+
             // Playback Controls
             PlaybackControls(viewModel: viewModel)
-            
+
             // Settings Buttons
             SettingsButtons(viewModel: viewModel)
-            
+
             // Analyze Button
             if viewModel.canAnalyze {
                 AnalyzeButton(viewModel: viewModel, showReport: $showReport)
@@ -75,7 +75,7 @@ struct ControlArea: View {
         .padding(Theme.Spacing.md.rawValue)
         .glassCard(elevation: ThemeGlassCardModifier.Elevation.medium)
     }
-    
+
     private func getGuideText() -> String? {
         switch viewModel.status {
         case .setting: return "slider_hint".localized
@@ -83,7 +83,7 @@ struct ControlArea: View {
         default: return nil
         }
     }
-    
+
     private func getGuideIcon() -> String {
         switch viewModel.status {
         case .setting: return "hand.tap.fill"
@@ -91,7 +91,7 @@ struct ControlArea: View {
         default: return "info.circle"
         }
     }
-    
+
     private func getGuideColor() -> Color {
         switch viewModel.status {
         case .complete: return Theme.forestGreen
@@ -110,7 +110,7 @@ struct CustomSlider: View {
     var impactTime: Int?
     var duration: Double
     var onEditingChanged: (Bool) -> Void
-    
+
     var body: some View {
         ZStack {
             // マーカー表示層（スライダーの背景に重ねる）
@@ -125,7 +125,7 @@ struct CustomSlider: View {
                             .frame(width: 12, height: 12)
                             .offset(x: offsetX)
                     }
-                    
+
                     // インパクトマーカー（青色の円）
                     if let impact = impactTime, duration > 0 {
                         let offsetX = calculateMarkerOffset(timeMs: impact, duration: duration, width: geometry.size.width)
@@ -140,12 +140,12 @@ struct CustomSlider: View {
                 .offset(y: 10) // スライダーのトラック中心位置に合わせる
             }
             .frame(height: 20)
-            
+
             Slider(value: $value, in: range, onEditingChanged: onEditingChanged)
                 .accentColor(Theme.accent)
         }
     }
-    
+
     /// マーカーのX座標オフセットを計算するヘルパーメソッド
     /// - Parameters:
     ///   - timeMs: マーカーを配置する時刻（ミリ秒）
@@ -164,7 +164,7 @@ struct CustomSlider: View {
 /// - Note: コマ送りボタンは長押しで連続実行できます（ContinuousButton使用）
 struct PlaybackControls: View {
     @ObservedObject var viewModel: VideoViewModel
-    
+
     var body: some View {
         HStack(spacing: 20) {
             // コマ戻し
@@ -180,9 +180,9 @@ struct PlaybackControls: View {
                     .font(.system(size: 10))
                     .foregroundColor(Theme.textSecondary)
             }
-            
+
             Spacer()
-            
+
             // 再生/一時停止ボタン（小さめに）
             Button(action: { viewModel.togglePlayPause() }) {
                 Image(systemName: viewModel.isPlaying ? "pause.circle.fill" : "play.circle.fill")
@@ -190,9 +190,9 @@ struct PlaybackControls: View {
                     .foregroundColor(Theme.forestGreen)
                     .shadow(color: Theme.forestGreen.opacity(0.3), radius: 8)
             }
-            
+
             Spacer()
-            
+
             // コマ送り
             VStack(spacing: 2) {
                 ContinuousButton(
@@ -206,7 +206,7 @@ struct PlaybackControls: View {
                     .font(.system(size: 10))
                     .foregroundColor(Theme.textSecondary)
             }
-            
+
             // 速度変更メニュー
             Menu {
                 Button("0.25x") { viewModel.setPlaybackRate(0.25) }
@@ -229,7 +229,7 @@ struct PlaybackControls: View {
 /// - ユーザーがスイングの重要な瞬間を設定するためのボタンです
 struct SettingsButtons: View {
     @ObservedObject var viewModel: VideoViewModel
-    
+
     var body: some View {
         HStack(spacing: 8) {
             // アドレス設定ボタン
@@ -244,7 +244,7 @@ struct SettingsButtons: View {
                     viewModel.setAddress()
                 }
             )
-            
+
             // インパクト設定ボタン
             SettingButton(
                 title: "Impact",
@@ -257,7 +257,7 @@ struct SettingsButtons: View {
                     viewModel.setImpact()
                 }
             )
-            
+
             // ゴースト表示切り替えボタン
             Button(action: { viewModel.toggleGhost() }) {
                 VStack(spacing: 4) {
@@ -292,7 +292,7 @@ struct SettingButton: View {
     let timestamp: Int?
     let color: Color
     let action: () -> Void
-    
+
     var body: some View {
         Button(action: action) {
             VStack(spacing: 4) {
@@ -301,7 +301,7 @@ struct SettingButton: View {
                     Text(title)
                 }
                 .font(.subheadline.bold())
-                
+
                 if let ms = timestamp {
                     Text(String(format: "%.2f s", Double(ms) / 1000.0))
                         .font(.caption2)
@@ -334,14 +334,14 @@ struct AnalyzeButton: View {
     @ObservedObject var viewModel: VideoViewModel
     @Binding var showReport: Bool
     @State private var showCoachSelection = false
-    
+
     var body: some View {
         VStack(spacing: 8) {
             // 残り回数ピル（診断前のみ表示）
             if viewModel.status != .complete {
                 remainingCountBadge
             }
-            
+
             // メインボタン
             Button(action: handleButtonTap) {
                 buttonLabel
@@ -353,11 +353,11 @@ struct AnalyzeButton: View {
                 .presentationDragIndicator(.visible)
         }
     }
-    
+
     /// 残り回数バッジ
     private var remainingCountBadge: some View {
         let usageLimiter = UsageLimiter.shared
-        
+
         return HStack(spacing: 4) {
             Image(systemName: "bolt.fill")
                 .font(.system(size: 10))
@@ -371,7 +371,7 @@ struct AnalyzeButton: View {
         }
         .foregroundColor(usageLimiter.isUnlimited || usageLimiter.displayRemainingCount > 5 ? Theme.textSecondary : Theme.accentOrange)
     }
-    
+
     /// ボタンラベル
     private var buttonLabel: some View {
         HStack {
@@ -387,7 +387,7 @@ struct AnalyzeButton: View {
         .cornerRadius(Theme.cornerRadius)
         .shadow(color: Theme.championshipGold.opacity(0.4), radius: 12, x: 0, y: 6)
     }
-    
+
     /// ボタンタップ処理
     private func handleButtonTap() {
         if viewModel.status == .complete {
@@ -405,30 +405,30 @@ struct CoachSelectionView: View {
     @ObservedObject var viewModel: VideoViewModel
     @Binding var isPresented: Bool
     @ObservedObject var languageManager = LanguageManager.shared
-    
+
     var body: some View {
         VStack(spacing: 20) {
             Text("select_coach_title".localized)
                 .font(.headline)
                 .padding(.top)
-            
+
             Text("select_coach_desc".localized)
                 .font(.caption)
                 .foregroundColor(Theme.textSecondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
-            
+
             ScrollView {
                 VStack(spacing: 12) {
                     let personas = CoachPersona.availablePersonas(for: languageManager.currentLanguage)
-                    
+
                     ForEach(personas) { persona in
                         Button(action: {
                             HapticFeedback.selection()
                             viewModel.coachMode = persona
                             // IDを保存
                             UserDefaults.standard.set(persona.id, forKey: "coachModeId")
-                            
+
                             isPresented = false
                             // 少し遅延させてシートが閉じた後に診断を開始する（アニメーション競合回避）
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -443,20 +443,20 @@ struct CoachSelectionView: View {
                                     .background(Theme.surface)
                                     .clipShape(Circle())
                                     .shadow(color: Color.black.opacity(0.1), radius: 4)
-                                
+
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text(persona.name)
                                         .font(.headline)
                                         .foregroundColor(Theme.textPrimary)
-                                    
+
                                     Text(persona.description)
                                         .font(.caption)
                                         .foregroundColor(Theme.textSecondary)
                                         .multilineTextAlignment(.leading)
                                 }
-                                
+
                                 Spacer()
-                                
+
                                 if viewModel.coachMode.id == persona.id {
                                     Image(systemName: "checkmark.circle.fill")
                                         .foregroundColor(Theme.forestGreen)
@@ -480,7 +480,7 @@ struct CoachSelectionView: View {
         .background(Theme.surface.ignoresSafeArea())
     }
 }
-    
+
 
 
 /// 長押しで連続的にアクションを実行するボタン
@@ -490,9 +490,9 @@ struct CoachSelectionView: View {
 struct ContinuousButton: View {
     let imageName: String
     let action: () -> Void
-    
+
     @State private var timer: Timer?
-    
+
     var body: some View {
         Button(action: {}) {
             Image(systemName: imageName)

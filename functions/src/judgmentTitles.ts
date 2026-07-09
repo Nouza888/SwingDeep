@@ -1,9 +1,9 @@
 /**
  * GolfScan AI - Judgment Titles Pool (v2: with Direction)
  * 各詳細項目の一言判定タイトル
- * 
+ *
  * 構造: metric × severity × direction × 10語 = 360語
- * 
+ *
  * direction は数値閾値から決定論で算出し、LLMには判断させない。
  * これにより「速すぎるのに遅すぎると書かれる」等の信頼性崩壊事故を防ぐ。
  */

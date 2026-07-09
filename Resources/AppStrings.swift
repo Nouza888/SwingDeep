@@ -6,13 +6,13 @@ struct AppStrings {
         "tab_diagnose": "分析",
         "tab_history": "履歴",
         "tab_settings": "設定",
-        
+
         // History
         "history_title": "履歴",
         "history_section_title": "診断履歴",
         "history_empty": "まだ履歴がありません",
         "analyzing_status": "解析中...",
-        
+
         // Analysis View
         "diagnose_title": "AIスイング分析",
         "select_video": "動画を選択",
@@ -42,19 +42,19 @@ struct AppStrings {
         "ghost_toggle": "ゴーストを表示",
         "guide_overlay_message": "アドレスとインパクトのタイミングを指定してください",
         "ready_to_generate": "レポートを作成する準備ができました",
-        
+
         // Frame Navigation
         "slider_hint": "スライダーをドラッグして位置を設定",
         "previous_frame": "1コマ戻す",
         "next_frame": "1コマ進む",
-        
+
         // Empty State
         "empty_state_title": "動画を選択してください",
         "analysis_tips_title": "正確な分析のために",
         "tip_camera": "iPhone標準カメラで撮影",
         "tip_fixed": "開始から終了までカメラを固定",
         "tip_angle": "後方（Down The Line）から撮影",
-        
+
         // Settings
         "settings_title": "設定",
         "plan_settings": "プラン設定",
@@ -68,7 +68,7 @@ struct AppStrings {
         "version": "バージョン",
         "terms": "利用規約",
         "privacy": "プライバシーポリシー",
-        
+
         // Coach Names & Descriptions (短縮版)
         "coach_gentle_sister": "お姉さん",
         "coach_spartan": "鬼軍曹",
@@ -76,26 +76,26 @@ struct AppStrings {
         "coach_comedian": "ツッコミ芸人",
         "coach_gal": "ギャル",
         "coach_toxic_pro": "毒舌プロ",
-        
+
         "desc_gentle_sister": "穏やかで優しい。長所を見つけるのが得意。",
         "desc_spartan": "容赦なし。言い訳不可。",
         "desc_standard": "データ重視の標準コーチ。",
         "desc_comedian": "ミスは笑う。要点は鋭い。",
         "desc_gal": "ノリと勢いでモチベを上げる。",
         "desc_toxic_pro": "回りくどい説明はしない。",
-        
+
         "quote_gentle_sister": "「できてる所、ちゃんと見えてるからね。」",
         "quote_spartan": "「できない理由は聞かん。やるか、死ぬ気でやるかだ」",
         "quote_standard": "数値と事実でスイングを分解。",
         "quote_comedian": "「いや、そこは打つ前に気づかんかい」",
         "quote_gal": "「え待って？ 今の普通に笑っちゃったw」",
         "quote_toxic_pro": "「このまま続けたら、同じミスを繰り返す。」",
-        
+
         // Coach Selection
         "select_coach_title": "コーチ選択",
         "select_coach_desc": "あなたのスイングを分析する専属コーチを選んでください",
         "cancel": "キャンセル",
-        
+
         // Error Messages (LLM / Usage)
         "error_validation": "入力データに問題があります。再度お試しください。",
         "error_payload_too_large": "データが大きすぎます。短い動画でお試しください。",
@@ -107,7 +107,7 @@ struct AppStrings {
         "error_usage_limit_reached": "今月の無料枠を使い切りました。来月1日にリセットされます。",
         "remaining_count": "残り%d回",
         "usage_limit_title": "利用制限",
-        
+
         // Usage Status (Settings)
         "usage_status": "利用状況",
         "monthly_usage": "今月の利用",
@@ -116,7 +116,7 @@ struct AppStrings {
         "reports_used": "%d回使用済み",
         "unlimited": "無制限",
         "reports_count": "%d回",
-        
+
         // Graph Metrics
         "metric_total_score": "総合スコア",
         "metric_spine_angle": "前傾キープ",
@@ -125,14 +125,14 @@ struct AppStrings {
         "metric_head_movement": "頭の安定感",
         "metric_hand_position": "インパクト時の手元",
         "metric_early_extension": "腰の伸び上がり",
-        
+
         // Graph Axis
         "graph_attempt": "%d回目",
-        
+
         // Remaining Usage Display
         "remaining_display": "残り %d/%d",
         "monthly_remaining": "今月の残り: %d/%d回",
-        
+
         // Diagnosis Report
         "detail_analysis": "詳細分析",
         "improvement_drill": "改善ドリル",
@@ -141,34 +141,34 @@ struct AppStrings {
         "drill_locked": "改善ドリルはロックされています",
         "drill_time": "%d分",
         "check_plan": "プランを確認する",
-        
+
         // Graph
         "graph_data_insufficient": "データが不足しています（2件以上必要）",
         "graph_premium_locked": "スコア推移グラフを確認できます",
         "premium_feature": "Premium限定機能",
         "standard_unlock": "Standardプラン以上で\nロックが解除されます",
-        
+
         // Overlay
         "overlay_early_extension": "起き上がり",
-        
+
         // Improvement Drills Section
         "improvement_drills_title": "今回の改善ドリル",
         "improvement_drills_sub": "まずはここだけでOK",
         "improvement_target": "改善対象項目:"
     ]
-    
+
     static let english: [String: String] = [
         // Tabs
         "tab_diagnose": "Analysis",
         "tab_history": "History",
         "tab_settings": "Settings",
-        
+
         // History
         "history_title": "History",
         "history_section_title": "Diagnosis History",
         "history_empty": "No history yet",
         "analyzing_status": "Analyzing...",
-        
+
         // Analysis View
         "diagnose_title": "AI Swing Analysis",
         "select_video": "Select Video",
@@ -198,19 +198,19 @@ struct AppStrings {
         "ghost_toggle": "Show Ghost",
         "guide_overlay_message": "Set Address and Impact timing",
         "ready_to_generate": "Ready to Generate Report",
-        
+
         // Frame Navigation
         "slider_hint": "Drag the slider to set the timing",
         "previous_frame": "Previous frame",
         "next_frame": "Next frame",
-        
+
         // Empty State
         "empty_state_title": "Please select a video",
         "analysis_tips_title": "For Accurate Analysis",
         "tip_camera": "Use iPhone standard camera",
         "tip_fixed": "Keep camera fixed",
         "tip_angle": "Film from Down The Line (DTL)",
-        
+
         // Settings
         "settings_title": "Settings",
         "plan_settings": "Plan Settings",
@@ -224,7 +224,7 @@ struct AppStrings {
         "version": "Version",
         "terms": "Terms of Service",
         "privacy": "Privacy Policy",
-        
+
         // Coach Names & Descriptions (短縮版)
         "coach_gentle_sister": "Big Sis",
         "coach_spartan": "Drill Sergeant",
@@ -232,26 +232,26 @@ struct AppStrings {
         "coach_comedian": "Comedian",
         "coach_gal": "Hype Girl",
         "coach_toxic_pro": "Tough Pro",
-        
+
         "desc_gentle_sister": "Calm and kind. Finds your strengths.",
         "desc_spartan": "No mercy. No excuses.",
         "desc_standard": "Data-driven standard coach.",
         "desc_comedian": "Laughs at mistakes. Sharp on points.",
         "desc_gal": "Vibes and energy to boost you up.",
         "desc_toxic_pro": "No sugarcoating.",
-        
+
         "quote_gentle_sister": "\"I can see what you're doing right.\"",
         "quote_spartan": "\"I don't want excuses. Do or die.\"",
         "quote_standard": "Breaking down your swing with facts.",
         "quote_comedian": "\"Wait, you didn't notice that before hitting?\"",
         "quote_gal": "\"OMG wait, that was actually funny lol\"",
         "quote_toxic_pro": "\"Keep this up and you'll repeat the same mistake.\"",
-        
+
         // Coach Selection
         "select_coach_title": "Select Coach",
         "select_coach_desc": "Choose your personal AI coach for this analysis",
         "cancel": "Cancel",
-        
+
         // Error Messages (LLM / Usage)
         "error_validation": "There was an issue with the input data. Please try again.",
         "error_payload_too_large": "Data is too large. Please try with a shorter video.",
@@ -263,7 +263,7 @@ struct AppStrings {
         "error_usage_limit_reached": "You've used all free analyses this month. Resets on the 1st.",
         "remaining_count": "%d left",
         "usage_limit_title": "Usage Limit",
-        
+
         // Usage Status (Settings)
         "usage_status": "Usage Status",
         "monthly_usage": "This Month",
@@ -272,7 +272,7 @@ struct AppStrings {
         "reports_used": "%d reports used",
         "unlimited": "Unlimited",
         "reports_count": "%d reports",
-        
+
         // Graph Metrics
         "metric_total_score": "Overall Score",
         "metric_spine_angle": "Spine Angle Consistency",
@@ -281,14 +281,14 @@ struct AppStrings {
         "metric_head_movement": "Head Stability",
         "metric_hand_position": "Hand Position",
         "metric_early_extension": "Early Extension",
-        
+
         // Graph Axis
         "graph_attempt": "#%d",
-        
+
         // Remaining Usage Display
         "remaining_display": "%d/%d left",
         "monthly_remaining": "This month: %d/%d",
-        
+
         // Diagnosis Report
         "detail_analysis": "Detailed Analysis",
         "improvement_drill": "Improvement Drill",
@@ -297,16 +297,16 @@ struct AppStrings {
         "drill_locked": "Improvement Drill is locked",
         "drill_time": "%d min",
         "check_plan": "Check Plan",
-        
+
         // Graph
         "graph_data_insufficient": "Insufficient data (2+ required)",
         "graph_premium_locked": "View score trend graph",
         "premium_feature": "Premium Feature",
         "standard_unlock": "Unlock with Standard plan\\nor higher",
-        
+
         // Overlay
         "overlay_early_extension": "Early Extension",
-        
+
         // Improvement Drills Section
         "improvement_drills_title": "Today's Practice Drills",
         "improvement_drills_sub": "Focus on just this for now",

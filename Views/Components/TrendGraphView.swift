@@ -12,9 +12,9 @@ enum TrendGraphType: Int, CaseIterable, Identifiable {
     case headMovement
     case handPosition
     case earlyExtension
-    
+
     var id: Int { rawValue }
-    
+
     /// 言語対応のタイトルを取得
     var title: String {
         let key: String
@@ -29,7 +29,7 @@ enum TrendGraphType: Int, CaseIterable, Identifiable {
         }
         return key.localized
     }
-    
+
     var metricKey: String? {
         switch self {
         case .totalScore: return nil
@@ -41,7 +41,7 @@ enum TrendGraphType: Int, CaseIterable, Identifiable {
         case .earlyExtension: return "early_extension"
         }
     }
-    
+
     var color: Color {
         switch self {
         case .totalScore: return Theme.accent
@@ -72,35 +72,35 @@ struct TrendDataPoint: Identifiable {
 /// - 横軸はレポート出力回数ベース
 struct TrendGraphView: View {
     let analyses: [SwingAnalysis]
-    
+
     @State private var currentGraphIndex: Int = 0
-    
+
     /// 現在選択中のグラフタイプ
     private var currentGraphType: TrendGraphType {
         TrendGraphType(rawValue: currentGraphIndex) ?? .totalScore
     }
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             // ヘッダー（タイトル + インジケーター）
             headerView
-            
+
             // データが2件未満の場合はグラフを表示できない
             if analyses.count < 2 {
                 emptyStateView
             } else {
                 // スワイプ可能なグラフ
                 graphTabView
-                
+
                 // ページインジケーター
                 pageIndicator
             }
         }
         .padding(.vertical, 8)
     }
-    
+
     // MARK: - Header
-    
+
     private var headerView: some View {
         HStack(spacing: 16) {
             // 左ボタン
@@ -116,21 +116,21 @@ struct TrendGraphView: View {
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            
+
             Spacer()
-            
+
             VStack(spacing: 2) {
                 Text(currentGraphType.title)
                     .font(.headline)
                     .foregroundColor(currentGraphType.color)
-                
+
                 Text("\(currentGraphIndex + 1) / \(TrendGraphType.allCases.count)")
                     .font(.caption2)
                     .foregroundColor(Theme.textSecondary)
             }
-            
+
             Spacer()
-            
+
             // 右ボタン
             Button {
                 if currentGraphIndex < TrendGraphType.allCases.count - 1 {
@@ -147,9 +147,9 @@ struct TrendGraphView: View {
         }
         .padding(.horizontal)
     }
-    
+
     // MARK: - Empty State
-    
+
     private var emptyStateView: some View {
         Text("graph_data_insufficient".localized)
             .font(.caption)
@@ -160,9 +160,9 @@ struct TrendGraphView: View {
             .cornerRadius(12)
             .padding(.horizontal)
     }
-    
+
     // MARK: - Graph TabView
-    
+
     private var graphTabView: some View {
         // TabViewではなく、選択されたグラフのみ表示（スワイプ競合回避）
         SingleTrendChart(
@@ -173,9 +173,9 @@ struct TrendGraphView: View {
         .transition(.opacity)
         .frame(height: 170)
     }
-    
+
     // MARK: - Page Indicator
-    
+
     private var pageIndicator: some View {
         HStack(spacing: 6) {
             ForEach(TrendGraphType.allCases) { graphType in
@@ -188,19 +188,19 @@ struct TrendGraphView: View {
         }
         .frame(maxWidth: .infinity)
     }
-    
+
     // MARK: - Data Extraction
-    
+
     /// 指定されたグラフタイプのデータポイントを取得
     private func getDataPoints(for graphType: TrendGraphType) -> [TrendDataPoint] {
         // 古い順に並べ替えて、インデックス（回数）を付与
         let sortedAnalyses = analyses.sorted { $0.date < $1.date }
-        
+
         var points: [TrendDataPoint] = []
-        
+
         for (index, analysis) in sortedAnalyses.enumerated() {
             guard let report = analysis.diagnosisReport else { continue }
-            
+
             let score: Int
             if graphType == .totalScore {
                 score = report.totalScore
@@ -210,30 +210,30 @@ struct TrendGraphView: View {
             } else {
                 continue
             }
-            
+
             points.append(TrendDataPoint(
                 index: index + 1,  // 1から始まる回数
                 score: score,
                 date: analysis.date
             ))
         }
-        
+
         // 直近10件に制限
         return Array(points.suffix(10))
     }
-    
+
     /// DiagnosisReportから特定の項目のスコアを取得
     /// - Note: itemScoreがあればそれを使用、なければstatusからフォールバック計算
     private func getItemScore(from report: DiagnosisReport, key: String) -> Int {
         guard let item = report.diagnosisItems.first(where: { $0.key == key }) else {
             return 50 // 項目が見つからない場合のデフォルト値
         }
-        
+
         // itemScoreがあればそれを返す（新しいデータ）
         if let itemScore = item.itemScore {
             return itemScore
         }
-        
+
         // itemScoreがない場合はstatusから推定（既存データとの互換性）
         switch item.status {
         case "Good": return 85
@@ -250,10 +250,10 @@ struct TrendGraphView: View {
 private struct SingleTrendChart: View {
     let dataPoints: [TrendDataPoint]
     let graphType: TrendGraphType
-    
+
     /// 選択中のデータポイント
     @State private var selectedPoint: TrendDataPoint?
-    
+
     var body: some View {
         Chart {
             ForEach(dataPoints) { point in
@@ -263,7 +263,7 @@ private struct SingleTrendChart: View {
                 )
                 .foregroundStyle(graphType.color)
                 .lineStyle(StrokeStyle(lineWidth: 2))
-                
+
                 PointMark(
                     x: .value("回", point.index),
                     y: .value("Score", point.score)
@@ -271,7 +271,7 @@ private struct SingleTrendChart: View {
                 .foregroundStyle(graphType.color)
                 .symbolSize(selectedPoint?.index == point.index ? 80 : 40)
             }
-            
+
             // 選択中のポイントにアノテーションを表示（PointMarkに直接）
             if let selected = selectedPoint {
                 PointMark(
@@ -338,13 +338,13 @@ private struct SingleTrendChart: View {
         .cornerRadius(12)
         .padding(.horizontal)
     }
-    
+
     /// タッチ位置から最も近いデータポイントを選択
     private func updateSelection(at location: CGPoint, proxy: ChartProxy, geometry: GeometryProxy) {
         let xPosition = location.x - geometry[proxy.plotAreaFrame].origin.x
-        
+
         guard let index: Int = proxy.value(atX: xPosition) else { return }
-        
+
         // 最も近いデータポイントを検索
         if let point = dataPoints.min(by: { abs($0.index - index) < abs($1.index - index) }) {
             withAnimation(.easeInOut(duration: 0.1)) {
@@ -361,33 +361,33 @@ private struct SingleTrendChart: View {
 /// - グラフ本体のみぼかし表示
 struct LockedTrendGraphView: View {
     @State private var currentGraphIndex: Int = 0
-    
+
     /// 現在選択中のグラフタイプ
     private var currentGraphType: TrendGraphType {
         TrendGraphType(rawValue: currentGraphIndex) ?? .totalScore
     }
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             // ヘッダー（ぼかし対象外）
             headerView
-            
+
             // グラフ本体（ぼかし+ロック）
             ZStack {
                 graphContentView
                     .blur(radius: 4)
-                
+
                 lockOverlayView
             }
-            
+
             // ページインジケーター（ぼかし対象外）
             pageIndicator
         }
         .padding(.vertical, 8)
     }
-    
+
     // MARK: - Header (Not Blurred)
-    
+
     private var headerView: some View {
         HStack(spacing: 16) {
             // 左ボタン
@@ -405,16 +405,16 @@ struct LockedTrendGraphView: View {
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            
+
             Spacer()
-            
+
             // グラフタイトル
             Text(currentGraphType.title)
                 .font(.headline)
                 .foregroundColor(currentGraphType.color)
-            
+
             Spacer()
-            
+
             // 右ボタン
             Button {
                 if currentGraphIndex < TrendGraphType.allCases.count - 1 {
@@ -433,13 +433,13 @@ struct LockedTrendGraphView: View {
         }
         .padding(.horizontal)
     }
-    
+
     // MARK: - Graph Content (Blurred)
-    
+
     private var graphContentView: some View {
         dummyChart
     }
-    
+
     /// ダミーグラフ
     private var dummyChart: some View {
         Chart {
@@ -461,9 +461,9 @@ struct LockedTrendGraphView: View {
         .cornerRadius(12)
         .padding(.horizontal)
     }
-    
+
     // MARK: - Page Indicator (Not Blurred)
-    
+
     private var pageIndicator: some View {
         HStack(spacing: 6) {
             ForEach(TrendGraphType.allCases) { graphType in
@@ -474,7 +474,7 @@ struct LockedTrendGraphView: View {
         }
         .frame(maxWidth: .infinity)
     }
-    
+
     /// ロックオーバーレイ
     private var lockOverlayView: some View {
         VStack(spacing: 8) {

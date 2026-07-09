@@ -1,31 +1,27 @@
 import Foundation
-import FirebaseFunctions
+import FirebaseCore
 
 /// Firebase Functions経由でLLM APIを呼び出すクライアント
 /// - Note: `generateReport` Callable関数を呼び出し、Gemini APIへプロキシします
 class FirebaseLLMClient: LLMClient, LLMClientV2 {
-    
+
     static let shared = FirebaseLLMClient()
-    
-    /// Firebase Functions参照
-    /// - Note: asia-northeast1リージョンを使用
-    private lazy var functions = Functions.functions(region: "asia-northeast1")
-    
+
     /// タイムアウト設定（秒）
     private let timeoutInterval: TimeInterval = 60
-    
+
+    /// Firebase Functionsのデプロイ先リージョン
+    private let region = "asia-northeast1"
+
     private init() {}
-    
+
     // MARK: - LLMClient Protocol (V1)
-    
+
     /// レポートを生成する
     /// - Parameter request: LLMリクエスト
     /// - Returns: LLMレスポンス
     /// - Throws: LLMError
     func generateReport(request: LLMRequest) async throws -> LLMResponse {
-        let callable = functions.httpsCallable("generateReport")
-        callable.timeoutInterval = timeoutInterval
-        
         // リクエストデータの構築
         let data: [String: Any] = [
             "clientId": request.clientId,
@@ -44,38 +40,24 @@ class FirebaseLLMClient: LLMClient, LLMClientV2 {
             "systemPrompt": request.systemPrompt,
             "userPrompt": request.userPrompt
         ]
-        
+
         do {
-            // Firebase Functions呼び出し
-            let result = try await callable.call(data)
-            
-            // レスポンスのパース
-            guard let responseData = result.data as? [String: Any] else {
-                throw LLMError(
-                    code: .unknown,
-                    message: "Invalid response format",
-                    retryable: false
-                )
-            }
-            
+            let responseData = try await call(function: "generateReport", payload: data)
             return try parseResponse(responseData)
-            
-        } catch let error as NSError {
-            // Firebase Functionsのエラーをハンドリング
-            return try handleFunctionsError(error)
+        } catch let error as LLMError {
+            throw error
+        } catch {
+            throw transportError(from: error)
         }
     }
-    
+
     // MARK: - LLMClientV2 Protocol
-    
+
     /// V2レポートを生成する（Layer分離設計）
     /// - Parameter request: LLMRequestV2
     /// - Returns: LLMResponseV2
     /// - Throws: LLMError
     func generateReportV2(request: LLMRequestV2) async throws -> LLMResponseV2 {
-        let callable = functions.httpsCallable("generateReportV2")
-        callable.timeoutInterval = timeoutInterval
-        
         // ItemRankedを辞書に変換
         let itemsData = request.itemsRanked.map { item -> [String: Any] in
             return [
@@ -85,7 +67,7 @@ class FirebaseLLMClient: LLMClient, LLMClientV2 {
                 "metrics": item.metrics
             ]
         }
-        
+
         // リクエストデータの構築
         let data: [String: Any] = [
             "locale": request.locale.rawValue,
@@ -97,30 +79,19 @@ class FirebaseLLMClient: LLMClient, LLMClientV2 {
             "skeleton_summary_text": request.skeletonSummaryText,
             "report_context": request.reportContext.rawValue  // ユーザーとの関係性フェーズ
         ]
-        
+
         do {
-            // Firebase Functions呼び出し
-            let result = try await callable.call(data)
-            
-            // レスポンスのパース
-            guard let responseData = result.data as? [String: Any] else {
-                throw LLMError(
-                    code: .unknown,
-                    message: "Invalid response format",
-                    retryable: false
-                )
-            }
-            
+            let responseData = try await call(function: "generateReportV2", payload: data)
             return try parseResponseV2(responseData)
-            
-        } catch let error as NSError {
-            // Firebase Functionsのエラーをハンドリング
-            throw try handleFunctionsErrorV2(error)
+        } catch let error as LLMError {
+            throw error
+        } catch {
+            throw transportError(from: error)
         }
     }
-    
+
     // MARK: - Private Methods (V1)
-    
+
     /// レスポンスをパースする
     private func parseResponse(_ data: [String: Any]) throws -> LLMResponse {
         let success = data["success"] as? Bool ?? false
@@ -128,15 +99,15 @@ class FirebaseLLMClient: LLMClient, LLMClientV2 {
         let provider = data["provider"] as? String ?? "gemini"
         let personaFallback = data["personaFallback"] as? Bool ?? false
         let reportText = data["reportText"] as? String
-        
+
         // エラーチェック
         if let errorData = data["error"] as? [String: Any] {
             let codeString = errorData["code"] as? String ?? "UNKNOWN"
             let message = errorData["message"] as? String ?? "Unknown error"
             let retryable = errorData["retryable"] as? Bool ?? false
-            
+
             let code = LLMErrorCode(rawValue: codeString) ?? .unknown
-            
+
             return LLMResponse(
                 success: false,
                 requestId: requestId,
@@ -146,7 +117,7 @@ class FirebaseLLMClient: LLMClient, LLMClientV2 {
                 error: LLMError(code: code, message: message, retryable: retryable)
             )
         }
-        
+
         return LLMResponse(
             success: success,
             requestId: requestId,
@@ -156,9 +127,9 @@ class FirebaseLLMClient: LLMClient, LLMClientV2 {
             error: nil
         )
     }
-    
+
     // MARK: - Private Methods (V2)
-    
+
     /// V2レスポンスをパースする
     private func parseResponseV2(_ data: [String: Any]) throws -> LLMResponseV2 {
         let success = data["success"] as? Bool ?? false
@@ -169,7 +140,7 @@ class FirebaseLLMClient: LLMClient, LLMClientV2 {
         let overallBadgeTitle = data["overall_badge_title"] as? String ?? ""
         let overallCardText = data["overall_card_text"] as? String ?? ""
         let metaModeString = data["meta_mode"] as? String ?? "NORMAL"
-        
+
         // MetaModeをパース
         let metaMode: MetaMode
         switch metaModeString {
@@ -178,7 +149,7 @@ class FirebaseLLMClient: LLMClient, LLMClientV2 {
         case "REBUILD": metaMode = .rebuild
         default: metaMode = .normal
         }
-        
+
         // Detailsをパース
         var details: [DetailItemV2] = []
         if let detailsData = data["details"] as? [[String: Any]] {
@@ -194,14 +165,14 @@ class FirebaseLLMClient: LLMClient, LLMClientV2 {
                 details.append(detail)
             }
         }
-        
+
         // エラーチェック
         if let errorData = data["error"] as? [String: Any] {
             let codeString = errorData["code"] as? String ?? "UNKNOWN"
             let message = errorData["message"] as? String ?? "Unknown error"
             let retryable = errorData["retryable"] as? Bool ?? false
             let code = LLMErrorCode(rawValue: codeString) ?? .unknown
-            
+
             return LLMResponseV2(
                 success: false,
                 requestId: requestId,
@@ -215,7 +186,7 @@ class FirebaseLLMClient: LLMClient, LLMClientV2 {
                 error: LLMError(code: code, message: message, retryable: retryable)
             )
         }
-        
+
         return LLMResponseV2(
             success: success,
             requestId: requestId,
@@ -229,108 +200,89 @@ class FirebaseLLMClient: LLMClient, LLMClientV2 {
             error: nil
         )
     }
-    
-    /// Firebase Functionsのエラーをハンドリング
-    private func handleFunctionsError(_ error: NSError) throws -> LLMResponse {
-        // ネットワークエラー
-        if error.domain == NSURLErrorDomain {
+
+    /// Firebase CallableプロトコルをURLSessionで呼び出す。
+    /// MediaPipeとFirebaseFunctions SDKの重複Linkを避けるため、専用SDKへ依存しない。
+    private func call(function name: String, payload: [String: Any]) async throws -> [String: Any] {
+        guard let projectID = FirebaseApp.app()?.options.projectID, !projectID.isEmpty else {
             throw LLMError(
-                code: .networkError,
-                message: "error_network".localized,
-                retryable: true
+                code: .providerError,
+                message: "Firebase configuration is missing",
+                retryable: false
             )
         }
-        
-        // Firebase Functionsエラー
-        if error.domain == FunctionsErrorDomain {
-            let code = FunctionsErrorCode(rawValue: error.code)
-            
-            switch code {
-            case .resourceExhausted:
-                // PAYLOAD_TOO_LARGE
-                throw LLMError(
-                    code: .payloadTooLarge,
-                    message: "error_payload_too_large".localized,
-                    retryable: false
-                )
-            case .deadlineExceeded:
-                throw LLMError(
-                    code: .timeout,
-                    message: "error_timeout".localized,
-                    retryable: true
-                )
-            case .unavailable:
-                throw LLMError(
-                    code: .providerError,
-                    message: "error_provider".localized,
-                    retryable: true
-                )
-            default:
-                throw LLMError(
-                    code: .unknown,
-                    message: error.localizedDescription,
-                    retryable: true
-                )
-            }
+
+        guard let url = URL(string: "https://\(region)-\(projectID).cloudfunctions.net/\(name)") else {
+            throw LLMError(code: .unknown, message: "Invalid Functions URL", retryable: false)
         }
-        
-        // その他のエラー
-        throw LLMError(
-            code: .unknown,
-            message: error.localizedDescription,
-            retryable: true
-        )
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.timeoutInterval = timeoutInterval
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try JSONSerialization.data(withJSONObject: ["data": payload])
+
+        let responseData: Data
+        let response: URLResponse
+        do {
+            (responseData, response) = try await URLSession.shared.data(for: request)
+        } catch {
+            throw transportError(from: error)
+        }
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw LLMError(code: .unknown, message: "Invalid HTTP response", retryable: true)
+        }
+
+        guard let object = try JSONSerialization.jsonObject(with: responseData) as? [String: Any] else {
+            throw LLMError(code: .unknown, message: "Invalid response format", retryable: false)
+        }
+
+        if let errorData = object["error"] as? [String: Any] {
+            let status = errorData["status"] as? String ?? "UNKNOWN"
+            let message = errorData["message"] as? String ?? HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
+            throw callableError(status: status, message: message)
+        }
+
+        guard (200..<300).contains(httpResponse.statusCode) else {
+            throw LLMError(
+                code: .providerError,
+                message: HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode),
+                retryable: httpResponse.statusCode >= 500
+            )
+        }
+
+        if let result = object["result"] as? [String: Any] {
+            return result
+        }
+        if let data = object["data"] as? [String: Any] {
+            return data
+        }
+
+        throw LLMError(code: .unknown, message: "Invalid callable response", retryable: false)
     }
-    
-    /// V2用エラーハンドリング
-    private func handleFunctionsErrorV2(_ error: NSError) throws -> LLMError {
-        // ネットワークエラー
-        if error.domain == NSURLErrorDomain {
-            return LLMError(
-                code: .networkError,
-                message: "error_network".localized,
-                retryable: true
-            )
+
+    private func callableError(status: String, message: String) -> LLMError {
+        switch status {
+        case "RESOURCE_EXHAUSTED":
+            return LLMError(code: .payloadTooLarge, message: message, retryable: false)
+        case "DEADLINE_EXCEEDED":
+            return LLMError(code: .timeout, message: "error_timeout".localized, retryable: true)
+        case "UNAVAILABLE", "INTERNAL":
+            return LLMError(code: .providerError, message: message, retryable: true)
+        default:
+            return LLMError(code: .unknown, message: message, retryable: false)
         }
-        
-        // Firebase Functionsエラー
-        if error.domain == FunctionsErrorDomain {
-            let code = FunctionsErrorCode(rawValue: error.code)
-            
-            switch code {
-            case .resourceExhausted:
-                return LLMError(
-                    code: .payloadTooLarge,
-                    message: "error_payload_too_large".localized,
-                    retryable: false
-                )
-            case .deadlineExceeded:
-                return LLMError(
-                    code: .timeout,
-                    message: "error_timeout".localized,
-                    retryable: true
-                )
-            case .unavailable:
-                return LLMError(
-                    code: .providerError,
-                    message: "error_provider".localized,
-                    retryable: true
-                )
-            default:
-                return LLMError(
-                    code: .unknown,
-                    message: error.localizedDescription,
-                    retryable: true
-                )
+    }
+
+    private func transportError(from error: Error) -> LLMError {
+        if let urlError = error as? URLError {
+            if urlError.code == .timedOut {
+                return LLMError(code: .timeout, message: "error_timeout".localized, retryable: true)
             }
+            return LLMError(code: .networkError, message: "error_network".localized, retryable: true)
         }
-        
-        // その他のエラー
-        return LLMError(
-            code: .unknown,
-            message: error.localizedDescription,
-            retryable: true
-        )
+
+        return LLMError(code: .unknown, message: error.localizedDescription, retryable: true)
     }
 }
-

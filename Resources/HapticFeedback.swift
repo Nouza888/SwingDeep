@@ -9,37 +9,37 @@ struct HapticFeedback {
         let generator = UIImpactFeedbackGenerator(style: .light)
         generator.impactOccurred()
     }
-    
+
     /// 中程度のタップフィードバック（重要なアクション）
     static func medium() {
         let generator = UIImpactFeedbackGenerator(style: .medium)
         generator.impactOccurred()
     }
-    
+
     /// 強いタップフィードバック（非常に重要なアクション）
     static func heavy() {
         let generator = UIImpactFeedbackGenerator(style: .heavy)
         generator.impactOccurred()
     }
-    
+
     /// 成功フィードバック（診断完了、設定保存など）
     static func success() {
         let generator = UINotificationFeedbackGenerator()
         generator.notificationOccurred(.success)
     }
-    
+
     /// 警告フィードバック（確認が必要なアクション）
     static func warning() {
         let generator = UINotificationFeedbackGenerator()
         generator.notificationOccurred(.warning)
     }
-    
+
     /// エラーフィードバック（失敗、エラー発生）
     static func error() {
         let generator = UINotificationFeedbackGenerator()
         generator.notificationOccurred(.error)
     }
-    
+
     /// 選択フィードバック（タブ切り替え、ピッカー選択）
     static func selection() {
         let generator = UISelectionFeedbackGenerator()
@@ -53,11 +53,11 @@ struct HapticFeedback {
 struct InteractiveButtonStyle: ButtonStyle {
     var hapticStyle: HapticType = .light
     var scaleEffect: CGFloat = 0.95
-    
+
     enum HapticType {
         case light, medium, heavy, selection
     }
-    
+
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .scaleEffect(configuration.isPressed ? scaleEffect : 1.0)
@@ -68,7 +68,7 @@ struct InteractiveButtonStyle: ButtonStyle {
                 }
             }
     }
-    
+
     private func triggerHaptic() {
         switch hapticStyle {
         case .light: HapticFeedback.light()
@@ -83,7 +83,7 @@ struct InteractiveButtonStyle: ButtonStyle {
 struct HoverGlowModifier: ViewModifier {
     @State private var isHovered = false
     let glowColor: Color
-    
+
     func body(content: Content) -> some View {
         content
             .shadow(
@@ -101,7 +101,7 @@ struct HoverGlowModifier: ViewModifier {
 /// カードのマイクロインタラクション（タップ時の反応）
 struct CardTapModifier: ViewModifier {
     @State private var isTapped = false
-    
+
     func body(content: Content) -> some View {
         content
             .scaleEffect(isTapped ? 0.98 : 1.0)
@@ -131,12 +131,12 @@ extension View {
     ) -> some View {
         buttonStyle(InteractiveButtonStyle(hapticStyle: haptic, scaleEffect: scale))
     }
-    
+
     /// ホバー時のグロー効果を追加
     func hoverGlow(color: Color = Theme.forestGreen) -> some View {
         modifier(HoverGlowModifier(glowColor: color))
     }
-    
+
     /// カードタップアニメーションを追加
     func cardTapAnimation() -> some View {
         modifier(CardTapModifier())

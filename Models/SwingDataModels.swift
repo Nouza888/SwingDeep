@@ -23,30 +23,30 @@ enum UserType: String, Codable {
 struct SwingMetrics: Codable {
     /// 前傾角度の差分（耳-腰ベース、マイナスは起き上がり）
     var spineAngleDiffDeg: Double
-    
+
     /// 腰の移動量（肩幅に対する比率、例: 0.1 = 肩幅の10%）
     var hipMoveRatio: Double
-    
+
     /// 頭の上下動（身長に対する比率、例: 0.05 = 身長の5%）
     var headMoveY: Double
-    
+
     /// Back : Down比率（テンポ）
     var tempoRatio: Double
-    
+
     /// インパクトでの手の浮き上がり量（手〜頭距離に対する比率）
     var handRaiseY: Double
-    
+
     /// スイング軌道タイプ ("Outside-In", "Inside-Out", "Straight")
     var swingPathType: String
-    
+
     // MARK: - デバッグ用基準スケール（オプショナル）
-    
+
     /// アドレス時の肩幅（正規化座標）
     var shoulderWidth: Double?
-    
+
     /// アドレス時の手〜頭距離（正規化座標）
     var handToHeadDistance: Double?
-    
+
     /// アドレス時の身長近似値（頭〜足首、正規化座標）
     var bodyHeight: Double?
 }
@@ -64,11 +64,11 @@ struct DiagnosisReport: Codable, Equatable {
     var swingRank: String
     var swingTypeName: String
     var diagnosisItems: [DiagnosisItem]
-    
+
     // v1.0 レポート構成変更
     var drillsToShow: [String]
     var drillSectionMessage: String
-    
+
     // JSON snake_case <-> Swift camelCase 変換
     enum CodingKeys: String, CodingKey {
         case coachComment = "coach_comment"
@@ -80,7 +80,7 @@ struct DiagnosisReport: Codable, Equatable {
         case drillsToShow = "drills_to_show"
         case drillSectionMessage = "drill_section_message"
     }
-    
+
     // Equatable準拠のための実装
     static func == (lhs: DiagnosisReport, rhs: DiagnosisReport) -> Bool {
         lhs.coachComment == rhs.coachComment &&
@@ -92,49 +92,49 @@ struct DiagnosisReport: Codable, Equatable {
 /// 診断項目（個別の診断ポイント）
 struct DiagnosisItem: Codable, Identifiable, Equatable {
     var id: String { key }
-    
+
     /// 項目キー（swing_path, hand_position等）
     var key: String
-    
+
     /// 表示タイトル
     var title: String
-    
+
     /// 一言判定タイトル（LLM生成、例：「軸がブレブレです」）
     var judgmentTitle: String?
-    
+
     /// 項目スコア（0-100、高いほど良い）
     /// - Note: オプショナルで既存データとの互換性維持
     var itemScore: Int?
-    
+
     /// ステータス ("Good", "Bad", "Check")
     var status: String
-    
+
     /// 重要度 (1:軽微 〜 10:重度)
     var severity: Double
-    
+
     /// 可視化用の値 (-100 〜 +100)
     var visualizationValue: Double
-    
+
     /// コメント・アドバイス
     var comment: String
-    
+
     /// コメント内の強調フレーズ（UIで太字化する）
     var detailKeyPhrases: [String]
-    
+
     /// v1.0: 要改善順Top2かどうか
     var isTop2: Bool
-    
+
     /// 改善ドリル
     var drill: Drill?
-    
+
     /// 改善ドリル詳細
     struct Drill: Codable, Equatable {
         var title: String
         var description: String
-        
+
         /// ドリル説明内の強調フレーズ（UIで太字化する）
         var drillKeyPhrases: [String]
-        
+
         // プール式ドリル詳細（v2.0追加）
         var drillId: String?
         var steps: [String]?
@@ -143,7 +143,7 @@ struct DiagnosisItem: Codable, Identifiable, Equatable {
         var ng: [String]?
         var variantType: String?
         var timeSec: Int?
-        
+
         enum CodingKeys: String, CodingKey {
             case title
             case description
@@ -156,7 +156,7 @@ struct DiagnosisItem: Codable, Identifiable, Equatable {
             case variantType = "drill_variant_type"
             case timeSec = "drill_time_sec"
         }
-        
+
         /// カスタムデコーダー（drillKeyPhrasesがない場合のデフォルト値設定）
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -171,7 +171,7 @@ struct DiagnosisItem: Codable, Identifiable, Equatable {
             variantType = try container.decodeIfPresent(String.self, forKey: .variantType)
             timeSec = try container.decodeIfPresent(Int.self, forKey: .timeSec)
         }
-        
+
         /// 初期化（プログラム内で使用）
         init(title: String, description: String, drillKeyPhrases: [String] = [], drillId: String? = nil, steps: [String]? = nil, reps: String? = nil, tools: [String]? = nil, ng: [String]? = nil, variantType: String? = nil, timeSec: Int? = nil) {
             self.title = title
@@ -186,7 +186,7 @@ struct DiagnosisItem: Codable, Identifiable, Equatable {
             self.timeSec = timeSec
         }
     }
-    
+
     enum CodingKeys: String, CodingKey {
         case key
         case title
@@ -200,7 +200,7 @@ struct DiagnosisItem: Codable, Identifiable, Equatable {
         case isTop2 = "is_top2"
         case drill
     }
-    
+
     /// カスタムデコーダー（detailKeyPhrasesがない場合のデフォルト値設定）
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -216,7 +216,7 @@ struct DiagnosisItem: Codable, Identifiable, Equatable {
         isTop2 = try container.decodeIfPresent(Bool.self, forKey: .isTop2) ?? false
         drill = try container.decodeIfPresent(Drill.self, forKey: .drill)
     }
-    
+
     /// 初期化（プログラム内で使用）
     init(key: String, title: String, judgmentTitle: String? = nil, itemScore: Int? = nil, status: String, severity: Double, visualizationValue: Double, comment: String, detailKeyPhrases: [String] = [], isTop2: Bool = false, drill: Drill? = nil) {
         self.key = key
@@ -243,13 +243,13 @@ class GolferProfile {
     var id: UUID
     var name: String
     var type: UserType
-    
+
     /// プロフィールアイコン画像（大サイズのため外部ストレージ）
     @Attribute(.externalStorage) var icon: Data?
-    
+
     /// このゴルファーの解析履歴
     @Relationship(deleteRule: .cascade) var analyses: [SwingAnalysis] = []
-    
+
     init(id: UUID = UUID(), name: String, type: UserType, icon: Data? = nil) {
         self.id = id
         self.name = name
@@ -264,35 +264,35 @@ class GolferProfile {
 class SwingAnalysis {
     var id: UUID
     var date: Date
-    
+
     /// 動画ファイルパス（Documentsディレクトリからの相対パス）
     var videoPath: String
-    
+
     /// 動画の長さ
     var duration: TimeInterval
-    
+
     // MARK: 診断用データ
-    
+
     /// アドレス時刻（ミリ秒）
     var addressTime: Double
-    
+
     /// インパクト時刻（ミリ秒）
     var impactTime: Double
-    
+
     /// 解析メトリクス（JSONエンコードして保存）
     @Attribute(.externalStorage) var metricsData: Data?
-    
+
     /// 診断レポート（JSONエンコードして保存）
     /// - Note: DiagnosisReportは複雑なネスト構造のため、Dataとして保存
     @Attribute(.externalStorage) var diagnosisReportData: Data?
-    
+
     // MARK: リレーション
-    
+
     /// 親プロフィールへの逆参照
     var golfer: GolferProfile?
-    
+
     // MARK: 計算プロパティ
-    
+
     /// メトリクス（エンコード/デコード）
     var metrics: SwingMetrics? {
         get {
@@ -303,7 +303,7 @@ class SwingAnalysis {
             metricsData = try? JSONEncoder().encode(newValue)
         }
     }
-    
+
     /// 診断レポート（エンコード/デコード）
     var diagnosisReport: DiagnosisReport? {
         get {
@@ -314,9 +314,9 @@ class SwingAnalysis {
             diagnosisReportData = try? JSONEncoder().encode(newValue)
         }
     }
-    
+
     // MARK: イニシャライザ
-    
+
     init(
         id: UUID = UUID(),
         date: Date = Date(),
