@@ -1,0 +1,742 @@
+{
+    "meta": {
+        "version": "1.0.0",
+        "metric_key": "head_movement",
+        "description": "Head Level drill pool - 16 drills"
+    },
+    "drills": [
+        {
+            "drill_id": "head_movement_too_much_rise_light_check_01",
+            "metric_key": "head_movement",
+            "direction": "too_much_rise",
+            "intensity": "light",
+            "variant_type": "CHECK",
+            "title": {
+                "ja": "帽子つばライン確認",
+                "en": "Cap Brim Line Check"
+            },
+            "intent": {
+                "ja": "構えた時の帽子つばの高さを目安に、ハーフ素振り。インパクトで視界が上に動くと起き上がり。高さが変わらない回数を数え、10回中7回を目標に",
+                "en": "Use cap brim height at address as reference for half swings. Rising view at impact means rising up. Count reps where height stays same, aim for 7 out of 10."
+            },
+            "steps": {
+                "ja": [
+                    "帽子つばの高さを目安にする",
+                    "ハーフ素振りで視界が上がらないか確認",
+                    "高さが変わらない回数を10回中7回目標"
+                ],
+                "en": [
+                    "Use cap brim height as reference",
+                    "Check if view rises during half swing",
+                    "Aim for 7 out of 10 with no height change"
+                ]
+            },
+            "reps": "10",
+            "tools": [
+                "cap"
+            ],
+            "ng": {
+                "ja": [
+                    "視界が上に跳ねる"
+                ],
+                "en": [
+                    "View jumping upward"
+                ]
+            },
+            "time_sec": 90,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "head_movement_too_much_rise_light_sense_01",
+            "metric_key": "head_movement",
+            "direction": "too_much_rise",
+            "intensity": "light",
+            "variant_type": "SENSE",
+            "title": {
+                "ja": "天井タッチ禁止素振り",
+                "en": "No Ceiling Touch Swing"
+            },
+            "intent": {
+                "ja": "頭の上に「ここまで」という仮想ラインを作る。ハーフで頭がそのラインに近づかない意識。近づく＝起き上がり。低く保てた感覚を10回で覚える",
+                "en": "Create imaginary line above head. Practice not letting head approach that line in half swings. Approaching = rising. Learn to keep low in 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "頭上に仮想ラインを作る",
+                    "ハーフで頭がラインに近づかない意識",
+                    "低く保てた感覚を10回で覚える"
+                ],
+                "en": [
+                    "Create imaginary line above head",
+                    "Focus on head not approaching line in half swings",
+                    "Learn to keep low in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "頭が仮想ラインに近づく"
+                ],
+                "en": [
+                    "Head approaching the imaginary line"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "head_movement_too_much_rise_light_control_01",
+            "metric_key": "head_movement",
+            "direction": "too_much_rise",
+            "intensity": "light",
+            "variant_type": "CONTROL",
+            "title": {
+                "ja": "トップ静止1秒→低く入る",
+                "en": "1-Sec Top Pause → Enter Low"
+            },
+            "intent": {
+                "ja": "トップで1秒止めてからハーフで下ろす。止めた後に頭が上に動く人は起きやすい。止めても高さが変わらない形を10回で作る",
+                "en": "Pause 1 second at top then make half downswing. Those whose head rises after pause tend to rise. Create form where height stays same after pause in 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "トップで1秒止める",
+                    "止めた後にハーフで下ろす",
+                    "高さが変わらない形を10回で作る"
+                ],
+                "en": [
+                    "Pause 1 second at top",
+                    "Make half downswing after pause",
+                    "Create form where height stays same in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "止めた後に頭が上がる"
+                ],
+                "en": [
+                    "Head rising after pause"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "head_movement_too_much_rise_light_transfer_01",
+            "metric_key": "head_movement",
+            "direction": "too_much_rise",
+            "intensity": "light",
+            "variant_type": "TRANSFER",
+            "title": {
+                "ja": "ハーフ3球（高さだけ意識）",
+                "en": "3 Half Shots (Height Only)"
+            },
+            "intent": {
+                "ja": "実打3球。飛距離は無視して「頭の高さだけ」意識。上に動いた感触が出たら即中断。高さを守れた球だけを成功とする",
+                "en": "Hit 3 shots. Ignore distance, focus only on 'head height'. Stop immediately if you feel rising. Only count shots where height was maintained."
+            },
+            "steps": {
+                "ja": [
+                    "ハーフで3球打つ",
+                    "頭の高さだけ意識する",
+                    "上に動いたら即中断"
+                ],
+                "en": [
+                    "Hit 3 half shots",
+                    "Focus only on head height",
+                    "Stop immediately if rising"
+                ]
+            },
+            "reps": "3",
+            "tools": [
+                "ball"
+            ],
+            "ng": {
+                "ja": [
+                    "結果を気にして高さを忘れる"
+                ],
+                "en": [
+                    "Forgetting height while caring about result"
+                ]
+            },
+            "time_sec": 90,
+            "tags": [
+                "range_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "head_movement_too_much_rise_medium_check_01",
+            "metric_key": "head_movement",
+            "direction": "too_much_rise",
+            "intensity": "medium",
+            "variant_type": "CHECK",
+            "title": {
+                "ja": "壁ヘッド位置チェック",
+                "en": "Wall Head Position Check"
+            },
+            "intent": {
+                "ja": "頭の横に壁や柱が来る位置で構え、ハーフ素振り。起きると壁から離れる。触れ続けられた回数をカウントし、10回中7回以上を目標",
+                "en": "Set up with wall or pillar beside head, make half swings. Rising moves away from wall. Count reps staying in contact, aim for 7+ out of 10."
+            },
+            "steps": {
+                "ja": [
+                    "頭の横に壁が来る位置で構える",
+                    "ハーフ素振りで壁から離れないか確認",
+                    "10回中7回以上触れ続けるのが目標"
+                ],
+                "en": [
+                    "Set up with wall beside head",
+                    "Check if you stay in contact during half swings",
+                    "Aim for 7+ out of 10 staying in contact"
+                ]
+            },
+            "reps": "10",
+            "tools": [
+                "wall"
+            ],
+            "ng": {
+                "ja": [
+                    "壁から離れて起きる"
+                ],
+                "en": [
+                    "Rising away from wall"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "head_movement_too_much_rise_medium_sense_01",
+            "metric_key": "head_movement",
+            "direction": "too_much_rise",
+            "intensity": "medium",
+            "variant_type": "SENSE",
+            "title": {
+                "ja": "低い視界キープドリル",
+                "en": "Keep Low View Drill"
+            },
+            "intent": {
+                "ja": "「インパクトまでボールのロゴを見る」意識でハーフ。視界が上がる＝頭が上がっている。最後まで低い視界を保つ感覚を10回で定着",
+                "en": "Half swing with 'see ball logo until impact' focus. Rising view = head rising. Establish keeping low view to the end in 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "ボールのロゴを見る意識でハーフ",
+                    "視界が上がらないようにする",
+                    "低い視界を10回で定着させる"
+                ],
+                "en": [
+                    "Half swing focusing on ball logo",
+                    "Keep view from rising",
+                    "Establish low view in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [
+                "ball"
+            ],
+            "ng": {
+                "ja": [
+                    "視界が上がって起きる"
+                ],
+                "en": [
+                    "View rising and standing up"
+                ]
+            },
+            "time_sec": 150,
+            "tags": [
+                "range_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "head_movement_too_much_rise_medium_control_01",
+            "metric_key": "head_movement",
+            "direction": "too_much_rise",
+            "intensity": "medium",
+            "variant_type": "CONTROL",
+            "title": {
+                "ja": "下半身主導3拍子",
+                "en": "Lower Body Lead 3-Count"
+            },
+            "intent": {
+                "ja": "「1下半身 2体幹 3腕」でハーフ。頭が起きる人は1を飛ばしがち。必ず1から始め、頭の高さが変わらないか確認しながら10回",
+                "en": "Half swing with '1:lower body 2:core 3:arms'. Those who rise tend to skip 1. Always start with 1, check head height stays same for 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "「1下半身→2体幹→3腕」で素振り",
+                    "必ず1から始める",
+                    "頭の高さを確認しながら10回"
+                ],
+                "en": [
+                    "Swing with '1:lower body 2:core 3:arms'",
+                    "Always start with 1",
+                    "Check head height for 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "1を飛ばして腕から動く"
+                ],
+                "en": [
+                    "Skipping 1 and moving arms first"
+                ]
+            },
+            "time_sec": 150,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "head_movement_too_much_rise_medium_transfer_01",
+            "metric_key": "head_movement",
+            "direction": "too_much_rise",
+            "intensity": "medium",
+            "variant_type": "TRANSFER",
+            "title": {
+                "ja": "テンポ固定10球（低さ優先）",
+                "en": "Fixed Tempo 10 Shots (Low Priority)"
+            },
+            "intent": {
+                "ja": "8割テンポで10球。速くなるほど起きやすい。高さを守れた回だけカウント。起きたら即ノーカウントで、次は素振りに戻す",
+                "en": "Hit 10 balls at 80% tempo. Faster tends to cause rising. Only count reps where height was kept. No count if rising, return to practice swings."
+            },
+            "steps": {
+                "ja": [
+                    "8割テンポで10球",
+                    "高さを守れた回だけカウント",
+                    "起きたらノーカウントで素振りに戻す"
+                ],
+                "en": [
+                    "Hit 10 balls at 80% tempo",
+                    "Only count reps with height maintained",
+                    "No count if rising, return to swings"
+                ]
+            },
+            "reps": "10",
+            "tools": [
+                "ball"
+            ],
+            "ng": {
+                "ja": [
+                    "急いで起き上がる"
+                ],
+                "en": [
+                    "Rushing and rising up"
+                ]
+            },
+            "time_sec": 180,
+            "tags": [
+                "range_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "head_movement_too_much_drop_light_check_01",
+            "metric_key": "head_movement",
+            "direction": "too_much_drop",
+            "intensity": "light",
+            "variant_type": "CHECK",
+            "title": {
+                "ja": "膝高さキープ確認",
+                "en": "Knee Height Keep Check"
+            },
+            "intent": {
+                "ja": "構えた時の膝の高さを基準にハーフ素振り。沈み込みすぎると視界が下がる。高さが大きく変わらない回数を10回で確認",
+                "en": "Use knee height at address as reference for half swings. Excessive dipping lowers your view. Check for reps with minimal height change in 10 swings."
+            },
+            "steps": {
+                "ja": [
+                    "膝の高さを基準にする",
+                    "ハーフ素振りで沈まないか確認",
+                    "高さが変わらない回数を10回で確認"
+                ],
+                "en": [
+                    "Use knee height as reference",
+                    "Check for dipping in half swings",
+                    "Check reps with no height change in 10"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "膝が大きく沈む"
+                ],
+                "en": [
+                    "Knees dipping significantly"
+                ]
+            },
+            "time_sec": 90,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "head_movement_too_much_drop_light_sense_01",
+            "metric_key": "head_movement",
+            "direction": "too_much_drop",
+            "intensity": "light",
+            "variant_type": "SENSE",
+            "title": {
+                "ja": "胸ポジション一定ドリル",
+                "en": "Chest Position Constant Drill"
+            },
+            "intent": {
+                "ja": "胸の位置が上下しない意識でハーフ。沈む人は胸が下がりやすい。胸が\"前に回る\"感覚を優先し、上下動を抑えて10回",
+                "en": "Half swing keeping chest position steady. Those who dip tend to lower chest. Prioritize 'chest rotating forward' feel, reduce up-down motion in 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "胸の位置を一定に保つ意識",
+                    "「前に回る」感覚を優先",
+                    "上下動を抑えて10回"
+                ],
+                "en": [
+                    "Focus on keeping chest position steady",
+                    "Prioritize 'rotating forward' feel",
+                    "Reduce up-down motion in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "胸が下がって沈む"
+                ],
+                "en": [
+                    "Chest lowering and dipping"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "head_movement_too_much_drop_light_control_01",
+            "metric_key": "head_movement",
+            "direction": "too_much_drop",
+            "intensity": "light",
+            "variant_type": "CONTROL",
+            "title": {
+                "ja": "足裏均等圧素振り",
+                "en": "Even Sole Pressure Swing"
+            },
+            "intent": {
+                "ja": "沈み込み過多は土踏まずに圧が集まりやすい。ハーフで足裏全体に圧を感じる。均等なら沈まない。10回で圧配分を覚える",
+                "en": "Excessive dipping tends to concentrate pressure on arches. Feel pressure across entire sole in half swings. Even pressure = no dipping. Learn pressure distribution in 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "足裏全体に圧を感じる意識",
+                    "ハーフ素振りで均等を保つ",
+                    "圧配分を10回で覚える"
+                ],
+                "en": [
+                    "Focus on feeling pressure across entire sole",
+                    "Keep even pressure in half swings",
+                    "Learn pressure distribution in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "土踏まずに圧が集まる"
+                ],
+                "en": [
+                    "Pressure concentrating on arches"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "head_movement_too_much_drop_light_transfer_01",
+            "metric_key": "head_movement",
+            "direction": "too_much_drop",
+            "intensity": "light",
+            "variant_type": "TRANSFER",
+            "title": {
+                "ja": "ハーフ3球（沈まない当たり）",
+                "en": "3 Half Shots (No Dipping Hit)"
+            },
+            "intent": {
+                "ja": "実打3球。沈んだ感触が出たらノーカウント。高さを保った当たりだけを成功とし、上下動が減ったかを体感する",
+                "en": "Hit 3 shots. No count if you feel dipping. Only count hits where height was maintained, feel the reduction in up-down motion."
+            },
+            "steps": {
+                "ja": [
+                    "ハーフで3球打つ",
+                    "沈んだ感触が出たらノーカウント",
+                    "高さを保った当たりだけ成功"
+                ],
+                "en": [
+                    "Hit 3 half shots",
+                    "No count if you feel dipping",
+                    "Only count hits with height maintained"
+                ]
+            },
+            "reps": "3",
+            "tools": [
+                "ball"
+            ],
+            "ng": {
+                "ja": [
+                    "沈んでも続けて打つ"
+                ],
+                "en": [
+                    "Continuing to hit even when dipping"
+                ]
+            },
+            "time_sec": 90,
+            "tags": [
+                "range_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "head_movement_too_much_drop_medium_check_01",
+            "metric_key": "head_movement",
+            "direction": "too_much_drop",
+            "intensity": "medium",
+            "variant_type": "CHECK",
+            "title": {
+                "ja": "イス座面チェック",
+                "en": "Chair Seat Check"
+            },
+            "intent": {
+                "ja": "お尻の下にイス座面が来る距離で構え、沈み込みすぎないか確認。深く沈むと座面に触れやすい。触れずに回れる回数を10回で把握",
+                "en": "Set up with chair seat distance below hips, check for excessive dipping. Deep dipping tends to touch seat. Check reps where you can rotate without touching in 10."
+            },
+            "steps": {
+                "ja": [
+                    "お尻の下にイス座面が来る距離で構える",
+                    "沈み込みすぎないか確認",
+                    "触れずに回れる回数を10回で把握"
+                ],
+                "en": [
+                    "Set up with chair seat below hips",
+                    "Check for excessive dipping",
+                    "Check rotation without touching in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [
+                "chair"
+            ],
+            "ng": {
+                "ja": [
+                    "座面に深く触れる"
+                ],
+                "en": [
+                    "Touching seat deeply"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "head_movement_too_much_drop_medium_sense_01",
+            "metric_key": "head_movement",
+            "direction": "too_much_drop",
+            "intensity": "medium",
+            "variant_type": "SENSE",
+            "title": {
+                "ja": "胸高め→回転ドリル",
+                "en": "Chest High → Rotate Drill"
+            },
+            "intent": {
+                "ja": "構えで胸を少し高めにしてからハーフ。沈み込みは胸が低すぎる合図。高めを保ったまま回る感覚を10回で作る",
+                "en": "Set up with chest slightly higher then make half swing. Dipping signals chest too low. Create rotating while keeping chest high feel in 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "胸を少し高めに構える",
+                    "高めを保ったままハーフ",
+                    "回る感覚を10回で作る"
+                ],
+                "en": [
+                    "Set up with chest slightly higher",
+                    "Half swing keeping chest high",
+                    "Create rotating feel in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "胸が下がって沈む"
+                ],
+                "en": [
+                    "Chest lowering and dipping"
+                ]
+            },
+            "time_sec": 150,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "head_movement_too_much_drop_medium_control_01",
+            "metric_key": "head_movement",
+            "direction": "too_much_drop",
+            "intensity": "medium",
+            "variant_type": "CONTROL",
+            "title": {
+                "ja": "切り返しで高さ固定",
+                "en": "Fix Height at Transition"
+            },
+            "intent": {
+                "ja": "トップで一瞬止め、高さを変えずに下ろす。沈む人は止めた後に一段沈む。止めても高さが変わらない形を10回で制御",
+                "en": "Pause briefly at top, lower without changing height. Those who dip tend to drop one level after pause. Control form where height stays same after pause in 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "トップで一瞬止める",
+                    "高さを変えずに下ろす",
+                    "止めても高さが変わらない形を10回"
+                ],
+                "en": [
+                    "Pause briefly at top",
+                    "Lower without changing height",
+                    "Control height staying same in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "止めた後に沈む"
+                ],
+                "en": [
+                    "Dipping after pause"
+                ]
+            },
+            "time_sec": 150,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "head_movement_too_much_drop_medium_transfer_01",
+            "metric_key": "head_movement",
+            "direction": "too_much_drop",
+            "intensity": "medium",
+            "variant_type": "TRANSFER",
+            "title": {
+                "ja": "8割テンポ10球（高さ一定）",
+                "en": "80% Tempo 10 Shots (Height Constant)"
+            },
+            "intent": {
+                "ja": "8割テンポで10球。沈み込みは急減速で出やすい。テンポ一定を守り、高さが安定した回だけカウント",
+                "en": "Hit 10 balls at 80% tempo. Dipping tends to appear with sudden deceleration. Keep tempo constant, only count reps where height was stable."
+            },
+            "steps": {
+                "ja": [
+                    "8割テンポで10球",
+                    "テンポ一定を守る",
+                    "高さが安定した回だけカウント"
+                ],
+                "en": [
+                    "Hit 10 balls at 80% tempo",
+                    "Keep tempo constant",
+                    "Only count reps with stable height"
+                ]
+            },
+            "reps": "10",
+            "tools": [
+                "ball"
+            ],
+            "ng": {
+                "ja": [
+                    "急減速して沈む"
+                ],
+                "en": [
+                    "Sudden deceleration and dipping"
+                ]
+            },
+            "time_sec": 180,
+            "tags": [
+                "range_ok"
+            ],
+            "cooldown_days": 7
+        }
+    ],
+    "maintain_drills": [
+        {
+            "drill_id": "head_movement_maintain_check_01",
+            "metric_key": "head_movement",
+            "direction": "maintain",
+            "intensity": "light",
+            "variant_type": "CHECK",
+            "title": {
+                "ja": "高さ確認（30秒）",
+                "en": "Height Check (30 sec)"
+            },
+            "intent": {
+                "ja": "現状の良い頭の高さを確認し、維持する",
+                "en": "Confirm and maintain your current good head height"
+            },
+            "steps": {
+                "ja": [
+                    "帽子つばの高さを意識",
+                    "ハーフ素振りで確認",
+                    "30秒で5回できればOK"
+                ],
+                "en": [
+                    "Focus on cap brim height",
+                    "Check with half swings",
+                    "OK if 5 in 30 seconds"
+                ]
+            },
+            "reps": "5",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "形だけで流す"
+                ],
+                "en": [
+                    "Going through the motions"
+                ]
+            },
+            "time_sec": 30,
+            "tags": [
+                "home_ok",
+                "quick"
+            ],
+            "cooldown_days": 3
+        }
+    ]
+}

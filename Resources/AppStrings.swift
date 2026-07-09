@@ -17,7 +17,7 @@ struct AppStrings {
         "diagnose_title": "AIスイング分析",
         "select_video": "動画を選択",
         "delete_video": "動画を削除",
-        "analyzing": "%@が分析中...",
+        "analyzing": "%@が分析中...",  // ペルソナ名が入る
         "analyze_swing": "コーチを選択する",
         "start_analysis": "分析を開始する",
         "view_report": "レポートを作成",
@@ -69,7 +69,7 @@ struct AppStrings {
         "terms": "利用規約",
         "privacy": "プライバシーポリシー",
         
-        // Coach Names & Descriptions
+        // Coach Names & Descriptions (短縮版)
         "coach_gentle_sister": "お姉さん",
         "coach_spartan": "鬼軍曹",
         "coach_standard": "理論派コーチ",
@@ -96,7 +96,7 @@ struct AppStrings {
         "select_coach_desc": "あなたのスイングを分析する専属コーチを選んでください",
         "cancel": "キャンセル",
         
-        // Error Messages
+        // Error Messages (LLM / Usage)
         "error_validation": "入力データに問題があります。再度お試しください。",
         "error_payload_too_large": "データが大きすぎます。短い動画でお試しください。",
         "error_rate_limit": "リクエストが多すぎます。しばらくお待ちください。",
@@ -108,7 +108,7 @@ struct AppStrings {
         "remaining_count": "残り%d回",
         "usage_limit_title": "利用制限",
         
-        // Usage Status
+        // Usage Status (Settings)
         "usage_status": "利用状況",
         "monthly_usage": "今月の利用",
         "next_reset": "次回リセット",
@@ -173,7 +173,7 @@ struct AppStrings {
         "diagnose_title": "AI Swing Analysis",
         "select_video": "Select Video",
         "delete_video": "Delete Video",
-        "analyzing": "%@ is analyzing...",
+        "analyzing": "%@ is analyzing...",  // ペルソナ名が入る
         "analyze_swing": "Select Coach",
         "start_analysis": "Start Analysis",
         "view_report": "Generate Report",
@@ -225,7 +225,7 @@ struct AppStrings {
         "terms": "Terms of Service",
         "privacy": "Privacy Policy",
         
-        // Coach Names & Descriptions
+        // Coach Names & Descriptions (短縮版)
         "coach_gentle_sister": "Big Sis",
         "coach_spartan": "Drill Sergeant",
         "coach_standard": "Analyst",
@@ -252,7 +252,7 @@ struct AppStrings {
         "select_coach_desc": "Choose your personal AI coach for this analysis",
         "cancel": "Cancel",
         
-        // Error Messages
+        // Error Messages (LLM / Usage)
         "error_validation": "There was an issue with the input data. Please try again.",
         "error_payload_too_large": "Data is too large. Please try with a shorter video.",
         "error_rate_limit": "Too many requests. Please wait a moment.",
@@ -264,7 +264,7 @@ struct AppStrings {
         "remaining_count": "%d left",
         "usage_limit_title": "Usage Limit",
         
-        // Usage Status
+        // Usage Status (Settings)
         "usage_status": "Usage Status",
         "monthly_usage": "This Month",
         "next_reset": "Next Reset",
@@ -313,3 +313,4 @@ struct AppStrings {
         "improvement_target": "Target:"
     ]
 }
+

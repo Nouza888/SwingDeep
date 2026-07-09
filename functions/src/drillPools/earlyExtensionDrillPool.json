@@ -1,0 +1,742 @@
+{
+    "meta": {
+        "version": "1.0.0",
+        "metric_key": "early_extension",
+        "description": "Hip Sway / Early Extension drill pool - 16 drills"
+    },
+    "drills": [
+        {
+            "drill_id": "early_extension_too_much_sway_light_check_01",
+            "metric_key": "early_extension",
+            "direction": "too_much_sway",
+            "intensity": "light",
+            "variant_type": "CHECK",
+            "title": {
+                "ja": "壁ヒップ触れ確認",
+                "en": "Wall Hip Touch Check"
+            },
+            "intent": {
+                "ja": "壁に右お尻を軽く触れて構え、ハーフ素振り。流れすぎると壁から離れる。触れたまま回れた回数を数え、10回中7回キープが目標",
+                "en": "Set up with right hip lightly touching wall, make half swings. Excessive sway pulls away from wall. Count reps staying in contact, aim for 7 out of 10."
+            },
+            "steps": {
+                "ja": [
+                    "壁に右お尻を軽く触れて構える",
+                    "ハーフ素振りで離れないか確認",
+                    "10回中7回キープが目標"
+                ],
+                "en": [
+                    "Set up with right hip lightly touching wall",
+                    "Check if you stay in contact during half swings",
+                    "Aim for 7 out of 10 staying in contact"
+                ]
+            },
+            "reps": "10",
+            "tools": [
+                "wall"
+            ],
+            "ng": {
+                "ja": [
+                    "壁を無視して横に流れる"
+                ],
+                "en": [
+                    "Ignoring wall and swaying laterally"
+                ]
+            },
+            "time_sec": 90,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "early_extension_too_much_sway_light_sense_01",
+            "metric_key": "early_extension",
+            "direction": "too_much_sway",
+            "intensity": "light",
+            "variant_type": "SENSE",
+            "title": {
+                "ja": "足裏「外側」圧ドリル",
+                "en": "Outside Foot Pressure Drill"
+            },
+            "intent": {
+                "ja": "ダウンで右足外側が抜けると腰が流れやすい。ハーフ素振りで右足外側に圧を残す意識。圧が残る＝回転できてる。10回で感覚を作る",
+                "en": "If outside of right foot lifts in downswing, hips tend to sway. Feel pressure on outside of right foot during half swings. Pressure remaining = rotating properly."
+            },
+            "steps": {
+                "ja": [
+                    "右足外側に圧を残す意識",
+                    "ハーフ素振りで圧を確認",
+                    "圧が残る感覚を10回で作る"
+                ],
+                "en": [
+                    "Focus on keeping pressure on right foot outside",
+                    "Check pressure during half swings",
+                    "Build this feeling in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "右足が浮いて流れる"
+                ],
+                "en": [
+                    "Right foot lifting and swaying"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "early_extension_too_much_sway_light_control_01",
+            "metric_key": "early_extension",
+            "direction": "too_much_sway",
+            "intensity": "light",
+            "variant_type": "CONTROL",
+            "title": {
+                "ja": "切り返しで一瞬止める",
+                "en": "Pause at Transition"
+            },
+            "intent": {
+                "ja": "トップで一瞬止めてからハーフで下ろす。流れる人は止められず横移動が出る。止めても腰が真横に動かない形を10回。横移動を抑える制御練習",
+                "en": "Pause briefly at top then make half downswing. Those who sway can't stop and move laterally. Practice 10 times stopping without lateral hip movement."
+            },
+            "steps": {
+                "ja": [
+                    "トップで一瞬止める",
+                    "止めた後にハーフで下ろす",
+                    "横移動が出ない形を10回"
+                ],
+                "en": [
+                    "Pause briefly at top",
+                    "Make half downswing after pause",
+                    "Practice 10 times without lateral movement"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "止められず流れる"
+                ],
+                "en": [
+                    "Unable to pause and swaying"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "early_extension_too_much_sway_light_transfer_01",
+            "metric_key": "early_extension",
+            "direction": "too_much_sway",
+            "intensity": "light",
+            "variant_type": "TRANSFER",
+            "title": {
+                "ja": "3球だけ（左足一本にしない）",
+                "en": "3 Shots (Don't Load Left Foot Only)"
+            },
+            "intent": {
+                "ja": "実打3球。腰が流れると左足にドスンと乗りがち。左足一本にならないよう、両足の圧を感じながら当てる。流れた感触が出たら即素振りに戻す",
+                "en": "Hit 3 shots. Swaying hips tend to slam onto left foot. Feel pressure on both feet, not just left. If you feel sway, immediately return to practice swings."
+            },
+            "steps": {
+                "ja": [
+                    "3球だけ打つ",
+                    "両足の圧を感じながら当てる",
+                    "流れた感触が出たら素振りに戻る"
+                ],
+                "en": [
+                    "Hit just 3 shots",
+                    "Feel pressure on both feet while hitting",
+                    "Return to practice swings if you feel sway"
+                ]
+            },
+            "reps": "3",
+            "tools": [
+                "ball"
+            ],
+            "ng": {
+                "ja": [
+                    "左足にドスンと乗る"
+                ],
+                "en": [
+                    "Slamming weight onto left foot"
+                ]
+            },
+            "time_sec": 90,
+            "tags": [
+                "range_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "early_extension_too_much_sway_medium_check_01",
+            "metric_key": "early_extension",
+            "direction": "too_much_sway",
+            "intensity": "medium",
+            "variant_type": "CHECK",
+            "title": {
+                "ja": "足元ラインチェック",
+                "en": "Foot Line Check"
+            },
+            "intent": {
+                "ja": "足元にクラブを置き、腰が左へ流れても体全体が同じだけズレないか確認。流れすぎは上体も左へ動く。ハーフで「回転だけ」を意識し10回確認",
+                "en": "Place club at feet, check if whole body shifts when hips sway left. Excessive sway moves upper body too. Practice 10 half swings focusing on 'rotation only'."
+            },
+            "steps": {
+                "ja": [
+                    "足元にクラブを置く",
+                    "ハーフ素振りで体がズレないか確認",
+                    "「回転だけ」を意識して10回"
+                ],
+                "en": [
+                    "Place club at feet",
+                    "Check if body shifts during half swings",
+                    "Focus on 'rotation only' for 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [
+                "club"
+            ],
+            "ng": {
+                "ja": [
+                    "上体ごと左にズレる"
+                ],
+                "en": [
+                    "Upper body shifting left together"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "early_extension_too_much_sway_medium_sense_01",
+            "metric_key": "early_extension",
+            "direction": "too_much_sway",
+            "intensity": "medium",
+            "variant_type": "SENSE",
+            "title": {
+                "ja": "左足つま先前の壁（止まる感）",
+                "en": "Wall in Front of Left Toe (Stop Feel)"
+            },
+            "intent": {
+                "ja": "左足つま先の少し前に目印（壁/バッグ等）を置き、腰が突っ込まない意識でハーフ。目印に向かうと流れすぎ。目印を「避ける」感覚で10回",
+                "en": "Place marker (wall/bag) slightly in front of left toe, practice half swings without hips thrusting forward. Moving toward marker = too much sway. 'Avoid' marker for 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "左足つま先前に目印を置く",
+                    "腰が目印に向かわない意識でハーフ",
+                    "「避ける」感覚で10回"
+                ],
+                "en": [
+                    "Place marker in front of left toe",
+                    "Half swing without hips going toward marker",
+                    "'Avoid' marker feel for 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [
+                "bag"
+            ],
+            "ng": {
+                "ja": [
+                    "目印に腰が突っ込む"
+                ],
+                "en": [
+                    "Hips thrusting toward marker"
+                ]
+            },
+            "time_sec": 150,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "early_extension_too_much_sway_medium_control_01",
+            "metric_key": "early_extension",
+            "direction": "too_much_sway",
+            "intensity": "medium",
+            "variant_type": "CONTROL",
+            "title": {
+                "ja": "右ひざ内側キープ",
+                "en": "Right Knee Inside Hold"
+            },
+            "intent": {
+                "ja": "流れすぎは右ひざが外へ逃げやすい。ハーフ素振りで右ひざを内側に保つ。膝が残ると腰が流れにくい。10回で「踏ん張って回る」感覚を作る",
+                "en": "Excessive sway lets right knee escape outward. Keep right knee inside during half swings. Keeping knee in prevents hip sway. Build 'brace and rotate' feel in 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "右ひざを内側に保つ意識",
+                    "ハーフ素振りで膝をキープ",
+                    "「踏ん張って回る」感覚を10回で作る"
+                ],
+                "en": [
+                    "Focus on keeping right knee inside",
+                    "Keep knee during half swings",
+                    "Build 'brace and rotate' feel in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "右ひざが外に逃げる"
+                ],
+                "en": [
+                    "Right knee escaping outward"
+                ]
+            },
+            "time_sec": 150,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "early_extension_too_much_sway_medium_transfer_01",
+            "metric_key": "early_extension",
+            "direction": "too_much_sway",
+            "intensity": "medium",
+            "variant_type": "TRANSFER",
+            "title": {
+                "ja": "テンポ固定10球（小さく）",
+                "en": "Fixed Tempo 10 Small Shots"
+            },
+            "intent": {
+                "ja": "小さめハーフで10球、テンポは一定。流れすぎは急ぐほど出る。テンポが崩れたらノーカウント。安定して回れる「速度の上限」を見つけるのが目的",
+                "en": "Hit 10 small half shots at fixed tempo. Sway worsens with rushing. No count if tempo breaks. Goal is finding 'speed limit' where you can rotate stably."
+            },
+            "steps": {
+                "ja": [
+                    "小さめハーフで10球",
+                    "テンポを一定に保つ",
+                    "崩れたらノーカウント"
+                ],
+                "en": [
+                    "Hit 10 small half shots",
+                    "Keep tempo constant",
+                    "No count if tempo breaks"
+                ]
+            },
+            "reps": "10",
+            "tools": [
+                "ball"
+            ],
+            "ng": {
+                "ja": [
+                    "急いでテンポが崩れる"
+                ],
+                "en": [
+                    "Rushing and breaking tempo"
+                ]
+            },
+            "time_sec": 180,
+            "tags": [
+                "range_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "early_extension_too_little_sway_light_check_01",
+            "metric_key": "early_extension",
+            "direction": "too_little_sway",
+            "intensity": "light",
+            "variant_type": "CHECK",
+            "title": {
+                "ja": "左尻ポケットの移動確認",
+                "en": "Left Hip Pocket Movement Check"
+            },
+            "intent": {
+                "ja": "腰が動かなさすぎると回転も止まりやすい。構えから「左尻ポケットが少し後ろへ回る」かを確認してハーフ素振り。10回で動きが出るかチェック",
+                "en": "Hips not moving enough stops rotation too. Check if 'left hip pocket rotates slightly back' from address during half swings. Check for movement in 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "左尻ポケットの動きを確認",
+                    "「少し後ろへ回る」意識でハーフ",
+                    "動きが出るかを10回でチェック"
+                ],
+                "en": [
+                    "Check left hip pocket movement",
+                    "Half swing with 'rotate slightly back' feel",
+                    "Check for movement in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "腰が固まったまま振る"
+                ],
+                "en": [
+                    "Swinging with frozen hips"
+                ]
+            },
+            "time_sec": 90,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "early_extension_too_little_sway_light_sense_01",
+            "metric_key": "early_extension",
+            "direction": "too_little_sway",
+            "intensity": "light",
+            "variant_type": "SENSE",
+            "title": {
+                "ja": "左足カカト軽く浮かせ",
+                "en": "Lift Left Heel Slightly"
+            },
+            "intent": {
+                "ja": "回れない人は下半身が固まりがち。ハーフで左カカトを少し浮かせて回転を作る。回れる感覚が出たら、次は浮かせ量を減らす。10回で可動域を取り戻す",
+                "en": "Those who can't rotate tend to have frozen lower body. Create rotation by lifting left heel slightly in half swings. Reduce lift amount once rotation appears. Restore range in 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "左カカトを少し浮かせてハーフ",
+                    "回れる感覚が出たら浮かせ量を減らす",
+                    "可動域を10回で取り戻す"
+                ],
+                "en": [
+                    "Half swing lifting left heel slightly",
+                    "Reduce lift once rotation appears",
+                    "Restore range in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "カカトを上げすぎてバランス崩す"
+                ],
+                "en": [
+                    "Lifting heel too much and losing balance"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "early_extension_too_little_sway_light_control_01",
+            "metric_key": "early_extension",
+            "direction": "too_little_sway",
+            "intensity": "light",
+            "variant_type": "CONTROL",
+            "title": {
+                "ja": "骨盤だけ先に回す（小さく）",
+                "en": "Rotate Pelvis First (Small)"
+            },
+            "intent": {
+                "ja": "上体だけ回すと腰が置き去り。アドレス→骨盤をほんの少し回してからハーフ素振り。骨盤が先に動くと回れる。10回で「順番」を作る",
+                "en": "Rotating only upper body leaves hips behind. Rotate pelvis slightly before half swing. Pelvis moving first enables rotation. Create 'sequence' in 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "アドレスから骨盤を少し回す",
+                    "その後ハーフ素振り",
+                    "「骨盤が先」の順番を10回で作る"
+                ],
+                "en": [
+                    "Rotate pelvis slightly from address",
+                    "Then make half swing",
+                    "Create 'pelvis first' sequence in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "骨盤を動かさず腕で振る"
+                ],
+                "en": [
+                    "Swinging with arms without moving pelvis"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "early_extension_too_little_sway_light_transfer_01",
+            "metric_key": "early_extension",
+            "direction": "too_little_sway",
+            "intensity": "light",
+            "variant_type": "TRANSFER",
+            "title": {
+                "ja": "ハーフ3球（回転の音を作る）",
+                "en": "3 Half Shots (Create Rotation Sound)"
+            },
+            "intent": {
+                "ja": "実打3球。回れない人は手で当てに行く。音より「回転で当たった感」を優先。腰が回った感触が出たらOK、出なければ素振りに戻して順番を整える",
+                "en": "Hit 3 half shots. Those who can't rotate hit with hands. Prioritize 'hit with rotation feel' over sound. OK if you feel hip rotation, if not return to practice swings."
+            },
+            "steps": {
+                "ja": [
+                    "ハーフで3球だけ打つ",
+                    "「回転で当たった感」を優先",
+                    "感触が出なければ素振りに戻る"
+                ],
+                "en": [
+                    "Hit just 3 half shots",
+                    "Prioritize 'hit with rotation feel'",
+                    "Return to practice swings if no feel"
+                ]
+            },
+            "reps": "3",
+            "tools": [
+                "ball"
+            ],
+            "ng": {
+                "ja": [
+                    "手で当てに行く"
+                ],
+                "en": [
+                    "Hitting with just hands"
+                ]
+            },
+            "time_sec": 90,
+            "tags": [
+                "range_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "early_extension_too_little_sway_medium_check_01",
+            "metric_key": "early_extension",
+            "direction": "too_little_sway",
+            "intensity": "medium",
+            "variant_type": "CHECK",
+            "title": {
+                "ja": "スプリットスタンス回転チェック",
+                "en": "Split Stance Rotation Check"
+            },
+            "intent": {
+                "ja": "左足を半歩引いて構え、ハーフ素振り。引くと回転が出やすい。これで回れるなら通常スタンスでも回れる余地あり。回れた回数を10回で確認して差を把握",
+                "en": "Set up with left foot half step back, make half swings. Easier to rotate this way. If you can rotate here, you have room in normal stance. Check rotation count in 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "左足を半歩引いて構える",
+                    "ハーフ素振りで回れるか確認",
+                    "通常スタンスとの差を10回で把握"
+                ],
+                "en": [
+                    "Set up with left foot half step back",
+                    "Check if you can rotate in half swings",
+                    "Compare with normal stance in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "スタンスを変えても回れない"
+                ],
+                "en": [
+                    "Unable to rotate even with changed stance"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "early_extension_too_little_sway_medium_sense_01",
+            "metric_key": "early_extension",
+            "direction": "too_little_sway",
+            "intensity": "medium",
+            "variant_type": "SENSE",
+            "title": {
+                "ja": "右足内側への圧ドリル",
+                "en": "Right Foot Inside Pressure Drill"
+            },
+            "intent": {
+                "ja": "回れない人は右足内側の圧が抜けることが多い。ハーフで右足内側に圧を残しながら回す。圧が残ると腰が回る。10回で「踏んで回る」感覚を作る",
+                "en": "Those who can't rotate often lose pressure on inside of right foot. Rotate while keeping pressure on inside of right foot. Pressure remaining means hips rotate. Build 'step and rotate' feel in 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "右足内側に圧を残す意識",
+                    "圧を残しながらハーフ素振り",
+                    "「踏んで回る」感覚を10回で作る"
+                ],
+                "en": [
+                    "Focus on keeping pressure on right foot inside",
+                    "Half swing while keeping pressure",
+                    "Build 'step and rotate' feel in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "右足内側の圧が抜ける"
+                ],
+                "en": [
+                    "Losing pressure on right foot inside"
+                ]
+            },
+            "time_sec": 150,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "early_extension_too_little_sway_medium_control_01",
+            "metric_key": "early_extension",
+            "direction": "too_little_sway",
+            "intensity": "medium",
+            "variant_type": "CONTROL",
+            "title": {
+                "ja": "3拍子（骨盤→胸→腕）",
+                "en": "3-Count (Pelvis-Chest-Arms)"
+            },
+            "intent": {
+                "ja": "「1骨盤 2胸 3腕」でハーフ。順番が逆だと回れない。毎回1を丁寧に入れる。10回で順番固定し、腰が動く「再現性」を上げる",
+                "en": "Half swing with '1:pelvis 2:chest 3:arms'. Wrong sequence prevents rotation. Always carefully include step 1. Fix sequence in 10 reps to improve hip movement consistency."
+            },
+            "steps": {
+                "ja": [
+                    "「1骨盤→2胸→3腕」で素振り",
+                    "毎回1を丁寧に入れる",
+                    "順番固定を10回で作る"
+                ],
+                "en": [
+                    "Swing with '1:pelvis 2:chest 3:arms'",
+                    "Always carefully include step 1",
+                    "Fix sequence in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "1を飛ばして腕から動く"
+                ],
+                "en": [
+                    "Skipping step 1 and moving arms first"
+                ]
+            },
+            "time_sec": 150,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "early_extension_too_little_sway_medium_transfer_01",
+            "metric_key": "early_extension",
+            "direction": "too_little_sway",
+            "intensity": "medium",
+            "variant_type": "TRANSFER",
+            "title": {
+                "ja": "8割テンポ10球（回転優先）",
+                "en": "80% Tempo 10 Shots (Rotation Priority)"
+            },
+            "intent": {
+                "ja": "8割テンポで10球。回れない人は力むほど止まる。回転が出た回だけカウント。手で当てた感触が出たら中断して、1〜3の順番ドリルに戻す",
+                "en": "Hit 10 balls at 80% tempo. Those who can't rotate stop more when tensing. Only count reps with rotation. If you feel hitting with hands, stop and return to sequence drill."
+            },
+            "steps": {
+                "ja": [
+                    "8割テンポで10球打つ",
+                    "回転が出た回だけカウント",
+                    "手で当てた感触が出たら中断"
+                ],
+                "en": [
+                    "Hit 10 balls at 80% tempo",
+                    "Only count reps with rotation",
+                    "Stop if you feel hitting with hands"
+                ]
+            },
+            "reps": "10",
+            "tools": [
+                "ball"
+            ],
+            "ng": {
+                "ja": [
+                    "力んで回転が止まる"
+                ],
+                "en": [
+                    "Tensing up and stopping rotation"
+                ]
+            },
+            "time_sec": 180,
+            "tags": [
+                "range_ok"
+            ],
+            "cooldown_days": 7
+        }
+    ],
+    "maintain_drills": [
+        {
+            "drill_id": "early_extension_maintain_check_01",
+            "metric_key": "early_extension",
+            "direction": "maintain",
+            "intensity": "light",
+            "variant_type": "CHECK",
+            "title": {
+                "ja": "壁タッチ確認（30秒）",
+                "en": "Wall Touch Check (30 sec)"
+            },
+            "intent": {
+                "ja": "現状の良い腰の動きを確認し、維持する",
+                "en": "Confirm and maintain your current good hip movement"
+            },
+            "steps": {
+                "ja": [
+                    "壁に軽く触れて構える",
+                    "ハーフ素振りで離れないか確認",
+                    "30秒で5回できればOK"
+                ],
+                "en": [
+                    "Set up lightly touching wall",
+                    "Check if you stay in contact during half swings",
+                    "OK if 5 in 30 seconds"
+                ]
+            },
+            "reps": "5",
+            "tools": [
+                "wall"
+            ],
+            "ng": {
+                "ja": [
+                    "形だけで流す"
+                ],
+                "en": [
+                    "Going through the motions"
+                ]
+            },
+            "time_sec": 30,
+            "tags": [
+                "home_ok",
+                "quick"
+            ],
+            "cooldown_days": 3
+        }
+    ]
+}

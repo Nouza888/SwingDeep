@@ -1,0 +1,750 @@
+{
+    "meta": {
+        "version": "1.0.0",
+        "metric_key": "spine_angle",
+        "description": "Spine Angle drill pool - 16 drills"
+    },
+    "drills": [
+        {
+            "drill_id": "spine_angle_lose_forward_bend_light_check_01",
+            "metric_key": "spine_angle",
+            "direction": "lose_forward_bend",
+            "intensity": "light",
+            "variant_type": "CHECK",
+            "title": {
+                "ja": "壁お尻タッチ確認",
+                "en": "Wall Hip Touch Check"
+            },
+            "intent": {
+                "ja": "前傾がほどける瞬間を自覚し、前傾維持の基準を作る",
+                "en": "Become aware of when your forward bend breaks to establish a baseline"
+            },
+            "steps": {
+                "ja": [
+                    "壁にお尻を軽く当てて構える",
+                    "ハーフ素振りでお尻が壁から離れないか見る",
+                    "離れたら構え直し、離れずに10回"
+                ],
+                "en": [
+                    "Set up with hips lightly touching the wall",
+                    "Check if hips leave the wall during half swings",
+                    "Reset if they leave, complete 10 reps without leaving"
+                ]
+            },
+            "reps": "10",
+            "tools": [
+                "wall"
+            ],
+            "ng": {
+                "ja": [
+                    "腰だけ固定して上体が止まる"
+                ],
+                "en": [
+                    "Locking only your hips while your upper body freezes"
+                ]
+            },
+            "time_sec": 90,
+            "tags": [
+                "beginner_safe",
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "spine_angle_lose_forward_bend_light_sense_01",
+            "metric_key": "spine_angle",
+            "direction": "lose_forward_bend",
+            "intensity": "light",
+            "variant_type": "SENSE",
+            "title": {
+                "ja": "タオル前傾キープ",
+                "en": "Towel Forward Bend Hold"
+            },
+            "intent": {
+                "ja": "前傾が残る感覚をつくり、起き上がりを減らす",
+                "en": "Build the feeling of maintaining forward bend to reduce standing up"
+            },
+            "steps": {
+                "ja": [
+                    "胸と太ももの間にタオルを軽く挟む",
+                    "ハーフで5回、落ちそうなら一度停止",
+                    "タオルが残る形で2セット"
+                ],
+                "en": [
+                    "Lightly place a towel between chest and thighs",
+                    "Do 5 half swings, pause if towel is about to fall",
+                    "Complete 2 sets keeping the towel in place"
+                ]
+            },
+            "reps": "5x2",
+            "tools": [
+                "towel"
+            ],
+            "ng": {
+                "ja": [
+                    "反り腰で無理に前傾を作る"
+                ],
+                "en": [
+                    "Forcing forward bend with an arched lower back"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "beginner_safe",
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "spine_angle_lose_forward_bend_light_control_01",
+            "metric_key": "spine_angle",
+            "direction": "lose_forward_bend",
+            "intensity": "light",
+            "variant_type": "CONTROL",
+            "title": {
+                "ja": "トップ静止2秒ハーフ",
+                "en": "2-Second Top Pause Half Swing"
+            },
+            "intent": {
+                "ja": "起き上がるタイミングを可視化し、前傾維持を学習する",
+                "en": "Visualize when you stand up and learn to maintain forward bend"
+            },
+            "steps": {
+                "ja": [
+                    "ハーフで上げてトップで2秒止める",
+                    "止めた瞬間に胸が起きない形を探す",
+                    "ゆっくり戻す動きを10回"
+                ],
+                "en": [
+                    "Take half swing and pause 2 seconds at the top",
+                    "Find a position where chest doesn't rise when paused",
+                    "Slowly return, repeat 10 times"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "止めた瞬間に肩がすくむ"
+                ],
+                "en": [
+                    "Shoulders scrunching when you pause"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "spine_angle_lose_forward_bend_light_transfer_01",
+            "metric_key": "spine_angle",
+            "direction": "lose_forward_bend",
+            "intensity": "light",
+            "variant_type": "TRANSFER",
+            "title": {
+                "ja": "8割スピード3球だけ",
+                "en": "80% Speed - Just 3 Balls"
+            },
+            "intent": {
+                "ja": "前傾を守ったまま当てる感覚を実打に移す",
+                "en": "Transfer the feel of maintaining forward bend to real shots"
+            },
+            "steps": {
+                "ja": [
+                    "スピード8割でハーフ〜3/4を選ぶ",
+                    "3球だけ打ち、起きた感触が出たら中断",
+                    "中断後は素振りで形を戻す"
+                ],
+                "en": [
+                    "Choose half to 3/4 swing at 80% speed",
+                    "Hit only 3 balls, stop if you feel yourself standing up",
+                    "After stopping, reset form with practice swings"
+                ]
+            },
+            "reps": "3",
+            "tools": [
+                "ball"
+            ],
+            "ng": {
+                "ja": [
+                    "飛ばそうとして急ぐ"
+                ],
+                "en": [
+                    "Rushing trying to hit it far"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "range_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "spine_angle_lose_forward_bend_medium_check_01",
+            "metric_key": "spine_angle",
+            "direction": "lose_forward_bend",
+            "intensity": "medium",
+            "variant_type": "CHECK",
+            "title": {
+                "ja": "イス背もたれチェック",
+                "en": "Chair Backrest Check"
+            },
+            "intent": {
+                "ja": "前傾がほどける量を客観的に確認し、再現性を上げる",
+                "en": "Objectively check how much forward bend is lost to improve consistency"
+            },
+            "steps": {
+                "ja": [
+                    "お尻の後ろにイス背もたれを置く",
+                    "構えで軽く触れる距離に調整",
+                    "素振り中に触れ続けられるか確認"
+                ],
+                "en": [
+                    "Place chair backrest behind your hips",
+                    "Adjust to lightly touch at address",
+                    "Check if you maintain contact during swing"
+                ]
+            },
+            "reps": "10",
+            "tools": [
+                "chair"
+            ],
+            "ng": {
+                "ja": [
+                    "近すぎて動きが詰まる"
+                ],
+                "en": [
+                    "Too close, restricting movement"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "spine_angle_lose_forward_bend_medium_sense_01",
+            "metric_key": "spine_angle",
+            "direction": "lose_forward_bend",
+            "intensity": "medium",
+            "variant_type": "SENSE",
+            "title": {
+                "ja": "左わきタオル固定",
+                "en": "Left Armpit Towel Hold"
+            },
+            "intent": {
+                "ja": "胸と腕の一体感を作り、起き上がりを抑える",
+                "en": "Create connection between chest and arms to prevent standing up"
+            },
+            "steps": {
+                "ja": [
+                    "左わきにタオルを挟んで構える",
+                    "落とさずにハーフ素振りを10回",
+                    "わきが開く前に一度止めてやり直す"
+                ],
+                "en": [
+                    "Setup with towel under left armpit",
+                    "Do 10 half swings without dropping it",
+                    "Stop and reset if armpit opens"
+                ]
+            },
+            "reps": "10",
+            "tools": [
+                "towel"
+            ],
+            "ng": {
+                "ja": [
+                    "腕だけで上げて肩が詰まる"
+                ],
+                "en": [
+                    "Lifting with arms only, causing shoulder tension"
+                ]
+            },
+            "time_sec": 150,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "spine_angle_lose_forward_bend_medium_control_01",
+            "metric_key": "spine_angle",
+            "direction": "lose_forward_bend",
+            "intensity": "medium",
+            "variant_type": "CONTROL",
+            "title": {
+                "ja": "分割スイング（3拍子）",
+                "en": "Split Swing (3-Count)"
+            },
+            "intent": {
+                "ja": "胸と骨盤の同期を作り、前傾維持で回れるようにする",
+                "en": "Synchronize chest and pelvis to rotate while maintaining forward bend"
+            },
+            "steps": {
+                "ja": [
+                    "ハーフで「1上げる→2止める→3下ろす」",
+                    "止めた時に胸が起きたらやり直す",
+                    "テンポを一定にして10回"
+                ],
+                "en": [
+                    "Half swing: '1-up, 2-pause, 3-down'",
+                    "Reset if chest rises when paused",
+                    "Maintain tempo for 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "速くして誤魔化す"
+                ],
+                "en": [
+                    "Speeding up to hide flaws"
+                ]
+            },
+            "time_sec": 150,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "spine_angle_lose_forward_bend_medium_transfer_01",
+            "metric_key": "spine_angle",
+            "direction": "lose_forward_bend",
+            "intensity": "medium",
+            "variant_type": "TRANSFER",
+            "title": {
+                "ja": "ハーフ連続10球（テンポ固定）",
+                "en": "10 Consecutive Half Swings (Fixed Tempo)"
+            },
+            "intent": {
+                "ja": "前傾維持をテンポに紐づけ、実打で再現する",
+                "en": "Link forward bend maintenance to tempo for real shots"
+            },
+            "steps": {
+                "ja": [
+                    "ハーフで10球連続、ゆっくり一定テンポ",
+                    "当てにいかず\"同じ形\"だけ優先",
+                    "守れた回だけカウントする"
+                ],
+                "en": [
+                    "Hit 10 consecutive half swings at slow, consistent tempo",
+                    "Prioritize 'same form' over making contact",
+                    "Only count reps where form was maintained"
+                ]
+            },
+            "reps": "10",
+            "tools": [
+                "ball"
+            ],
+            "ng": {
+                "ja": [
+                    "結果を見てテンポが速くなる"
+                ],
+                "en": [
+                    "Tempo speeding up after seeing results"
+                ]
+            },
+            "time_sec": 180,
+            "tags": [
+                "range_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "spine_angle_too_much_forward_bend_light_check_01",
+            "metric_key": "spine_angle",
+            "direction": "too_much_forward_bend",
+            "intensity": "light",
+            "variant_type": "CHECK",
+            "title": {
+                "ja": "クラブ水平チェック",
+                "en": "Club Horizontal Check"
+            },
+            "intent": {
+                "ja": "前傾の深さを客観化し、適正な前傾角を見つける",
+                "en": "Objectify forward bend depth to find the proper angle"
+            },
+            "steps": {
+                "ja": [
+                    "クラブを胸の前で水平に持つ",
+                    "首が詰まらず呼吸できる前傾を探す",
+                    "その角度で10秒キープを3回"
+                ],
+                "en": [
+                    "Hold club horizontally in front of chest",
+                    "Find a forward bend where neck isn't cramped and you can breathe",
+                    "Hold that angle for 10 seconds, 3 times"
+                ]
+            },
+            "reps": "10sx3",
+            "tools": [
+                "club"
+            ],
+            "ng": {
+                "ja": [
+                    "背中を丸めて倒れる"
+                ],
+                "en": [
+                    "Falling forward with rounded back"
+                ]
+            },
+            "time_sec": 90,
+            "tags": [
+                "home_ok",
+                "beginner_safe"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "spine_angle_too_much_forward_bend_light_sense_01",
+            "metric_key": "spine_angle",
+            "direction": "too_much_forward_bend",
+            "intensity": "light",
+            "variant_type": "SENSE",
+            "title": {
+                "ja": "胸を高くする構え直し",
+                "en": "Chest-Up Address Reset"
+            },
+            "intent": {
+                "ja": "猫背由来の深い前傾を減らし、楽な前傾を作る",
+                "en": "Reduce deep forward bend from slouching, create comfortable posture"
+            },
+            "steps": {
+                "ja": [
+                    "胸を\"少しだけ\"高くしてから前傾を作る",
+                    "首が長く見える位置で止める",
+                    "同じ作り方で5回リセットする"
+                ],
+                "en": [
+                    "Raise chest 'slightly' before creating forward bend",
+                    "Stop at position where neck looks long",
+                    "Reset 5 times with same method"
+                ]
+            },
+            "reps": "5",
+            "tools": [
+                "mirror"
+            ],
+            "ng": {
+                "ja": [
+                    "胸を反らせて腰が反る"
+                ],
+                "en": [
+                    "Arching chest causing lower back to arch"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "spine_angle_too_much_forward_bend_light_control_01",
+            "metric_key": "spine_angle",
+            "direction": "too_much_forward_bend",
+            "intensity": "light",
+            "variant_type": "CONTROL",
+            "title": {
+                "ja": "骨盤前傾→背骨まっすぐ",
+                "en": "Pelvis Tilt → Straight Spine"
+            },
+            "intent": {
+                "ja": "折る前傾ではなく、伸ばして傾ける前傾を学ぶ",
+                "en": "Learn to tilt while extending, not bending"
+            },
+            "steps": {
+                "ja": [
+                    "骨盤を軽く前傾させる",
+                    "背骨を\"反らずに長く\"する",
+                    "その形でハーフ素振りを10回"
+                ],
+                "en": [
+                    "Slightly tilt pelvis forward",
+                    "Make spine 'long without arching'",
+                    "Do 10 half swings in that form"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "腰を反って胸を突き出す"
+                ],
+                "en": [
+                    "Arching lower back and pushing chest out"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "spine_angle_too_much_forward_bend_light_transfer_01",
+            "metric_key": "spine_angle",
+            "direction": "too_much_forward_bend",
+            "intensity": "light",
+            "variant_type": "TRANSFER",
+            "title": {
+                "ja": "アドレスだけ5回リセット",
+                "en": "Address-Only 5 Resets"
+            },
+            "intent": {
+                "ja": "深い前傾の\"作り方の癖\"をリセットし、再現性を上げる",
+                "en": "Reset the 'habit of creating' deep forward bend to improve consistency"
+            },
+            "steps": {
+                "ja": [
+                    "アドレス→一度立つ、を繰り返す",
+                    "毎回「胸高め→前傾→脱力」の順で作る",
+                    "5回とも同じ感覚ならOK"
+                ],
+                "en": [
+                    "Repeat: address → stand up",
+                    "Each time: 'chest up → forward bend → relax'",
+                    "OK if all 5 feel the same"
+                ]
+            },
+            "reps": "5",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "急いで形を作る"
+                ],
+                "en": [
+                    "Rushing to create the form"
+                ]
+            },
+            "time_sec": 90,
+            "tags": [
+                "home_ok",
+                "beginner_safe"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "spine_angle_too_much_forward_bend_medium_check_01",
+            "metric_key": "spine_angle",
+            "direction": "too_much_forward_bend",
+            "intensity": "medium",
+            "variant_type": "CHECK",
+            "title": {
+                "ja": "かかと体重チェック",
+                "en": "Heel Weight Check"
+            },
+            "intent": {
+                "ja": "つま先寄りによる深い前傾を抑え、適正な前傾を作る",
+                "en": "Reduce deep forward bend from toe-heavy stance, create proper posture"
+            },
+            "steps": {
+                "ja": [
+                    "構えで体重がつま先に寄ってないか確認",
+                    "母指球6：かかと4くらいに整える",
+                    "その重心でアドレスを3回作り直す"
+                ],
+                "en": [
+                    "Check if weight is on toes at address",
+                    "Adjust to roughly 60% ball of foot, 40% heel",
+                    "Recreate address 3 times with that weight distribution"
+                ]
+            },
+            "reps": "3",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "かかとに乗りすぎて反り腰になる"
+                ],
+                "en": [
+                    "Too much heel weight causing lower back arch"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "spine_angle_too_much_forward_bend_medium_sense_01",
+            "metric_key": "spine_angle",
+            "direction": "too_much_forward_bend",
+            "intensity": "medium",
+            "variant_type": "SENSE",
+            "title": {
+                "ja": "胸ポケット上向きドリル",
+                "en": "Chest Pocket Upward Drill"
+            },
+            "intent": {
+                "ja": "猫背を抑え、胸が潰れない前傾を作る",
+                "en": "Reduce slouching, create forward bend without collapsing chest"
+            },
+            "steps": {
+                "ja": [
+                    "胸ポケットが少し前を向く程度に胸を起こす",
+                    "そのまま前傾を作り、首が詰まらない角度にする",
+                    "同じ形で10秒キープを3回"
+                ],
+                "en": [
+                    "Raise chest so chest pocket faces slightly forward",
+                    "Create forward bend while keeping neck uncramped",
+                    "Hold same form for 10 seconds, 3 times"
+                ]
+            },
+            "reps": "10sx3",
+            "tools": [
+                "mirror"
+            ],
+            "ng": {
+                "ja": [
+                    "胸を上げすぎて腰が反る"
+                ],
+                "en": [
+                    "Raising chest too much causing lower back arch"
+                ]
+            },
+            "time_sec": 150,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "spine_angle_too_much_forward_bend_medium_control_01",
+            "metric_key": "spine_angle",
+            "direction": "too_much_forward_bend",
+            "intensity": "medium",
+            "variant_type": "CONTROL",
+            "title": {
+                "ja": "肩甲骨ゆらし→構え",
+                "en": "Shoulder Blade Shake → Address"
+            },
+            "intent": {
+                "ja": "力んで作る深い前傾を減らし、脱力した前傾を定着させる",
+                "en": "Reduce tense deep forward bend, establish relaxed posture"
+            },
+            "steps": {
+                "ja": [
+                    "構える前に肩甲骨を前後に2回ゆらす",
+                    "力を抜いたまま前傾を作る",
+                    "その形でハーフ素振りを10回"
+                ],
+                "en": [
+                    "Before address, shake shoulder blades back and forth twice",
+                    "Create forward bend while staying relaxed",
+                    "Do 10 half swings in that form"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "肩をすくめて固める"
+                ],
+                "en": [
+                    "Shrugging and tensing shoulders"
+                ]
+            },
+            "time_sec": 150,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "spine_angle_too_much_forward_bend_medium_transfer_01",
+            "metric_key": "spine_angle",
+            "direction": "too_much_forward_bend",
+            "intensity": "medium",
+            "variant_type": "TRANSFER",
+            "title": {
+                "ja": "スプリットスタンス素振り",
+                "en": "Split Stance Practice Swing"
+            },
+            "intent": {
+                "ja": "丸めて倒れる癖を抑え、適正前傾のまま振れる形に移行する",
+                "en": "Reduce the habit of rounding over, transition to proper forward bend while swinging"
+            },
+            "steps": {
+                "ja": [
+                    "左足を半歩引いて構える",
+                    "深い前傾にならない形でハーフ素振りを10回",
+                    "形が作れたら通常スタンスで3回確認"
+                ],
+                "en": [
+                    "Set up with left foot half a step back",
+                    "Do 10 half swings without deep forward bend",
+                    "When form is good, confirm with 3 normal stance swings"
+                ]
+            },
+            "reps": "10+3",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "足幅を広げすぎて動きが止まる"
+                ],
+                "en": [
+                    "Stance too wide, restricting movement"
+                ]
+            },
+            "time_sec": 180,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        }
+    ],
+    "maintain_drills": [
+        {
+            "drill_id": "spine_angle_maintain_check_01",
+            "metric_key": "spine_angle",
+            "direction": "maintain",
+            "intensity": "light",
+            "variant_type": "CHECK",
+            "title": {
+                "ja": "壁お尻タッチ確認（30秒）",
+                "en": "Wall Hip Touch Check (30 sec)"
+            },
+            "intent": {
+                "ja": "現状の良い前傾キープを確認し、維持する",
+                "en": "Confirm and maintain your current good forward bend"
+            },
+            "steps": {
+                "ja": [
+                    "壁にお尻を軽く当てて構える",
+                    "ハーフ素振りで離れないか確認",
+                    "30秒で5回できればOK"
+                ],
+                "en": [
+                    "Set up with hips lightly touching wall",
+                    "Check if hips stay during half swings",
+                    "OK if you can do 5 in 30 seconds"
+                ]
+            },
+            "reps": "5",
+            "tools": [
+                "wall"
+            ],
+            "ng": {
+                "ja": [
+                    "形だけで流す"
+                ],
+                "en": [
+                    "Going through the motions without focus"
+                ]
+            },
+            "time_sec": 30,
+            "tags": [
+                "home_ok",
+                "quick"
+            ],
+            "cooldown_days": 3
+        }
+    ]
+}

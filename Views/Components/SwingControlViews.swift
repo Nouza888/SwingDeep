@@ -1,32 +1,76 @@
 import SwiftUI
 import UIKit
 
-// MARK: - Control Area
+// MARK: - コントロールコンポーネント
 
+/// このファイルには動画コントロール関連のコンポーネントが含まれます。
+///
+/// ## 含まれるコンポーネント
+/// - ControlArea: メインコントロールエリア（下部シート）
+/// - CustomSlider: シークバー（マーカー付き）
+/// - PlaybackControls: 再生コントロール群
+/// - SettingsButtons: 設定ボタン群（アドレス・インパクト・ゴースト）
+/// - AnalyzeButton: 診断実行ボタン
+/// - CoachSelectionView: コーチ選択画面
+/// - ContinuousButton: 長押し連続実行ボタン
+
+// MARK: - コントロールエリア
+
+/// コントロールエリア（下部シート）
+///
+/// ## 機能
+/// - 動画の再生コントロール
+/// - アドレス・インパクト設定ボタン
+/// - 診断実行ボタン
+///
+/// - Note: ガラスモーフィズム風のデザインを採用
 struct ControlArea: View {
     @ObservedObject var viewModel: VideoViewModel
     @Binding var showReport: Bool
     
     var body: some View {
         VStack(spacing: Theme.Spacing.md.rawValue) {
+            // Status Guide
             if let guideText = getGuideText() {
                 HStack(spacing: Theme.Spacing.xs.rawValue) {
-                    Image(systemName: getGuideIcon()).font(.system(size: 12, weight: .semibold))
-                    Text(guideText).font(.system(size: 11))
+                    Image(systemName: getGuideIcon())
+                        .font(.system(size: 12, weight: .semibold))
+                    Text(guideText)
+                        .font(.system(size: 11))
                 }
                 .foregroundColor(getGuideColor())
-                .padding(.horizontal, Theme.Spacing.sm.rawValue).padding(.vertical, 4)
-                .background(Capsule().fill(getGuideColor().opacity(0.1)))
+                .padding(.horizontal, Theme.Spacing.sm.rawValue)
+                .padding(.vertical, 4)
+                .background(
+                    Capsule()
+                        .fill(getGuideColor().opacity(0.1))
+                )
             }
+            // Seek Bar
             CustomSlider(
-                value: Binding(get: { viewModel.currentTime }, set: { viewModel.seek(to: $0) }),
+                value: Binding(
+                    get: { viewModel.currentTime },
+                    set: { viewModel.seek(to: $0) }
+                ),
                 range: 0...viewModel.duration,
-                addressTime: viewModel.addressTime, impactTime: viewModel.impactTime, duration: viewModel.duration,
-                onEditingChanged: { editing in if editing { viewModel.startSeeking() } else { viewModel.endSeeking() } }
+                addressTime: viewModel.addressTime,
+                impactTime: viewModel.impactTime,
+                duration: viewModel.duration,
+                onEditingChanged: { editing in
+                    if editing { viewModel.startSeeking() } else { viewModel.endSeeking() }
+                }
             )
+            
+            // Playback Controls
             PlaybackControls(viewModel: viewModel)
+            
+            // Settings Buttons
             SettingsButtons(viewModel: viewModel)
-            if viewModel.canAnalyze { AnalyzeButton(viewModel: viewModel, showReport: $showReport) }
+            
+            // Analyze Button
+            if viewModel.canAnalyze {
+                AnalyzeButton(viewModel: viewModel, showReport: $showReport)
+            }
         }
         .padding(Theme.Spacing.md.rawValue)
         .glassCard(elevation: ThemeGlassCardModifier.Elevation.medium)
@@ -39,16 +83,26 @@ struct ControlArea: View {
         default: return nil
         }
     }
+    
     private func getGuideIcon() -> String {
-        switch viewModel.status { case .setting: return "hand.tap.fill"; case .complete: return "checkmark.circle.fill"; default: return "info.circle" }
+        switch viewModel.status {
+        case .setting: return "hand.tap.fill"
+        case .complete: return "checkmark.circle.fill"
+        default: return "info.circle"
+        }
     }
+    
     private func getGuideColor() -> Color {
-        switch viewModel.status { case .complete: return Theme.forestGreen; default: return Theme.textSecondary }
+        switch viewModel.status {
+        case .complete: return Theme.forestGreen
+        default: return Theme.textSecondary
+        }
     }
 }
 
-// MARK: - Custom Slider
-
+/// カスタムスライダー: 動画のシークバーとマーカー表示を統合したコンポーネント
+/// - アドレスとインパクトの位置をマーカーで表示します
+/// - Note: SwiftUIの標準Sliderの上に、GeometryReaderを使ってマーカーを重ねています
 struct CustomSlider: View {
     @Binding var value: Double
     var range: ClosedRange<Double>
@@ -59,85 +113,168 @@ struct CustomSlider: View {
     
     var body: some View {
         ZStack {
+            // マーカー表示層（スライダーの背景に重ねる）
+            // GeometryReaderでスライダーの幅を取得し、時刻に応じた位置にマーカーを配置
             GeometryReader { geometry in
                 ZStack(alignment: .leading) {
+                    // アドレスマーカー（赤色の円）
                     if let address = addressTime, duration > 0 {
                         let offsetX = calculateMarkerOffset(timeMs: address, duration: duration, width: geometry.size.width)
-                        Circle().fill(Theme.address).frame(width: 12, height: 12).offset(x: offsetX)
+                        Circle()
+                            .fill(Theme.address)
+                            .frame(width: 12, height: 12)
+                            .offset(x: offsetX)
                     }
+                    
+                    // インパクトマーカー（青色の円）
                     if let impact = impactTime, duration > 0 {
                         let offsetX = calculateMarkerOffset(timeMs: impact, duration: duration, width: geometry.size.width)
-                        Circle().fill(Theme.impact).frame(width: 12, height: 12).offset(x: offsetX)
+                        Circle()
+                            .fill(Theme.impact)
+                            .frame(width: 12, height: 12)
+                            .offset(x: offsetX)
                     }
                 }
-                .frame(height: 4).padding(.horizontal, 10).offset(y: 10)
-            }.frame(height: 20)
-            Slider(value: $value, in: range, onEditingChanged: onEditingChanged).accentColor(Theme.accent)
+                .frame(height: 4)
+                .padding(.horizontal, 10) // スライダーのパディングに合わせる
+                .offset(y: 10) // スライダーのトラック中心位置に合わせる
+            }
+            .frame(height: 20)
+            
+            Slider(value: $value, in: range, onEditingChanged: onEditingChanged)
+                .accentColor(Theme.accent)
         }
     }
     
+    /// マーカーのX座標オフセットを計算するヘルパーメソッド
+    /// - Parameters:
+    ///   - timeMs: マーカーを配置する時刻（ミリ秒）
+    ///   - duration: 動画の総再生時間（秒）
+    ///   - width: スライダーの幅（ポイント）
+    /// - Returns: マーカー円の中心を配置するX座標オフセット
     private func calculateMarkerOffset(timeMs: Int, duration: Double, width: CGFloat) -> CGFloat {
-        let timeRatio = Double(timeMs) / 1000.0 / duration
-        return (timeRatio * width) - 6
+        let timeRatio = Double(timeMs) / 1000.0 / duration // 0.0〜1.0の範囲
+        let markerRadius: CGFloat = 6 // マーカー円の半径
+        return (timeRatio * width) - markerRadius
     }
 }
 
-// MARK: - Playback Controls
-
+/// 再生コントロール群
+/// - コマ送り/戻し、再生/停止、速度変更を統合したUIです
+/// - Note: コマ送りボタンは長押しで連続実行できます（ContinuousButton使用）
 struct PlaybackControls: View {
     @ObservedObject var viewModel: VideoViewModel
     
     var body: some View {
         HStack(spacing: 20) {
+            // コマ戻し
             VStack(spacing: 2) {
-                ContinuousButton(imageName: "chevron.backward.circle.fill", action: { HapticFeedback.light(); viewModel.stepFrame(count: -1) })
-                Text("previous_frame".localized).font(.system(size: 10)).foregroundColor(Theme.textSecondary)
+                ContinuousButton(
+                    imageName: "chevron.backward.circle.fill",
+                    action: {
+                        HapticFeedback.light()
+                        viewModel.stepFrame(count: -1)
+                    }
+                )
+                Text("previous_frame".localized)
+                    .font(.system(size: 10))
+                    .foregroundColor(Theme.textSecondary)
             }
+            
             Spacer()
+            
+            // 再生/一時停止ボタン（小さめに）
             Button(action: { viewModel.togglePlayPause() }) {
                 Image(systemName: viewModel.isPlaying ? "pause.circle.fill" : "play.circle.fill")
-                    .font(.system(size: 50, weight: .medium)).foregroundColor(Theme.forestGreen)
+                    .font(.system(size: 50, weight: .medium))
+                    .foregroundColor(Theme.forestGreen)
                     .shadow(color: Theme.forestGreen.opacity(0.3), radius: 8)
             }
+            
             Spacer()
+            
+            // コマ送り
             VStack(spacing: 2) {
-                ContinuousButton(imageName: "chevron.forward.circle.fill", action: { HapticFeedback.light(); viewModel.stepFrame(count: 1) })
-                Text("next_frame".localized).font(.system(size: 10)).foregroundColor(Theme.textSecondary)
+                ContinuousButton(
+                    imageName: "chevron.forward.circle.fill",
+                    action: {
+                        HapticFeedback.light()
+                        viewModel.stepFrame(count: 1)
+                    }
+                )
+                Text("next_frame".localized)
+                    .font(.system(size: 10))
+                    .foregroundColor(Theme.textSecondary)
             }
+            
+            // 速度変更メニュー
             Menu {
                 Button("0.25x") { viewModel.setPlaybackRate(0.25) }
                 Button("0.5x") { viewModel.setPlaybackRate(0.5) }
                 Button("1.0x") { viewModel.setPlaybackRate(1.0) }
             } label: {
                 Text(String(format: "%.2gx", viewModel.playbackRate))
-                    .font(.caption.bold()).padding(.horizontal, 8).padding(.vertical, 4)
-                    .background(Theme.surface.opacity(0.5)).cornerRadius(4).foregroundColor(Theme.textPrimary)
+                    .font(.caption.bold())
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(Theme.surface.opacity(0.5))
+                    .cornerRadius(4)
+                    .foregroundColor(Theme.textPrimary)
             }
         }
     }
 }
 
-// MARK: - Settings Buttons
-
+/// 設定ボタン群（アドレス・インパクト・ゴースト）
+/// - ユーザーがスイングの重要な瞬間を設定するためのボタンです
 struct SettingsButtons: View {
     @ObservedObject var viewModel: VideoViewModel
     
     var body: some View {
         HStack(spacing: 8) {
-            SettingButton(title: "Address", icon: "figure.golf", isSet: viewModel.addressTime != nil,
-                         timestamp: viewModel.addressTime, color: Theme.address, action: { HapticFeedback.medium(); viewModel.setAddress() })
-            SettingButton(title: "Impact", icon: "figure.golf", isSet: viewModel.impactTime != nil,
-                         timestamp: viewModel.impactTime, color: Theme.impact, action: { HapticFeedback.medium(); viewModel.setImpact() })
+            // アドレス設定ボタン
+            SettingButton(
+                title: "Address",
+                icon: "figure.golf",
+                isSet: viewModel.addressTime != nil,
+                timestamp: viewModel.addressTime,
+                color: Theme.address,
+                action: {
+                    HapticFeedback.medium() // 決定感のある振動
+                    viewModel.setAddress()
+                }
+            )
+            
+            // インパクト設定ボタン
+            SettingButton(
+                title: "Impact",
+                icon: "figure.golf",
+                isSet: viewModel.impactTime != nil,
+                timestamp: viewModel.impactTime,
+                color: Theme.impact,
+                action: {
+                    HapticFeedback.medium() // 決定感のある振動
+                    viewModel.setImpact()
+                }
+            )
+            
+            // ゴースト表示切り替えボタン
             Button(action: { viewModel.toggleGhost() }) {
                 VStack(spacing: 4) {
-                    Image(systemName: viewModel.showGhosts ? "eye" : "eye.slash").font(.system(size: 20))
-                    Text("Ghost").font(.caption.bold())
+                    Image(systemName: viewModel.showGhosts ? "eye" : "eye.slash")
+                        .font(.system(size: 20))
+                    Text("Ghost")
+                        .font(.caption.bold())
                 }
-                .frame(maxWidth: .infinity).frame(height: 60)
+                .frame(maxWidth: .infinity)
+                .frame(height: 60) // SettingButtonと高さを合わせる（概算）
                 .background(Theme.surface.opacity(0.5))
                 .foregroundColor(viewModel.showGhosts ? Theme.textPrimary : Theme.textSecondary)
                 .cornerRadius(12)
-                .overlay(RoundedRectangle(cornerRadius: 12).stroke(Theme.textSecondary.opacity(0.3), lineWidth: 1))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Theme.textSecondary.opacity(0.3), lineWidth: 1)
+                )
             }
             .disabled(viewModel.addressTime == nil && viewModel.impactTime == nil)
             .opacity(viewModel.addressTime == nil && viewModel.impactTime == nil ? 0.5 : 1.0)
@@ -145,30 +282,54 @@ struct SettingsButtons: View {
     }
 }
 
+/// 個別の設定ボタン（アドレス/インパクト用）
+/// - 設定状態に応じて色とアイコンが変化します
+/// - Parameter timestamp: 設定された時刻（ミリ秒）。nilの場合は未設定
 struct SettingButton: View {
-    let title: String; let icon: String; let isSet: Bool; let timestamp: Int?; let color: Color; let action: () -> Void
+    let title: String
+    let icon: String
+    let isSet: Bool
+    let timestamp: Int?
+    let color: Color
+    let action: () -> Void
+    
     var body: some View {
         Button(action: action) {
             VStack(spacing: 4) {
                 HStack {
                     Image(systemName: isSet ? "checkmark.circle.fill" : "circle")
                     Text(title)
-                }.font(.subheadline.bold())
+                }
+                .font(.subheadline.bold())
+                
                 if let ms = timestamp {
-                    Text(String(format: "%.2f s", Double(ms) / 1000.0)).font(.caption2).foregroundColor(Theme.textSecondary)
+                    Text(String(format: "%.2f s", Double(ms) / 1000.0))
+                        .font(.caption2)
+                        .foregroundColor(Theme.textSecondary)
                 }
             }
-            .frame(maxWidth: .infinity).padding(.vertical, 10)
-            .background(isSet ? color.opacity(0.2) : Theme.surface.opacity(0.5))
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 10)
+            .background(
+                isSet ? color.opacity(0.2) : Theme.surface.opacity(0.5)
+            )
             .foregroundColor(isSet ? color : Theme.textPrimary)
             .cornerRadius(12)
-            .overlay(RoundedRectangle(cornerRadius: 12).stroke(isSet ? color : Theme.textSecondary.opacity(0.3), lineWidth: 1))
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(isSet ? color : Theme.textSecondary.opacity(0.3), lineWidth: 1)
+            )
         }
     }
 }
 
-// MARK: - Analyze Button
-
+/// 診断実行ボタン
+/// - アドレスとインパクトが設定されている場合のみ表示されます
+/// - Note: 診断完了後は「レポートを見る」ボタンに変化します
+/// 診断実行ボタン
+///
+/// - アドレスとインパクトが設定されている場合のみ表示されます
+/// - Note: 診断完了後は「レポートを見る」ボタンに変化します
 struct AnalyzeButton: View {
     @ObservedObject var viewModel: VideoViewModel
     @Binding var showReport: Bool
@@ -176,42 +337,70 @@ struct AnalyzeButton: View {
     
     var body: some View {
         VStack(spacing: 8) {
+            // 残り回数ピル（診断前のみ表示）
             if viewModel.status != .complete {
-                let usageLimiter = UsageLimiter.shared
-                HStack(spacing: 4) {
-                    Image(systemName: "bolt.fill").font(.system(size: 10))
-                    if usageLimiter.isUnlimited {
-                        Text("unlimited".localized).font(.system(size: 11, weight: .medium))
-                    } else {
-                        Text(String(format: "monthly_remaining".localized, usageLimiter.displayRemainingCount, usageLimiter.monthlyLimit))
-                            .font(.system(size: 11, weight: .medium))
-                    }
-                }
-                .foregroundColor(usageLimiter.isUnlimited || usageLimiter.displayRemainingCount > 5 ? Theme.textSecondary : Theme.accentOrange)
+                remainingCountBadge
             }
-            Button(action: {
-                if viewModel.status == .complete { HapticFeedback.success(); showReport = true }
-                else { HapticFeedback.medium(); showCoachSelection = true }
-            }) {
-                HStack {
-                    Image(systemName: "sparkles")
-                    Text(viewModel.status == .complete ? "view_report".localized : "analyze_swing".localized)
-                }
-                .font(Theme.Typography.headlineMedium.font).foregroundColor(.white)
-                .padding(.vertical, Theme.Spacing.base.rawValue).padding(.horizontal, Theme.Spacing.xl.rawValue)
-                .frame(maxWidth: .infinity).background(Theme.heroGradient).cornerRadius(Theme.cornerRadius)
-                .shadow(color: Theme.championshipGold.opacity(0.4), radius: 12, x: 0, y: 6)
+            
+            // メインボタン
+            Button(action: handleButtonTap) {
+                buttonLabel
             }
         }
         .sheet(isPresented: $showCoachSelection) {
             CoachSelectionView(viewModel: viewModel, isPresented: $showCoachSelection)
-                .presentationDetents([.medium]).presentationDragIndicator(.visible)
+                .presentationDetents([.medium])
+                .presentationDragIndicator(.visible)
+        }
+    }
+    
+    /// 残り回数バッジ
+    private var remainingCountBadge: some View {
+        let usageLimiter = UsageLimiter.shared
+        
+        return HStack(spacing: 4) {
+            Image(systemName: "bolt.fill")
+                .font(.system(size: 10))
+            if usageLimiter.isUnlimited {
+                Text("unlimited".localized)
+                    .font(.system(size: 11, weight: .medium))
+            } else {
+                Text(String(format: "monthly_remaining".localized, usageLimiter.displayRemainingCount, usageLimiter.monthlyLimit))
+                    .font(.system(size: 11, weight: .medium))
+            }
+        }
+        .foregroundColor(usageLimiter.isUnlimited || usageLimiter.displayRemainingCount > 5 ? Theme.textSecondary : Theme.accentOrange)
+    }
+    
+    /// ボタンラベル
+    private var buttonLabel: some View {
+        HStack {
+            Image(systemName: "sparkles")
+            Text(viewModel.status == .complete ? "view_report".localized : "analyze_swing".localized)
+        }
+        .font(Theme.Typography.headlineMedium.font)
+        .foregroundColor(.white)
+        .padding(.vertical, Theme.Spacing.base.rawValue)
+        .padding(.horizontal, Theme.Spacing.xl.rawValue)
+        .frame(maxWidth: .infinity)
+        .background(Theme.heroGradient)
+        .cornerRadius(Theme.cornerRadius)
+        .shadow(color: Theme.championshipGold.opacity(0.4), radius: 12, x: 0, y: 6)
+    }
+    
+    /// ボタンタップ処理
+    private func handleButtonTap() {
+        if viewModel.status == .complete {
+            HapticFeedback.success()
+            showReport = true
+        } else {
+            HapticFeedback.medium()
+            showCoachSelection = true
         }
     }
 }
 
-// MARK: - Coach Selection View
-
+/// コーチ選択ビュー（シート表示用）
 struct CoachSelectionView: View {
     @ObservedObject var viewModel: VideoViewModel
     @Binding var isPresented: Bool
@@ -219,62 +408,114 @@ struct CoachSelectionView: View {
     
     var body: some View {
         VStack(spacing: 20) {
-            Text("select_coach_title".localized).font(.headline).padding(.top)
-            Text("select_coach_desc".localized).font(.caption).foregroundColor(Theme.textSecondary).multilineTextAlignment(.center).padding(.horizontal)
+            Text("select_coach_title".localized)
+                .font(.headline)
+                .padding(.top)
+            
+            Text("select_coach_desc".localized)
+                .font(.caption)
+                .foregroundColor(Theme.textSecondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal)
+            
             ScrollView {
                 VStack(spacing: 12) {
                     let personas = CoachPersona.availablePersonas(for: languageManager.currentLanguage)
+                    
                     ForEach(personas) { persona in
                         Button(action: {
                             HapticFeedback.selection()
                             viewModel.coachMode = persona
+                            // IDを保存
                             UserDefaults.standard.set(persona.id, forKey: "coachModeId")
+                            
                             isPresented = false
+                            // 少し遅延させてシートが閉じた後に診断を開始する（アニメーション競合回避）
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                HapticFeedback.medium(); viewModel.runDiagnosis()
+                                HapticFeedback.medium()
+                                viewModel.runDiagnosis()
                             }
                         }) {
                             HStack(spacing: 16) {
-                                Text(persona.icon).font(.system(size: 40)).frame(width: 60, height: 60)
-                                    .background(Theme.surface).clipShape(Circle()).shadow(color: Color.black.opacity(0.1), radius: 4)
+                                Text(persona.icon)
+                                    .font(.system(size: 40))
+                                    .frame(width: 60, height: 60)
+                                    .background(Theme.surface)
+                                    .clipShape(Circle())
+                                    .shadow(color: Color.black.opacity(0.1), radius: 4)
+                                
                                 VStack(alignment: .leading, spacing: 4) {
-                                    Text(persona.name).font(.headline).foregroundColor(Theme.textPrimary)
-                                    Text(persona.description).font(.caption).foregroundColor(Theme.textSecondary).multilineTextAlignment(.leading)
+                                    Text(persona.name)
+                                        .font(.headline)
+                                        .foregroundColor(Theme.textPrimary)
+                                    
+                                    Text(persona.description)
+                                        .font(.caption)
+                                        .foregroundColor(Theme.textSecondary)
+                                        .multilineTextAlignment(.leading)
                                 }
+                                
                                 Spacer()
+                                
                                 if viewModel.coachMode.id == persona.id {
-                                    Image(systemName: "checkmark.circle.fill").foregroundColor(Theme.forestGreen).font(.title2)
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .foregroundColor(Theme.forestGreen)
+                                        .font(.title2)
                                 }
                             }
-                            .padding().background(Theme.background).cornerRadius(12)
-                            .overlay(RoundedRectangle(cornerRadius: 12).stroke(viewModel.coachMode.id == persona.id ? Theme.forestGreen : Color.clear, lineWidth: 2))
-                        }.buttonStyle(PlainButtonStyle())
+                            .padding()
+                            .background(Theme.background)
+                            .cornerRadius(12)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(viewModel.coachMode.id == persona.id ? Theme.forestGreen : Color.clear, lineWidth: 2)
+                            )
+                        }
+                        .buttonStyle(PlainButtonStyle())
                     }
-                }.padding()
+                }
+                .padding()
             }
-        }.background(Theme.surface.ignoresSafeArea())
+        }
+        .background(Theme.surface.ignoresSafeArea())
     }
 }
+    
 
-// MARK: - Continuous Button
 
+/// 長押しで連続的にアクションを実行するボタン
+/// - コマ送り/コマ戻しボタンで使用されます
+/// - Note: タイマーを使用して0.1秒間隔でアクションを繰り返します
+/// - Important: ボタンを離すとタイマーは自動的に停止します
 struct ContinuousButton: View {
-    let imageName: String; let action: () -> Void
+    let imageName: String
+    let action: () -> Void
+    
     @State private var timer: Timer?
     
     var body: some View {
         Button(action: {}) {
-            Image(systemName: imageName).font(.system(size: 40)).foregroundColor(Theme.textPrimary)
+            Image(systemName: imageName)
+                .font(.system(size: 40))
+                .foregroundColor(Theme.textPrimary)
         }
         .simultaneousGesture(
             DragGesture(minimumDistance: 0)
                 .onChanged { _ in
                     if timer == nil {
+                        // 最初の1回を即座に実行（レスポンシブな操作感のため）
                         action()
-                        timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in action() }
+                        // タイマーで連続実行（0.1秒間隔）
+                        timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
+                            action()
+                        }
                     }
                 }
-                .onEnded { _ in timer?.invalidate(); timer = nil }
+                .onEnded { _ in
+                    // ボタンを離したらタイマーを停止してクリーンアップ
+                    timer?.invalidate()
+                    timer = nil
+                }
         )
     }
 }

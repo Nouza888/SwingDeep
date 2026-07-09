@@ -1,0 +1,736 @@
+{
+    "meta": {
+        "version": "1.0.0",
+        "metric_key": "hand_position",
+        "description": "Hand Lift / Hand Position drill pool - 16 drills"
+    },
+    "drills": [
+        {
+            "drill_id": "hand_position_too_much_lift_light_check_01",
+            "metric_key": "hand_position",
+            "direction": "too_much_lift",
+            "intensity": "light",
+            "variant_type": "CHECK",
+            "title": {
+                "ja": "インパクト高さ確認",
+                "en": "Impact Height Check"
+            },
+            "intent": {
+                "ja": "構えた時の手の高さを基準に、ハーフ素振り。インパクトで大きく高くなると浮きすぎ。高さが近い回数を10回確認",
+                "en": "Use hand height at address as reference for half swings. If much higher at impact, too much lift. Check reps where height is close in 10 swings."
+            },
+            "steps": {
+                "ja": [
+                    "構えの手の高さを基準にする",
+                    "ハーフ素振りで高さを確認",
+                    "高さが近い回数を10回で確認"
+                ],
+                "en": [
+                    "Use address hand height as reference",
+                    "Check height in half swings",
+                    "Check reps with close height in 10"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "手が大きく浮き上がる"
+                ],
+                "en": [
+                    "Hands lifting significantly"
+                ]
+            },
+            "time_sec": 90,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "hand_position_too_much_lift_light_sense_01",
+            "metric_key": "hand_position",
+            "direction": "too_much_lift",
+            "intensity": "light",
+            "variant_type": "SENSE",
+            "title": {
+                "ja": "左手低め通過ドリル",
+                "en": "Left Hand Low Pass Drill"
+            },
+            "intent": {
+                "ja": "インパクトで左手が低く通る意識でハーフ。浮く人は手元が上に跳ねる。低く通す感覚を10回で覚える",
+                "en": "Half swing focusing on left hand passing low at impact. Those who lift have hands jumping up. Learn low passing feel in 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "左手が低く通る意識",
+                    "ハーフで確認",
+                    "低く通す感覚を10回で覚える"
+                ],
+                "en": [
+                    "Focus on left hand passing low",
+                    "Check with half swings",
+                    "Learn low passing feel in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "手元が上に跳ねる"
+                ],
+                "en": [
+                    "Hands jumping up"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "hand_position_too_much_lift_light_control_01",
+            "metric_key": "hand_position",
+            "direction": "too_much_lift",
+            "intensity": "light",
+            "variant_type": "CONTROL",
+            "title": {
+                "ja": "フィニッシュ腰高止め",
+                "en": "Hip Height Finish Stop"
+            },
+            "intent": {
+                "ja": "フィニッシュを腰の高さで止める。手が浮く人は止められない。止められる形を10回で制御",
+                "en": "Stop finish at hip height. Those with hand lift can't stop. Control stoppable form in 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "フィニッシュを腰の高さで止める",
+                    "止められるか確認",
+                    "止められる形を10回で制御"
+                ],
+                "en": [
+                    "Stop finish at hip height",
+                    "Check if you can stop",
+                    "Control stoppable form in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "止められず振り抜く"
+                ],
+                "en": [
+                    "Unable to stop, swinging through"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "hand_position_too_much_lift_light_transfer_01",
+            "metric_key": "hand_position",
+            "direction": "too_much_lift",
+            "intensity": "light",
+            "variant_type": "TRANSFER",
+            "title": {
+                "ja": "ハーフ3球（高さだけ）",
+                "en": "3 Half Shots (Height Only)"
+            },
+            "intent": {
+                "ja": "実打3球。結果無視で手の高さだけ意識。浮いたら即中断。高さが安定した回だけ成功",
+                "en": "Hit 3 shots. Ignore result, only focus on hand height. Stop immediately if lifting. Only count reps with stable height."
+            },
+            "steps": {
+                "ja": [
+                    "ハーフで3球打つ",
+                    "手の高さだけ意識",
+                    "浮いたら即中断"
+                ],
+                "en": [
+                    "Hit 3 half shots",
+                    "Focus only on hand height",
+                    "Stop immediately if lifting"
+                ]
+            },
+            "reps": "3",
+            "tools": [
+                "ball"
+            ],
+            "ng": {
+                "ja": [
+                    "結果を気にして高さを忘れる"
+                ],
+                "en": [
+                    "Forgetting height while caring about result"
+                ]
+            },
+            "time_sec": 90,
+            "tags": [
+                "range_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "hand_position_too_much_lift_medium_check_01",
+            "metric_key": "hand_position",
+            "direction": "too_much_lift",
+            "intensity": "medium",
+            "variant_type": "CHECK",
+            "title": {
+                "ja": "インパクトバッグ確認",
+                "en": "Impact Bag Check"
+            },
+            "intent": {
+                "ja": "バッグやクッションに当て、手が上に逃げてないか確認。浮くと上を叩きやすい。正面に当てられる回数を10回で確認",
+                "en": "Hit bag or cushion, check if hands escape upward. Lifting tends to hit top. Check reps hitting straight in 10."
+            },
+            "steps": {
+                "ja": [
+                    "バッグやクッションに当てる",
+                    "手が上に逃げてないか確認",
+                    "正面に当てられる回数を10回で確認"
+                ],
+                "en": [
+                    "Hit bag or cushion",
+                    "Check if hands escape up",
+                    "Check straight hits in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [
+                "bag"
+            ],
+            "ng": {
+                "ja": [
+                    "上を叩いてしまう"
+                ],
+                "en": [
+                    "Hitting the top"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "hand_position_too_much_lift_medium_sense_01",
+            "metric_key": "hand_position",
+            "direction": "too_much_lift",
+            "intensity": "medium",
+            "variant_type": "SENSE",
+            "title": {
+                "ja": "ハンドファースト誇張",
+                "en": "Exaggerated Hand Forward"
+            },
+            "intent": {
+                "ja": "ややハンドファーストを誇張してハーフ。浮きすぎる人は誇張してやっと適正。10回で手元位置を修正",
+                "en": "Half swing with slightly exaggerated hand forward. Those who lift too much need exaggeration to reach proper. Fix hand position in 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "ハンドファーストを誇張する",
+                    "誇張してハーフ",
+                    "手元位置を10回で修正"
+                ],
+                "en": [
+                    "Exaggerate hand forward",
+                    "Half swing with exaggeration",
+                    "Fix hand position in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "誇張せず浮いたまま"
+                ],
+                "en": [
+                    "Not exaggerating and still lifting"
+                ]
+            },
+            "time_sec": 150,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "hand_position_too_much_lift_medium_control_01",
+            "metric_key": "hand_position",
+            "direction": "too_much_lift",
+            "intensity": "medium",
+            "variant_type": "CONTROL",
+            "title": {
+                "ja": "左手一本ハーフ",
+                "en": "Left Hand Only Half"
+            },
+            "intent": {
+                "ja": "左手だけでハーフ素振り。浮きすぎると制御できない。制御できる高さを10回で定着",
+                "en": "Half swing with left hand only. Can't control if lifting too much. Establish controllable height in 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "左手だけでハーフ素振り",
+                    "制御できる高さを探す",
+                    "10回で定着させる"
+                ],
+                "en": [
+                    "Half swing left hand only",
+                    "Find controllable height",
+                    "Establish in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "制御できず浮く"
+                ],
+                "en": [
+                    "Unable to control and lifting"
+                ]
+            },
+            "time_sec": 150,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "hand_position_too_much_lift_medium_transfer_01",
+            "metric_key": "hand_position",
+            "direction": "too_much_lift",
+            "intensity": "medium",
+            "variant_type": "TRANSFER",
+            "title": {
+                "ja": "8割テンポ10球（高さ一定）",
+                "en": "80% Tempo 10 Shots (Height Constant)"
+            },
+            "intent": {
+                "ja": "10球。高さが変わらない回だけカウント。浮き出したらノーカウントで素振りに戻す",
+                "en": "Hit 10 shots. Only count reps where height stays same. No count if lifting starts, return to practice swings."
+            },
+            "steps": {
+                "ja": [
+                    "8割テンポで10球",
+                    "高さが変わらない回だけカウント",
+                    "浮いたらノーカウントで素振りへ"
+                ],
+                "en": [
+                    "Hit 10 at 80% tempo",
+                    "Only count constant height reps",
+                    "No count if lifting, return to swings"
+                ]
+            },
+            "reps": "10",
+            "tools": [
+                "ball"
+            ],
+            "ng": {
+                "ja": [
+                    "浮いても続けて打つ"
+                ],
+                "en": [
+                    "Continuing to hit even when lifting"
+                ]
+            },
+            "time_sec": 180,
+            "tags": [
+                "range_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "hand_position_too_little_lift_light_check_01",
+            "metric_key": "hand_position",
+            "direction": "too_little_lift",
+            "intensity": "light",
+            "variant_type": "CHECK",
+            "title": {
+                "ja": "手元潰れ確認",
+                "en": "Hand Crush Check"
+            },
+            "intent": {
+                "ja": "インパクトで手が体に近づきすぎてないか確認。近づくほど潰れ。適度な距離を保てた回数を10回で把握",
+                "en": "Check if hands get too close to body at impact. Closer means crushed. Check reps with appropriate distance in 10 swings."
+            },
+            "steps": {
+                "ja": [
+                    "インパクトで手が体に近づきすぎないか確認",
+                    "適度な距離を保つ",
+                    "保てた回数を10回で把握"
+                ],
+                "en": [
+                    "Check if hands too close to body at impact",
+                    "Keep appropriate distance",
+                    "Check reps with distance in 10"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "体に引きつけすぎる"
+                ],
+                "en": [
+                    "Pulling too close to body"
+                ]
+            },
+            "time_sec": 90,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "hand_position_too_little_lift_light_sense_01",
+            "metric_key": "hand_position",
+            "direction": "too_little_lift",
+            "intensity": "light",
+            "variant_type": "SENSE",
+            "title": {
+                "ja": "手元スペース意識",
+                "en": "Hand Space Awareness"
+            },
+            "intent": {
+                "ja": "インパクトで\"手元の通り道\"を作る意識。潰れる人は体に引きつけすぎ。スペースを感じながら10回ハーフ",
+                "en": "Create 'hand path' awareness at impact. Those who crush pull too close. Feel space in 10 half swings."
+            },
+            "steps": {
+                "ja": [
+                    "手元の通り道を作る意識",
+                    "体に引きつけすぎない",
+                    "スペースを感じながら10回ハーフ"
+                ],
+                "en": [
+                    "Create hand path awareness",
+                    "Don't pull too close to body",
+                    "Feel space in 10 half swings"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "体に引きつけて潰れる"
+                ],
+                "en": [
+                    "Pulling close and crushing"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "hand_position_too_little_lift_light_control_01",
+            "metric_key": "hand_position",
+            "direction": "too_little_lift",
+            "intensity": "light",
+            "variant_type": "CONTROL",
+            "title": {
+                "ja": "フィニッシュ大きめ",
+                "en": "Larger Finish"
+            },
+            "intent": {
+                "ja": "フィニッシュを少し大きめに出す。潰れは途中で止まりやすい。止まらず出せる形を10回で作る",
+                "en": "Extend finish slightly larger. Crushing tends to stop midway. Create form that extends without stopping in 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "フィニッシュを少し大きめに出す",
+                    "途中で止まらない",
+                    "止まらず出せる形を10回で作る"
+                ],
+                "en": [
+                    "Extend finish slightly larger",
+                    "Don't stop midway",
+                    "Create non-stopping form in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "途中で止まって潰れる"
+                ],
+                "en": [
+                    "Stopping midway and crushing"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "hand_position_too_little_lift_light_transfer_01",
+            "metric_key": "hand_position",
+            "direction": "too_little_lift",
+            "intensity": "light",
+            "variant_type": "TRANSFER",
+            "title": {
+                "ja": "ハーフ3球（手元距離）",
+                "en": "3 Half Shots (Hand Distance)"
+            },
+            "intent": {
+                "ja": "実打3球。手元が近づきすぎないかだけを見る。距離を保てた球だけ成功",
+                "en": "Hit 3 shots. Only watch for hands getting too close. Only count shots with distance maintained."
+            },
+            "steps": {
+                "ja": [
+                    "ハーフで3球打つ",
+                    "手元が近づきすぎないかだけ見る",
+                    "距離を保てた球だけ成功"
+                ],
+                "en": [
+                    "Hit 3 half shots",
+                    "Only watch for hands too close",
+                    "Only count distance-kept shots"
+                ]
+            },
+            "reps": "3",
+            "tools": [
+                "ball"
+            ],
+            "ng": {
+                "ja": [
+                    "潰れても続けて打つ"
+                ],
+                "en": [
+                    "Continuing even when crushing"
+                ]
+            },
+            "time_sec": 90,
+            "tags": [
+                "range_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "hand_position_too_little_lift_medium_check_01",
+            "metric_key": "hand_position",
+            "direction": "too_little_lift",
+            "intensity": "medium",
+            "variant_type": "CHECK",
+            "title": {
+                "ja": "腰前スペース確認",
+                "en": "Space in Front of Hips Check"
+            },
+            "intent": {
+                "ja": "腰の前にスペースがあるかを確認してハーフ。潰れる人は腰前が詰まる。詰まらない回数を10回でチェック",
+                "en": "Check for space in front of hips during half swing. Those who crush have crowded hip front. Check non-crowded reps in 10."
+            },
+            "steps": {
+                "ja": [
+                    "腰の前にスペースがあるか確認",
+                    "詰まらないようにハーフ",
+                    "詰まらない回数を10回でチェック"
+                ],
+                "en": [
+                    "Check for space in front of hips",
+                    "Half swing without crowding",
+                    "Check non-crowded reps in 10"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "腰前が詰まる"
+                ],
+                "en": [
+                    "Hip front crowding"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "hand_position_too_little_lift_medium_sense_01",
+            "metric_key": "hand_position",
+            "direction": "too_little_lift",
+            "intensity": "medium",
+            "variant_type": "SENSE",
+            "title": {
+                "ja": "右手押し出し感覚",
+                "en": "Right Hand Push Feel"
+            },
+            "intent": {
+                "ja": "切り返しで右手が前に出る感覚を作る。潰れは引きすぎ合図。押し出す→回す順で10回",
+                "en": "Create feel of right hand pushing forward at transition. Crushing signals pulling too much. Push → rotate sequence for 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "切り返しで右手が前に出る感覚",
+                    "押し出す→回す順で素振り",
+                    "10回で感覚を作る"
+                ],
+                "en": [
+                    "Feel right hand pushing forward at transition",
+                    "Push → rotate sequence",
+                    "Create feel in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "引きすぎて潰れる"
+                ],
+                "en": [
+                    "Pulling too much and crushing"
+                ]
+            },
+            "time_sec": 150,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "hand_position_too_little_lift_medium_control_01",
+            "metric_key": "hand_position",
+            "direction": "too_little_lift",
+            "intensity": "medium",
+            "variant_type": "CONTROL",
+            "title": {
+                "ja": "両手ワイド通過",
+                "en": "Both Hands Wide Pass"
+            },
+            "intent": {
+                "ja": "インパクトで両手が広く通過する意識。潰れは狭くなりがち。ワイドを保って10回",
+                "en": "Feel both hands passing wide at impact. Crushing tends to narrow. Keep wide for 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "インパクトで両手が広く通過する意識",
+                    "狭くならないように",
+                    "ワイドを保って10回"
+                ],
+                "en": [
+                    "Feel both hands passing wide at impact",
+                    "Keep from narrowing",
+                    "Keep wide for 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "狭くなって潰れる"
+                ],
+                "en": [
+                    "Narrowing and crushing"
+                ]
+            },
+            "time_sec": 150,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "hand_position_too_little_lift_medium_transfer_01",
+            "metric_key": "hand_position",
+            "direction": "too_little_lift",
+            "intensity": "medium",
+            "variant_type": "TRANSFER",
+            "title": {
+                "ja": "8割テンポ10球（スペース優先）",
+                "en": "80% Tempo 10 Shots (Space Priority)"
+            },
+            "intent": {
+                "ja": "10球。結果より手元スペース。潰れたらノーカウント。形が安定したら次回は速度UP",
+                "en": "Hit 10 shots. Space over results. No count if crushed. Increase speed next time if form is stable."
+            },
+            "steps": {
+                "ja": [
+                    "8割テンポで10球",
+                    "結果より手元スペース",
+                    "潰れたらノーカウント"
+                ],
+                "en": [
+                    "Hit 10 at 80% tempo",
+                    "Space over results",
+                    "No count if crushed"
+                ]
+            },
+            "reps": "10",
+            "tools": [
+                "ball"
+            ],
+            "ng": {
+                "ja": [
+                    "潰れても続けて打つ"
+                ],
+                "en": [
+                    "Continuing even when crushing"
+                ]
+            },
+            "time_sec": 180,
+            "tags": [
+                "range_ok"
+            ],
+            "cooldown_days": 7
+        }
+    ],
+    "maintain_drills": [
+        {
+            "drill_id": "hand_position_maintain_check_01",
+            "metric_key": "hand_position",
+            "direction": "maintain",
+            "intensity": "light",
+            "variant_type": "CHECK",
+            "title": {
+                "ja": "手元位置確認（30秒）",
+                "en": "Hand Position Check (30 sec)"
+            },
+            "intent": {
+                "ja": "現状の良い手元位置を確認し、維持する",
+                "en": "Confirm and maintain your current good hand position"
+            },
+            "steps": {
+                "ja": [
+                    "構えで手元位置を確認",
+                    "ハーフ素振りで5回",
+                    "30秒でできればOK"
+                ],
+                "en": [
+                    "Check hand position at address",
+                    "5 half swings",
+                    "OK if done in 30 seconds"
+                ]
+            },
+            "reps": "5",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "形だけで流す"
+                ],
+                "en": [
+                    "Going through the motions"
+                ]
+            },
+            "time_sec": 30,
+            "tags": [
+                "home_ok",
+                "quick"
+            ],
+            "cooldown_days": 3
+        }
+    ]
+}

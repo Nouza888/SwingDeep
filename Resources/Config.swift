@@ -1,27 +1,23 @@
 import Foundation
 
-/// アプリケーションのグローバル設定
-///
-/// ## 使用箇所
-/// - バージョン表示（設定画面）
-/// - LLMプロバイダーの切り替え
-/// - デバッグフラグ
+/// アプリケーション設定ファイル
+/// - Important: このファイルにはAPIキーを含めないでください
+/// - Note: LLM APIキーはFirebase Functions経由で管理されます
 struct AppConfig {
     
-    // MARK: - Version
+    // MARK: - LLM Configuration
     
-    /// アプリバージョン
-    static let appVersion = "1.0.0"
-    
-    // MARK: - LLM Settings
-    
-    /// LLMプロバイダー: "firebase" / "gemini"
-    /// - firebase: Firebase Cloud Functions 経由 (Vertex AI)
-    /// - gemini: Google AI SDK 直接呼び出し
+    /// LLMプロバイダー（将来の切り替え用）
     static let llmProvider: String = "firebase"
     
-    // MARK: - Debug
+    /// Geminiモデル名（Functions側で使用する参照値）
+    static let geminiModel: String = "gemini-2.5-flash-lite"
     
-    /// デバッグモードフラグ
-    static let isDebugMode: Bool = false
+    // MARK: - App Settings
+    
+    /// アプリのバージョン
+    static let appVersion: String = "2.0.0"
+    
+    /// デバッグモード
+    static let isDebugMode: Bool = true
 }
