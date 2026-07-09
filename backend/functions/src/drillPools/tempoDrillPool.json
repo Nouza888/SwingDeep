@@ -1,0 +1,738 @@
+{
+    "meta": {
+        "version": "1.0.0",
+        "metric_key": "tempo",
+        "description": "Tempo drill pool - 16 drills"
+    },
+    "drills": [
+        {
+            "drill_id": "tempo_too_fast_downswing_light_check_01",
+            "metric_key": "tempo",
+            "direction": "too_fast_downswing",
+            "intensity": "light",
+            "variant_type": "CHECK",
+            "title": {
+                "ja": "音でテンポ確認",
+                "en": "Tempo Check by Sound"
+            },
+            "intent": {
+                "ja": "「上げる音：下ろす音」を同じ長さでハーフ素振り。ダウンが速いと音が短くなる。上下同じリズムで10回できるか確認",
+                "en": "Half swing with same length 'up sound : down sound'. Fast down makes short sound. Check if you can maintain same rhythm up and down for 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "上げる音と下ろす音を同じ長さに",
+                    "ハーフ素振りで確認",
+                    "同じリズムで10回できるか"
+                ],
+                "en": [
+                    "Keep up and down sound same length",
+                    "Check with half swings",
+                    "See if 10 reps with same rhythm"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "ダウンの音が短くなる"
+                ],
+                "en": [
+                    "Down sound becoming shorter"
+                ]
+            },
+            "time_sec": 90,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "tempo_too_fast_downswing_light_sense_01",
+            "metric_key": "tempo",
+            "direction": "too_fast_downswing",
+            "intensity": "light",
+            "variant_type": "SENSE",
+            "title": {
+                "ja": "3秒トップドリル",
+                "en": "3-Second Top Drill"
+            },
+            "intent": {
+                "ja": "トップで「1・2・3」と数えてから下ろす。速すぎる人は待てない。待っても力が抜ける形を10回で作る",
+                "en": "Count '1-2-3' at top before lowering. Those too fast can't wait. Create form where you can wait without losing power in 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "トップで「1・2・3」と数える",
+                    "数えてから下ろす",
+                    "待っても力が抜ける形を10回"
+                ],
+                "en": [
+                    "Count '1-2-3' at top",
+                    "Lower after counting",
+                    "Form with wait but no power loss in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "待てずにすぐ下ろす"
+                ],
+                "en": [
+                    "Unable to wait and lowering immediately"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "tempo_too_fast_downswing_light_control_01",
+            "metric_key": "tempo",
+            "direction": "too_fast_downswing",
+            "intensity": "light",
+            "variant_type": "CONTROL",
+            "title": {
+                "ja": "メトロノーム素振り",
+                "en": "Metronome Swing"
+            },
+            "intent": {
+                "ja": "一定テンポ（例：60bpm）で上げ下げ。ダウンだけ速くならないか確認。ズレたら即やり直し。10回で一定化",
+                "en": "Swing up and down at constant tempo (e.g. 60bpm). Check if down only becomes faster. Reset immediately if off. Stabilize in 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "60bpmのテンポで上げ下げ",
+                    "ダウンだけ速くならないか確認",
+                    "ズレたら即やり直し、10回で一定化"
+                ],
+                "en": [
+                    "Swing up/down at 60bpm",
+                    "Check if down becomes faster",
+                    "Reset if off, stabilize in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [
+                "metronome"
+            ],
+            "ng": {
+                "ja": [
+                    "ダウンだけテンポが速くなる"
+                ],
+                "en": [
+                    "Only down tempo becoming faster"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "tempo_too_fast_downswing_light_transfer_01",
+            "metric_key": "tempo",
+            "direction": "too_fast_downswing",
+            "intensity": "light",
+            "variant_type": "TRANSFER",
+            "title": {
+                "ja": "8割テンポ3球",
+                "en": "80% Tempo 3 Shots"
+            },
+            "intent": {
+                "ja": "実打3球。速く打ちたい欲を抑え、同じリズムだけを優先。テンポを守れた球だけ成功",
+                "en": "Hit 3 shots. Suppress urge to hit fast, prioritize only same rhythm. Only count shots where tempo was kept."
+            },
+            "steps": {
+                "ja": [
+                    "8割テンポで3球",
+                    "速く打ちたい欲を抑える",
+                    "テンポを守れた球だけ成功"
+                ],
+                "en": [
+                    "Hit 3 at 80% tempo",
+                    "Suppress urge to hit fast",
+                    "Only count tempo-kept shots"
+                ]
+            },
+            "reps": "3",
+            "tools": [
+                "ball"
+            ],
+            "ng": {
+                "ja": [
+                    "速く振ってリズム崩す"
+                ],
+                "en": [
+                    "Swinging fast and breaking rhythm"
+                ]
+            },
+            "time_sec": 90,
+            "tags": [
+                "range_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "tempo_too_fast_downswing_medium_check_01",
+            "metric_key": "tempo",
+            "direction": "too_fast_downswing",
+            "intensity": "medium",
+            "variant_type": "CHECK",
+            "title": {
+                "ja": "シャドースイング同期",
+                "en": "Shadow Swing Sync"
+            },
+            "intent": {
+                "ja": "自分の影を見て、上げ下げの長さが同じか確認。ダウンが速いと影が急に動く。影が滑らかになるまで10回",
+                "en": "Watch your shadow, check if up and down length are same. Fast down makes shadow move suddenly. Practice until shadow is smooth for 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "自分の影を見ながら素振り",
+                    "上げ下げの長さが同じか確認",
+                    "影が滑らかになるまで10回"
+                ],
+                "en": [
+                    "Swing while watching shadow",
+                    "Check if up/down length same",
+                    "Until shadow smooth for 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "影が急に動く"
+                ],
+                "en": [
+                    "Shadow moving suddenly"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "outdoor"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "tempo_too_fast_downswing_medium_sense_01",
+            "metric_key": "tempo",
+            "direction": "too_fast_downswing",
+            "intensity": "medium",
+            "variant_type": "SENSE",
+            "title": {
+                "ja": "切り返し脱力ドリル",
+                "en": "Transition Relaxation Drill"
+            },
+            "intent": {
+                "ja": "トップで一瞬脱力してから下ろす。力むと速くなる。脱力しても当てられる感覚を10回で覚える",
+                "en": "Briefly relax at top before lowering. Tension makes faster. Learn to hit even while relaxed in 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "トップで一瞬脱力する",
+                    "脱力してから下ろす",
+                    "脱力しても当てられる感覚を10回"
+                ],
+                "en": [
+                    "Briefly relax at top",
+                    "Lower after relaxing",
+                    "Feel hitting while relaxed in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "力んで速くなる"
+                ],
+                "en": [
+                    "Tensing up and getting faster"
+                ]
+            },
+            "time_sec": 150,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "tempo_too_fast_downswing_medium_control_01",
+            "metric_key": "tempo",
+            "direction": "too_fast_downswing",
+            "intensity": "medium",
+            "variant_type": "CONTROL",
+            "title": {
+                "ja": "2:1テンポ固定",
+                "en": "2:1 Tempo Lock"
+            },
+            "intent": {
+                "ja": "「2で上げて1で下ろす」をハーフで厳守。下ろしが速くなったら即中断。10回成功でテンポ定着",
+                "en": "Strictly follow '2 up, 1 down' in half swing. Stop immediately if down becomes faster. 10 successful reps to establish tempo."
+            },
+            "steps": {
+                "ja": [
+                    "「2で上げて1で下ろす」を厳守",
+                    "下ろしが速くなったら即中断",
+                    "10回成功でテンポ定着"
+                ],
+                "en": [
+                    "Strictly follow '2 up, 1 down'",
+                    "Stop if down becomes faster",
+                    "10 successes to establish tempo"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "下ろしが速くなる"
+                ],
+                "en": [
+                    "Down becoming faster"
+                ]
+            },
+            "time_sec": 150,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "tempo_too_fast_downswing_medium_transfer_01",
+            "metric_key": "tempo",
+            "direction": "too_fast_downswing",
+            "intensity": "medium",
+            "variant_type": "TRANSFER",
+            "title": {
+                "ja": "連続10球（テンポ最優先）",
+                "en": "10 Consecutive (Tempo Priority)"
+            },
+            "intent": {
+                "ja": "10球連続。結果は見ない。テンポが崩れた回はノーカウント。安定したリズムだけを積み上げる",
+                "en": "Hit 10 consecutive shots. Don't watch results. No count if tempo breaks. Only accumulate stable rhythm."
+            },
+            "steps": {
+                "ja": [
+                    "10球連続で打つ",
+                    "結果は見ない",
+                    "テンポが崩れた回はノーカウント"
+                ],
+                "en": [
+                    "Hit 10 consecutive shots",
+                    "Don't watch results",
+                    "No count if tempo breaks"
+                ]
+            },
+            "reps": "10",
+            "tools": [
+                "ball"
+            ],
+            "ng": {
+                "ja": [
+                    "結果を見てテンポを忘れる"
+                ],
+                "en": [
+                    "Watching result and forgetting tempo"
+                ]
+            },
+            "time_sec": 180,
+            "tags": [
+                "range_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "tempo_too_slow_downswing_light_check_01",
+            "metric_key": "tempo",
+            "direction": "too_slow_downswing",
+            "intensity": "light",
+            "variant_type": "CHECK",
+            "title": {
+                "ja": "下ろし遅れ確認",
+                "en": "Down Delay Check"
+            },
+            "intent": {
+                "ja": "トップからインパクトまでを数え、極端に長くなってないか確認。間延びしていたら遅すぎ。適度なテンポで10回修正",
+                "en": "Count from top to impact, check if extremely long. If dragging, too slow. Fix with appropriate tempo in 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "トップからインパクトまでを数える",
+                    "極端に長くなってないか確認",
+                    "適度なテンポで10回修正"
+                ],
+                "en": [
+                    "Count from top to impact",
+                    "Check if extremely long",
+                    "Fix with appropriate tempo in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "間延びして遅すぎる"
+                ],
+                "en": [
+                    "Dragging and being too slow"
+                ]
+            },
+            "time_sec": 90,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "tempo_too_slow_downswing_light_sense_01",
+            "metric_key": "tempo",
+            "direction": "too_slow_downswing",
+            "intensity": "light",
+            "variant_type": "SENSE",
+            "title": {
+                "ja": "パンッと切り返す意識",
+                "en": "Snappy Transition Feel"
+            },
+            "intent": {
+                "ja": "トップから「パンッ」と一気に入る感覚でハーフ。遅い人は入りが鈍い。入りだけを速くする感覚を10回で作る",
+                "en": "Half swing with 'snap' feel entering from top. Slow people have dull entry. Create faster entry feel only in 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "トップから「パンッ」と入る意識",
+                    "入りだけを速くする感覚",
+                    "10回で作る"
+                ],
+                "en": [
+                    "Feel 'snap' entry from top",
+                    "Faster entry feel only",
+                    "Create in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "入りが鈍いまま"
+                ],
+                "en": [
+                    "Entry remaining dull"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "tempo_too_slow_downswing_light_control_01",
+            "metric_key": "tempo",
+            "direction": "too_slow_downswing",
+            "intensity": "light",
+            "variant_type": "CONTROL",
+            "title": {
+                "ja": "切り返し即スタート",
+                "en": "Immediate Transition Start"
+            },
+            "intent": {
+                "ja": "トップで止まらず、そのまま下ろす。止まりすぎ＝遅い。止めない連続動作を10回で定着",
+                "en": "Lower without stopping at top. Stopping too much = slow. Establish continuous motion without stopping in 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "トップで止まらずそのまま下ろす",
+                    "止めない連続動作を意識",
+                    "10回で定着させる"
+                ],
+                "en": [
+                    "Lower without stopping at top",
+                    "Focus on continuous motion",
+                    "Establish in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "トップで止まりすぎる"
+                ],
+                "en": [
+                    "Stopping too much at top"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "tempo_too_slow_downswing_light_transfer_01",
+            "metric_key": "tempo",
+            "direction": "too_slow_downswing",
+            "intensity": "light",
+            "variant_type": "TRANSFER",
+            "title": {
+                "ja": "ハーフ3球（切り返しだけ意識）",
+                "en": "3 Half Shots (Transition Only)"
+            },
+            "intent": {
+                "ja": "実打3球。飛距離無視で切り返しの速さだけに集中。入りが良かった球だけ成功",
+                "en": "Hit 3 shots. Ignore distance, focus only on transition speed. Only count shots with good entry."
+            },
+            "steps": {
+                "ja": [
+                    "ハーフで3球打つ",
+                    "切り返しの速さだけに集中",
+                    "入りが良かった球だけ成功"
+                ],
+                "en": [
+                    "Hit 3 half shots",
+                    "Focus only on transition speed",
+                    "Only count good entry shots"
+                ]
+            },
+            "reps": "3",
+            "tools": [
+                "ball"
+            ],
+            "ng": {
+                "ja": [
+                    "遅い入りのまま打つ"
+                ],
+                "en": [
+                    "Hitting with slow entry"
+                ]
+            },
+            "time_sec": 90,
+            "tags": [
+                "range_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "tempo_too_slow_downswing_medium_check_01",
+            "metric_key": "tempo",
+            "direction": "too_slow_downswing",
+            "intensity": "medium",
+            "variant_type": "CHECK",
+            "title": {
+                "ja": "メトロノーム短縮",
+                "en": "Metronome Shortened"
+            },
+            "intent": {
+                "ja": "やや速めテンポ（例：70bpm）で上げ下げ。遅い人は付いていけない。付いていけるかを10回で確認",
+                "en": "Swing up/down at slightly faster tempo (e.g. 70bpm). Slow people can't keep up. Check if you can keep up in 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "70bpmのテンポで上げ下げ",
+                    "付いていけるか確認",
+                    "10回で確認する"
+                ],
+                "en": [
+                    "Swing up/down at 70bpm",
+                    "Check if you can keep up",
+                    "Check in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [
+                "metronome"
+            ],
+            "ng": {
+                "ja": [
+                    "テンポに付いていけない"
+                ],
+                "en": [
+                    "Unable to keep up with tempo"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "tempo_too_slow_downswing_medium_sense_01",
+            "metric_key": "tempo",
+            "direction": "too_slow_downswing",
+            "intensity": "medium",
+            "variant_type": "SENSE",
+            "title": {
+                "ja": "下半身先行ドリル",
+                "en": "Lower Body Lead Drill"
+            },
+            "intent": {
+                "ja": "切り返しで下半身を先に動かす。遅い人は上体待ちになりがち。先に動く感覚を10回で作る",
+                "en": "Move lower body first at transition. Slow people tend to wait with upper body. Create leading feel in 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "切り返しで下半身を先に動かす",
+                    "上体待ちにならない",
+                    "先に動く感覚を10回で作る"
+                ],
+                "en": [
+                    "Move lower body first at transition",
+                    "Don't wait with upper body",
+                    "Create leading feel in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "上体待ちで遅くなる"
+                ],
+                "en": [
+                    "Waiting with upper body and slowing"
+                ]
+            },
+            "time_sec": 150,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "tempo_too_slow_downswing_medium_control_01",
+            "metric_key": "tempo",
+            "direction": "too_slow_downswing",
+            "intensity": "medium",
+            "variant_type": "CONTROL",
+            "title": {
+                "ja": "1拍子ダウン練習",
+                "en": "1-Beat Down Practice"
+            },
+            "intent": {
+                "ja": "「上げる→すぐ下ろす」を1拍子で。間を作らない。10回で\"迷わず入る\"癖をつける",
+                "en": "Do 'up → immediately down' in 1 beat. No pause. Build habit of 'entering without hesitation' in 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "「上げる→すぐ下ろす」を1拍子で",
+                    "間を作らない",
+                    "迷わず入る癖を10回でつける"
+                ],
+                "en": [
+                    "'Up → immediately down' in 1 beat",
+                    "No pause",
+                    "Build no-hesitation habit in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "間を作って迷う"
+                ],
+                "en": [
+                    "Creating pause and hesitating"
+                ]
+            },
+            "time_sec": 150,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "tempo_too_slow_downswing_medium_transfer_01",
+            "metric_key": "tempo",
+            "direction": "too_slow_downswing",
+            "intensity": "medium",
+            "variant_type": "TRANSFER",
+            "title": {
+                "ja": "8割テンポ10球（切り返し一定）",
+                "en": "80% Tempo 10 Shots (Constant Transition)"
+            },
+            "intent": {
+                "ja": "10球。切り返しのタイミングだけを揃える。遅れたらノーカウント。速すぎてもOK、遅すぎNGで矯正",
+                "en": "Hit 10 shots. Only align transition timing. No count if late. Too fast OK, too slow NG for correction."
+            },
+            "steps": {
+                "ja": [
+                    "10球打つ",
+                    "切り返しのタイミングだけ揃える",
+                    "遅れたらノーカウント、速すぎはOK"
+                ],
+                "en": [
+                    "Hit 10 shots",
+                    "Only align transition timing",
+                    "No count if late, too fast OK"
+                ]
+            },
+            "reps": "10",
+            "tools": [
+                "ball"
+            ],
+            "ng": {
+                "ja": [
+                    "切り返しが遅れる"
+                ],
+                "en": [
+                    "Transition being late"
+                ]
+            },
+            "time_sec": 180,
+            "tags": [
+                "range_ok"
+            ],
+            "cooldown_days": 7
+        }
+    ],
+    "maintain_drills": [
+        {
+            "drill_id": "tempo_maintain_check_01",
+            "metric_key": "tempo",
+            "direction": "maintain",
+            "intensity": "light",
+            "variant_type": "CHECK",
+            "title": {
+                "ja": "リズム確認（30秒）",
+                "en": "Rhythm Check (30 sec)"
+            },
+            "intent": {
+                "ja": "現状の良いテンポを確認し、維持する",
+                "en": "Confirm and maintain your current good tempo"
+            },
+            "steps": {
+                "ja": [
+                    "上げ下げのリズムを確認",
+                    "ハーフ素振りで5回",
+                    "30秒でできればOK"
+                ],
+                "en": [
+                    "Check up/down rhythm",
+                    "5 half swings",
+                    "OK if done in 30 seconds"
+                ]
+            },
+            "reps": "5",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "形だけで流す"
+                ],
+                "en": [
+                    "Going through the motions"
+                ]
+            },
+            "time_sec": 30,
+            "tags": [
+                "home_ok",
+                "quick"
+            ],
+            "cooldown_days": 3
+        }
+    ]
+}

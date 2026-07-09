@@ -1,0 +1,36 @@
+{
+    "name": "swingdeep-functions",
+    "version": "1.0.0",
+    "description": "GolfScan AI - Firebase Functions (LLM Proxy)",
+    "main": "lib/index.js",
+    "scripts": {
+        "lint": "eslint --ext .js,.ts .",
+        "build": "tsc",
+        "build:watch": "tsc --watch",
+        "serve": "npm run build && firebase emulators:start --only functions",
+        "shell": "npm run build && firebase functions:shell",
+        "start": "npm run shell",
+        "deploy": "firebase deploy --only functions",
+        "logs": "firebase functions:log"
+    },
+    "engines": {
+        "node": "20"
+    },
+    "dependencies": {
+        "@google/generative-ai": "^0.21.0",
+        "firebase-admin": "^12.0.0",
+        "firebase-functions": "^7.0.1",
+        "uuid": "^9.0.0"
+    },
+    "devDependencies": {
+        "@types/node": "^20.0.0",
+        "@types/uuid": "^9.0.0",
+        "@typescript-eslint/eslint-plugin": "^6.0.0",
+        "@typescript-eslint/parser": "^6.0.0",
+        "eslint": "^8.0.0",
+        "eslint-config-google": "^0.14.0",
+        "eslint-plugin-import": "^2.25.4",
+        "typescript": "^5.3.0"
+    },
+    "private": true
+}

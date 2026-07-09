@@ -1,0 +1,743 @@
+{
+    "meta": {
+        "version": "1.0.0",
+        "metric_key": "swing_path",
+        "description": "Swing Path drill pool - 16 drills"
+    },
+    "drills": [
+        {
+            "drill_id": "swing_path_out_to_in_light_check_01",
+            "metric_key": "swing_path",
+            "direction": "out_to_in",
+            "intensity": "light",
+            "variant_type": "CHECK",
+            "title": {
+                "ja": "地面ライン素振り",
+                "en": "Ground Line Practice Swing"
+            },
+            "intent": {
+                "ja": "地面にクラブで軽く線を引き、その線に沿ってハーフ素振り。ダウンで外から被ると線を横切りやすい。線に沿う回数を増やして軌道を確認する",
+                "en": "Draw a line on the ground with your club and make half swings along it. Coming over the top tends to cross the line. Check your path by increasing successful reps."
+            },
+            "steps": {
+                "ja": [
+                    "地面にクラブで軽く目標線を引く",
+                    "その線に沿ってハーフ素振り",
+                    "線を横切らず沿う回数を増やす"
+                ],
+                "en": [
+                    "Draw a light target line on the ground with club",
+                    "Make half swings along that line",
+                    "Increase reps where you stay on the line"
+                ]
+            },
+            "reps": "10",
+            "tools": [
+                "club"
+            ],
+            "ng": {
+                "ja": [
+                    "線を無視して速く振る"
+                ],
+                "en": [
+                    "Swinging fast while ignoring the line"
+                ]
+            },
+            "time_sec": 90,
+            "tags": [
+                "beginner_safe",
+                "range_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "swing_path_out_to_in_light_sense_01",
+            "metric_key": "swing_path",
+            "direction": "out_to_in",
+            "intensity": "light",
+            "variant_type": "SENSE",
+            "title": {
+                "ja": "ヘッド外側落とし感覚",
+                "en": "Drop Club Head Outside Feel"
+            },
+            "intent": {
+                "ja": "トップから「ヘッドを自分の背中側に落とす」意識で、ゆっくりハーフ。被る人は前に出やすい。落とす→回すの順で「前に出ない」感覚を作る",
+                "en": "From the top, feel like dropping the club head behind you with slow half swings. Those who come over tend to push forward. Create a 'drop then rotate' sequence."
+            },
+            "steps": {
+                "ja": [
+                    "トップからヘッドを背中側に落とす意識",
+                    "ゆっくりハーフ素振りで確認",
+                    "「落とす→回す」の順で10回"
+                ],
+                "en": [
+                    "Feel club head dropping behind you from top",
+                    "Confirm with slow half swings",
+                    "Practice 'drop then rotate' sequence 10 times"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "トップから前に振り出す"
+                ],
+                "en": [
+                    "Throwing the club forward from the top"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "swing_path_out_to_in_light_control_01",
+            "metric_key": "swing_path",
+            "direction": "out_to_in",
+            "intensity": "light",
+            "variant_type": "CONTROL",
+            "title": {
+                "ja": "右わきタオル固定",
+                "en": "Right Armpit Towel Hold"
+            },
+            "intent": {
+                "ja": "右わきにタオルを挟み、落とさずハーフ素振り。わきが開くと外から入りやすい。落ちそうなら止めてやり直し、「内側から下りる」形に寄せる",
+                "en": "Place towel under right armpit and swing without dropping it. Open armpit leads to over-the-top. Stop and reset if it falls, work toward 'coming from inside' path."
+            },
+            "steps": {
+                "ja": [
+                    "右わきにタオルを挟んで構える",
+                    "落とさずにハーフ素振りを10回",
+                    "落ちそうなら止めてやり直す"
+                ],
+                "en": [
+                    "Set up with towel under right armpit",
+                    "Make 10 half swings without dropping it",
+                    "Stop and reset if towel is about to fall"
+                ]
+            },
+            "reps": "10",
+            "tools": [
+                "towel"
+            ],
+            "ng": {
+                "ja": [
+                    "わきを開けて腕で振る"
+                ],
+                "en": [
+                    "Opening armpit and swinging with arms"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "swing_path_out_to_in_light_transfer_01",
+            "metric_key": "swing_path",
+            "direction": "out_to_in",
+            "intensity": "light",
+            "variant_type": "TRANSFER",
+            "title": {
+                "ja": "ハーフ3球（方向だけ）",
+                "en": "3 Half Shots (Direction Only)"
+            },
+            "intent": {
+                "ja": "実打ならハーフで3球だけ。飛距離は捨てて「狙った方向に出たか」だけ見る。カットは左へ出やすい。まっすぐ〜右へ出たら軌道が改善方向",
+                "en": "Hit just 3 half shots. Ignore distance, only check direction. Cuts tend to go left. Straight to right means path is improving."
+            },
+            "steps": {
+                "ja": [
+                    "ハーフで3球だけ打つ",
+                    "飛距離は無視して方向だけ見る",
+                    "左に出たらカット、右に出たら改善方向"
+                ],
+                "en": [
+                    "Hit just 3 half shots",
+                    "Ignore distance, only check direction",
+                    "Left = cut, right = improving path"
+                ]
+            },
+            "reps": "3",
+            "tools": [
+                "ball"
+            ],
+            "ng": {
+                "ja": [
+                    "飛ばそうとしてフルスイング"
+                ],
+                "en": [
+                    "Trying to hit far with full swing"
+                ]
+            },
+            "time_sec": 90,
+            "tags": [
+                "range_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "swing_path_out_to_in_medium_check_01",
+            "metric_key": "swing_path",
+            "direction": "out_to_in",
+            "intensity": "medium",
+            "variant_type": "CHECK",
+            "title": {
+                "ja": "ボール後方ゲート",
+                "en": "Gate Behind Ball"
+            },
+            "intent": {
+                "ja": "ボールの少し後ろにティー2本で小さなゲートを作る。被るとゲートに当たりやすい。ゲートを避けて入ってこれた回数をカウントし、10回中7回を目標に",
+                "en": "Place 2 tees behind the ball as a gate. Coming over tends to hit the gate. Count successful passes through the gate, aim for 7 out of 10."
+            },
+            "steps": {
+                "ja": [
+                    "ボール後方にティー2本でゲート作成",
+                    "ゲートに当たらずハーフ素振り",
+                    "10回中7回成功を目標に"
+                ],
+                "en": [
+                    "Create gate with 2 tees behind ball",
+                    "Half swing without hitting the gate",
+                    "Aim for 7 out of 10 successful passes"
+                ]
+            },
+            "reps": "10",
+            "tools": [
+                "tees"
+            ],
+            "ng": {
+                "ja": [
+                    "ゲートを無視して強く振る"
+                ],
+                "en": [
+                    "Swinging hard while ignoring the gate"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "range_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "swing_path_out_to_in_medium_sense_01",
+            "metric_key": "swing_path",
+            "direction": "out_to_in",
+            "intensity": "medium",
+            "variant_type": "SENSE",
+            "title": {
+                "ja": "イン→アウト誇張素振り",
+                "en": "Exaggerated In-to-Out Swing"
+            },
+            "intent": {
+                "ja": "あえて「イン→アウトに出す」誇張でハーフ素振り。カットの人は誇張してやっと真っ直ぐに近づく。出し過ぎたら調整し、「正しい通り道」を覚える",
+                "en": "Exaggerate in-to-out path with half swings. Those who cut need exaggeration to approach straight. Adjust if overdone, learn the 'correct path'."
+            },
+            "steps": {
+                "ja": [
+                    "イン→アウトを大げさに意識",
+                    "ハーフで誇張して10回素振り",
+                    "真っ直ぐに近づく感覚を探す"
+                ],
+                "en": [
+                    "Consciously exaggerate in-to-out",
+                    "Practice 10 exaggerated half swings",
+                    "Find the feeling of approaching straight"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "誇張せず普段通り振る"
+                ],
+                "en": [
+                    "Swinging normally without exaggeration"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "swing_path_out_to_in_medium_control_01",
+            "metric_key": "swing_path",
+            "direction": "out_to_in",
+            "intensity": "medium",
+            "variant_type": "CONTROL",
+            "title": {
+                "ja": "3拍子（落とす→回す→当てる）",
+                "en": "3-Count (Drop-Rotate-Hit)"
+            },
+            "intent": {
+                "ja": "「1:落とす 2:回す 3:当てる」でハーフ。カットは1を飛ばして2に入りがち。毎回1を丁寧に入れ、テンポ固定で被りの再発を止める",
+                "en": "Half swing with '1:drop 2:rotate 3:hit'. Cutters tend to skip 1. Always start with 1, fix tempo to stop coming over."
+            },
+            "steps": {
+                "ja": [
+                    "「1落とす→2回す→3当てる」で素振り",
+                    "毎回1を丁寧に入れる",
+                    "テンポ固定で10回"
+                ],
+                "en": [
+                    "Swing with '1:drop 2:rotate 3:hit'",
+                    "Always carefully include step 1",
+                    "Fixed tempo for 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "1を飛ばしていきなり2に入る"
+                ],
+                "en": [
+                    "Skipping step 1 and jumping to 2"
+                ]
+            },
+            "time_sec": 150,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "swing_path_out_to_in_medium_transfer_01",
+            "metric_key": "swing_path",
+            "direction": "out_to_in",
+            "intensity": "medium",
+            "variant_type": "TRANSFER",
+            "title": {
+                "ja": "連続10球（スリークォーター）",
+                "en": "10 Consecutive 3/4 Shots"
+            },
+            "intent": {
+                "ja": "スリークォーターで10球。1球ごとに軌道を作り直さない。毎回同じ手順（落とす→回す）で、左へ出たら即ハーフに戻す。安定が出たら成功",
+                "en": "Hit 10 balls at 3/4. Don't rebuild path each shot. Same sequence (drop-rotate) every time. Return to half if going left. Success when stable."
+            },
+            "steps": {
+                "ja": [
+                    "スリークォーターで10球連続",
+                    "毎回「落とす→回す」の手順を守る",
+                    "左に出たら即ハーフに戻る"
+                ],
+                "en": [
+                    "Hit 10 consecutive 3/4 shots",
+                    "Keep 'drop-rotate' sequence each time",
+                    "Return to half immediately if going left"
+                ]
+            },
+            "reps": "10",
+            "tools": [
+                "ball"
+            ],
+            "ng": {
+                "ja": [
+                    "毎球リセットして考える"
+                ],
+                "en": [
+                    "Resetting and thinking before each shot"
+                ]
+            },
+            "time_sec": 180,
+            "tags": [
+                "range_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "swing_path_in_to_out_light_check_01",
+            "metric_key": "swing_path",
+            "direction": "in_to_out",
+            "intensity": "light",
+            "variant_type": "CHECK",
+            "title": {
+                "ja": "目標線にヘッドが出るか",
+                "en": "Club Head Along Target Line"
+            },
+            "intent": {
+                "ja": "目標に向けた線をイメージしてハーフ素振り。インサイドアウト過多だと右へ押し出しやすい。ヘッドが線に沿って出る感覚になるまで10回確認",
+                "en": "Visualize target line and make half swings. Excessive in-to-out pushes right. Check until club head follows the line for 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "目標線をイメージして構える",
+                    "ハーフ素振りでヘッドが線に沿うか確認",
+                    "右に押し出さない形を10回で探す"
+                ],
+                "en": [
+                    "Set up imagining target line",
+                    "Check if club head follows line in half swings",
+                    "Find form that doesn't push right in 10 reps"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "目標を無視してインサイドに振る"
+                ],
+                "en": [
+                    "Swinging inside while ignoring target"
+                ]
+            },
+            "time_sec": 90,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "swing_path_in_to_out_light_sense_01",
+            "metric_key": "swing_path",
+            "direction": "in_to_out",
+            "intensity": "light",
+            "variant_type": "SENSE",
+            "title": {
+                "ja": "フェース正面意識素振り",
+                "en": "Face Square Awareness Swing"
+            },
+            "intent": {
+                "ja": "「フェース面を目標に向けたまま」ハーフ素振り。インサイドアウト過多は開いて当てやすい。面を整えると軌道も落ち着く。10回で「押し出し」を減らす",
+                "en": "Half swing keeping face aimed at target. Excessive in-to-out opens face. Squaring face calms the path. Reduce pushes in 10 reps."
+            },
+            "steps": {
+                "ja": [
+                    "フェース面を目標に向ける意識",
+                    "その意識でハーフ素振り10回",
+                    "面が開かない形を作る"
+                ],
+                "en": [
+                    "Focus on keeping face at target",
+                    "Make 10 half swings with this awareness",
+                    "Build form where face doesn't open"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "フェースを開いたまま振り抜く"
+                ],
+                "en": [
+                    "Swinging through with open face"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "swing_path_in_to_out_light_control_01",
+            "metric_key": "swing_path",
+            "direction": "in_to_out",
+            "intensity": "light",
+            "variant_type": "CONTROL",
+            "title": {
+                "ja": "フィニッシュ小さく止める",
+                "en": "Small Finish Stop"
+            },
+            "intent": {
+                "ja": "ハーフで当てた後、フィニッシュを腰の高さで止める。過度な内側からの押し出しは止めると露呈する。まっすぐ止まる形を10回作り、暴れを抑える",
+                "en": "Stop finish at hip height after half shot. Excessive inside push shows when you stop. Create straight finish form 10 times to control path."
+            },
+            "steps": {
+                "ja": [
+                    "ハーフで当ててフィニッシュは腰高さ",
+                    "まっすぐ止まれるか確認",
+                    "止まる形を10回繰り返す"
+                ],
+                "en": [
+                    "Hit half shot and stop finish at hip height",
+                    "Check if you can stop straight",
+                    "Repeat stopping form 10 times"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "止めずに振り抜く"
+                ],
+                "en": [
+                    "Swinging through without stopping"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "swing_path_in_to_out_light_transfer_01",
+            "metric_key": "swing_path",
+            "direction": "in_to_out",
+            "intensity": "light",
+            "variant_type": "TRANSFER",
+            "title": {
+                "ja": "3球だけ（右への出球を減らす）",
+                "en": "3 Shots (Reduce Right Start)"
+            },
+            "intent": {
+                "ja": "実打3球。右に出るならインサイドアウト過多かフェース開き。目標より右に出ないことだけに集中。出たら素振りに戻して面と軌道を同時に整える",
+                "en": "Hit 3 shots. Right start means excessive in-to-out or open face. Focus only on not going right. If it does, return to practice swings to fix face and path."
+            },
+            "steps": {
+                "ja": [
+                    "3球だけ打つ",
+                    "右に出ないことだけに集中",
+                    "右に出たら素振りに戻る"
+                ],
+                "en": [
+                    "Hit just 3 shots",
+                    "Focus only on not starting right",
+                    "Return to practice swings if going right"
+                ]
+            },
+            "reps": "3",
+            "tools": [
+                "ball"
+            ],
+            "ng": {
+                "ja": [
+                    "右に出ても続けて打つ"
+                ],
+                "en": [
+                    "Continuing to hit even when going right"
+                ]
+            },
+            "time_sec": 90,
+            "tags": [
+                "range_ok"
+            ],
+            "cooldown_days": 5
+        },
+        {
+            "drill_id": "swing_path_in_to_out_medium_check_01",
+            "metric_key": "swing_path",
+            "direction": "in_to_out",
+            "intensity": "medium",
+            "variant_type": "CHECK",
+            "title": {
+                "ja": "前方ゲート（ボール前）",
+                "en": "Forward Gate (In Front of Ball)"
+            },
+            "intent": {
+                "ja": "ボールの少し前にティー2本でゲート。内側から過度に出すとゲートの外へ抜けやすい。ゲートを通せた回数を数え、10回中7回が目標",
+                "en": "Place 2 tees in front of ball as gate. Excessive inside-out exits outside the gate. Count passes through gate, aim for 7 out of 10."
+            },
+            "steps": {
+                "ja": [
+                    "ボール前にティー2本でゲート作成",
+                    "ゲートを通してハーフ素振り",
+                    "10回中7回成功を目標に"
+                ],
+                "en": [
+                    "Create gate with 2 tees in front of ball",
+                    "Half swing through the gate",
+                    "Aim for 7 out of 10 successful passes"
+                ]
+            },
+            "reps": "10",
+            "tools": [
+                "tees"
+            ],
+            "ng": {
+                "ja": [
+                    "ゲートを無視して振る"
+                ],
+                "en": [
+                    "Swinging while ignoring the gate"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "range_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "swing_path_in_to_out_medium_sense_01",
+            "metric_key": "swing_path",
+            "direction": "in_to_out",
+            "intensity": "medium",
+            "variant_type": "SENSE",
+            "title": {
+                "ja": "「左へ抜く」誇張素振り",
+                "en": "Exaggerated Exit Left Swing"
+            },
+            "intent": {
+                "ja": "インサイドアウト過多は、誇張して左へ抜くくらいで真っ直ぐに寄る。ハーフで「左へ抜く」意識を10回。押し出しが減る方向に収束させる",
+                "en": "Excessive in-to-out needs exaggerated exit left to approach straight. Practice 'exit left' awareness 10 times to reduce pushes."
+            },
+            "steps": {
+                "ja": [
+                    "「左へ抜く」を大げさに意識",
+                    "ハーフで誇張して10回素振り",
+                    "押し出しが減る方向を探す"
+                ],
+                "en": [
+                    "Consciously exaggerate 'exit left'",
+                    "Practice 10 exaggerated half swings",
+                    "Find direction that reduces pushes"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "普段通りに右へ押し出す"
+                ],
+                "en": [
+                    "Pushing right as usual"
+                ]
+            },
+            "time_sec": 120,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "swing_path_in_to_out_medium_control_01",
+            "metric_key": "swing_path",
+            "direction": "in_to_out",
+            "intensity": "medium",
+            "variant_type": "CONTROL",
+            "title": {
+                "ja": "右手ワンハンドハーフ",
+                "en": "Right Hand Only Half Swing"
+            },
+            "intent": {
+                "ja": "右手だけでハーフ素振りをゆっくり。内側から強く押す癖があると制御できない。右手で「面を保つ」感覚を作り、無理な押し出しを矯正",
+                "en": "Slow half swing with right hand only. Can't control if pushing hard from inside. Build 'keep face square' feel with right hand to fix excessive pushes."
+            },
+            "steps": {
+                "ja": [
+                    "右手だけでクラブを持つ",
+                    "ゆっくりハーフ素振りを10回",
+                    "面を保つ感覚を作る"
+                ],
+                "en": [
+                    "Hold club with right hand only",
+                    "Slow half swings 10 times",
+                    "Build feeling of keeping face square"
+                ]
+            },
+            "reps": "10",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "速く振って制御を失う"
+                ],
+                "en": [
+                    "Swinging fast and losing control"
+                ]
+            },
+            "time_sec": 150,
+            "tags": [
+                "home_ok"
+            ],
+            "cooldown_days": 7
+        },
+        {
+            "drill_id": "swing_path_in_to_out_medium_transfer_01",
+            "metric_key": "swing_path",
+            "direction": "in_to_out",
+            "intensity": "medium",
+            "variant_type": "TRANSFER",
+            "title": {
+                "ja": "8割テンポ10球",
+                "en": "80% Tempo 10 Shots"
+            },
+            "intent": {
+                "ja": "8割テンポで10球。強く振るほどインサイドアウトが暴れる。テンポを守れた回だけカウント。右への押し出しが止まったらOK、次回は少しだけ速度UP",
+                "en": "Hit 10 balls at 80% tempo. Harder swings make in-to-out unstable. Only count reps with good tempo. OK when pushes stop, then slightly increase speed."
+            },
+            "steps": {
+                "ja": [
+                    "8割テンポで10球打つ",
+                    "テンポを守れた回だけカウント",
+                    "押し出しが止まれば成功"
+                ],
+                "en": [
+                    "Hit 10 balls at 80% tempo",
+                    "Only count reps with good tempo",
+                    "Success when pushes stop"
+                ]
+            },
+            "reps": "10",
+            "tools": [
+                "ball"
+            ],
+            "ng": {
+                "ja": [
+                    "力んで100%で振る"
+                ],
+                "en": [
+                    "Tensing up and swinging at 100%"
+                ]
+            },
+            "time_sec": 180,
+            "tags": [
+                "range_ok"
+            ],
+            "cooldown_days": 7
+        }
+    ],
+    "maintain_drills": [
+        {
+            "drill_id": "swing_path_maintain_check_01",
+            "metric_key": "swing_path",
+            "direction": "maintain",
+            "intensity": "light",
+            "variant_type": "CHECK",
+            "title": {
+                "ja": "目標線確認（30秒）",
+                "en": "Target Line Check (30 sec)"
+            },
+            "intent": {
+                "ja": "現状の良い軌道を確認し、維持する",
+                "en": "Confirm and maintain your current good swing path"
+            },
+            "steps": {
+                "ja": [
+                    "目標線をイメージ",
+                    "ハーフ素振りで軌道確認",
+                    "30秒で5回できればOK"
+                ],
+                "en": [
+                    "Visualize target line",
+                    "Check path with half swings",
+                    "OK if 5 in 30 seconds"
+                ]
+            },
+            "reps": "5",
+            "tools": [],
+            "ng": {
+                "ja": [
+                    "形だけで流す"
+                ],
+                "en": [
+                    "Going through the motions"
+                ]
+            },
+            "time_sec": 30,
+            "tags": [
+                "home_ok",
+                "quick"
+            ],
+            "cooldown_days": 3
+        }
+    ]
+}
