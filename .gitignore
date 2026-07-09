@@ -29,9 +29,9 @@ config.swift
 !.env.example
 
 # Firebase Functions generated files
-functions/node_modules/
-functions/lib/
-functions/.firebase/
-functions/firebase-debug.log*
-functions/*-debug.log*
+backend/functions/node_modules/
+backend/functions/lib/
+backend/functions/.firebase/
+backend/functions/firebase-debug.log*
+backend/functions/*-debug.log*
 npm-debug.log*

@@ -41,16 +41,17 @@ pod install
 
 ## Firebase Functions
 
-The backend source is under `functions/` and targets Node.js 20.
+The backend source is under `backend/functions/` and targets Node.js 20.
 
 ```sh
-cd functions
+cd backend/functions
 npm ci
 npm run build
 cd ..
 cp .firebaserc.example .firebaserc
-firebase functions:secrets:set GEMINI_API_KEY
-firebase deploy --only functions
+cd ..
+firebase --config backend/firebase.json functions:secrets:set GEMINI_API_KEY
+firebase --config backend/firebase.json deploy --only functions
 ```
 
 The iOS client uses the Firebase Callable wire format over `URLSession`. This avoids a linker collision between the Firebase Functions client SDK and MediaPipe while preserving the existing backend contract.

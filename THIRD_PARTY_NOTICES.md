@@ -20,7 +20,7 @@ Resolved versions and checksums are recorded in `Podfile.lock`.
 
 ## Firebase Functions dependencies
 
-Exact versions are recorded in `functions/package-lock.json`. Direct dependencies include Firebase Admin, Firebase Functions, Google Generative AI, and UUID packages.
+Exact versions are recorded in `backend/functions/package-lock.json`. Direct dependencies include Firebase Admin, Firebase Functions, Google Generative AI, and UUID packages.
 
 ## Local image asset
 
